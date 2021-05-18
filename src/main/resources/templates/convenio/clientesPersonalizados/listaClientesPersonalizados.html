@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta name="description" content="File Manager - Dashboard">
+  <meta name="author" content="Michal Kuvik">
+  <meta name="keyword" content="Spring,Thymeleaf,Bootstrap,jQuery,CSS,HTML">
+  <title>Banco Exterior</title>
+  <!-- Icons-->
+  <link th:href="@{/node_modules/@coreui/icons/css/coreui-icons.min.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{/node_modules/flag-icon-css/css/flag-icon.min.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{/node_modules/font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{/node_modules/simple-line-icons/css/simple-line-icons.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{/node_modules/@fortawesome/fontawesome-free/css/all.css}" rel="stylesheet" type="text/css">
+  <!-- Main styles for this application-->
+  <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{/vendors/pace-progress/css/pace.min.css}" rel="stylesheet" type="text/css">
+</head>
+
+<body class="app header-fixed sidebar-fixed sidebar-lg-show" ng-app="app" ng-controller="controller" data-ng-init="getData()">
+  <header class="app-header navbar navbar-expand-xl">
+    <a class="navbar-brand mr-4" href="#">
+      <img class="navbar-brand-full" th:src="@{/img/brand/logo.svg}" width="89" height="25" alt="CoreUI Logo">
+    </a>
+
+    <ul class="nav ml-auto mr-5">
+    	<li>
+      	<div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
+            <div>
+                <form th:action="@{/logout}" method="post">
+                    <button  class="btn btn-primary" type="submit">
+                    	<i class="fas fa-sign-out-alt mr-2"></i><span>Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+      </li>
+    </ul>
+  </header>
+  <div class="app-body">
+    <div class="sidebar" th:insert="fragments/menu :: menu-principal">
+      
+    </div>
+    <main class="main">
+      <!-- Breadcrumb-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">Home</li>
+        <li class="breadcrumb-item">
+          <a href="#">Admin</a>
+        </li>
+        <li class="breadcrumb-item active">Dashboard</li>
+      </ol>
+      <div class="container-fluid">
+        <div class="animated fadeIn">
+		    <div class="row">
+		      <div class="col-lg-1-12">
+		        <div class="card">
+		          <div class="card-header">
+		            <i class="fa fa-align-justify"></i> Listado de Clientes Personalizados
+		            <p align="right"></p>
+		            <div class="my-2 text-left">
+		              <a class="btn btn-primary" th:href="@{/clientesPersonalizados/formClientePersonalizado}" title="Crear Cliente Personalizado" role="button"><i class="fas fa-file" aria-hidden="true"></i> Crear Cliente Personalizado</a>
+		            </div>
+		          </div><!--/.card-header-->
+		          <div class="card-body">
+		            <table class="table">
+		              <thead>
+		                <tr>
+		                  <th>Codigo Ibs</th>
+		                  <th>Nro. IdCliente</th>
+		                  <th>Nombre/Razon Social</th>
+		                  <th>Cod. Usuario</th>
+		                  <th>Flag Activo</th>
+		                  <th>Fecha Modificacion</th>
+		                  <th>Editar</th>
+		                  <th>Desactivar</th>
+		                </tr>
+		              </thead>
+		              <tbody>
+		                <tr th:each = "cliente: ${listaClientesPersonalizados}">
+		                  <td th:text="${cliente.codigoIbs}"></td>
+		                  <td th:text="${cliente.nroIdCliente}"></td>
+		                  <td th:text="${cliente.nombreRif}"></td>
+		                  <td th:text="${cliente.codUsuario}"></td>
+		                  <td>
+	                		<span class="badge badge-primary" th:if="${cliente.flagActivo}">Activo</span>
+	                		<span class="badge badge-danger" th:unless="${cliente.flagActivo }">Desactivo</span>
+	                	  </td>
+		                  <td th:text="${cliente.fechaModificacion}"></td>
+		                  <td>
+		                      <a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Editar</a>
+		                  </td>
+		                  <td th:if="${cliente.flagActivo}">
+		                   		<a  onclick="return confirm('¿Estas seguro?')" th:href="@{/vacantes/create}" class="btn btn-danger" role="button" title="Eliminar el registro.">Desactivar</a>
+			              </td>
+		                  <td th:unless="${cliente.flagActivo }"> 
+		                    	<a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Activar</a>
+		                   </td>
+		                </tr>
+		              </tbody>
+		            </table> 
+		          </div><!--/.card-body-->
+		        </div><!--/.card-->
+		      </div><!--/.col-lg-1-12-->
+		    </div><!--/.row-->    
+		  </div><!--/.animated fadeIn-->      
+
+
+      </div><!-- Container fluid -->
+
+    </main>
+  </div>
+  <footer class="app-footer" th:insert="fragments/footer :: pie-pagina">
+    
+  </footer>
+  <!-- Bootstrap and necessary plugins-->
+  <script th:src="@{/node_modules/jquery/dist/jquery.min.js}" type="text/javascript"></script>
+  <script th:src="@{/node_modules/popper.js/dist/umd/popper.min.js}" type="text/javascript"></script>
+  <script th:src="@{/node_modules/bootstrap/dist/js/bootstrap.min.js}" type="text/javascript"></script>
+  <script th:src="@{/js/angular.min.js}" type="text/javascript"></script>
+  <script th:src="@{/js/controller.js}" type="text/javascript"></script>
+  <script th:src="@{/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js}" type="text/javascript"></script>
+  <script th:src="@{/node_modules/@coreui/coreui/dist/js/coreui.min.js}" type="text/javascript"></script>
+  <script th:src="@{/node_modules/@fortawesome/fontawesome-free/js/all.js}" type="text/javascript"></script>
+  <!-- Plugins and scripts required by this view-->
+  <script th:src="@{/node_modules/@coreui/coreui-plugin-chartjs-custom-tooltips/dist/js/custom-tooltips.min.js}" type="text/javascript"></script>
+  <script th:src="@{/js/main.js}" type="text/javascript"></script>
+</body>
+
+</html>

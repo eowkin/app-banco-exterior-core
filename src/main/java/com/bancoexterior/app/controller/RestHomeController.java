@@ -1,0 +1,29 @@
+package com.bancoexterior.app.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bancoexterior.app.entities.Item;
+import com.bancoexterior.app.services.ItemService;
+
+@RestController
+public class RestHomeController {
+	
+	@Autowired
+	ItemService itemService = new ItemService();
+	
+	@RequestMapping(value= "/getItems", method = RequestMethod.GET)
+	public List<Item> getItems(){
+		return itemService.getItems();
+	}
+	
+	@RequestMapping(value= "/getPath", method = RequestMethod.GET)
+	public List<String> getPath(){
+		return itemService.getPath();
+	}
+
+}
