@@ -207,4 +207,14 @@ public class SolicitudServiceImpl implements ISolicitudService{
 		return listaSolicitudesTodas;
 	}
 
+	@Override
+	public Solicitud findById(String codOperacion) {
+		for (Solicitud solicitud : listaSolicitudesPorAprobar) {
+			if(solicitud.getCodOperacion().equals(codOperacion)) {
+				return solicitud;
+			}
+		}
+		return null;
+	}
+
 }

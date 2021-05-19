@@ -1,7 +1,7 @@
 <nav th:fragment="menu-principal" class="sidebar-nav">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" th:href="@{/user/index}">
               <i class="nav-icon icon-speedometer"></i> Dashboard
               <span class="badge badge-primary">NEW</span>
             </a>
@@ -10,6 +10,21 @@
             <a class="nav-link nav-dropdown-toggle" href="#">
               <i class="nav-icon icon-cursor"></i> Convenio</a>
 	            <ul class="nav-dropdown-items">
+	              <li class="nav-item nav-dropdown">
+		            	<a class="nav-link nav-dropdown-toggle" href="#">
+		              	<i class="nav-icon icon-cursor"></i> Solicitudes</a>
+			            <ul class="nav-dropdown-items">
+			              <li class="nav-item">
+			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesPorAprobar}">
+			                  <i class="nav-icon icon-cursor"></i> Por aprobar</a>
+			              </li>
+			              <li class="nav-item">
+			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientos}">
+			                  <i class="nav-icon icon-cursor"></i> Movimientos</a>
+			              </li>
+			              
+			            </ul>
+	          	  	  </li>	      	
 	              <li class="nav-item nav-dropdown">
 	            	<a class="nav-link nav-dropdown-toggle" href="#">
 	              	<i class="nav-icon icon-cursor"></i> Parametros</a>
@@ -36,21 +51,7 @@
 		              </li>
 		            </ul>
           		 	</li>
-	  				  <li class="nav-item nav-dropdown">
-		            	<a class="nav-link nav-dropdown-toggle" href="#">
-		              	<i class="nav-icon icon-cursor"></i> Solicitudes</a>
-			            <ul class="nav-dropdown-items">
-			              <li class="nav-item">
-			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesPorAprobar}">
-			                  <i class="nav-icon icon-cursor"></i> Por aprobar</a>
-			              </li>
-			              <li class="nav-item">
-			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientos}">
-			                  <i class="nav-icon icon-cursor"></i> Movimientos</a>
-			              </li>
-			              
-			            </ul>
-	          	  	  </li>	            
+	  				        
             </ul>
           </li>
           

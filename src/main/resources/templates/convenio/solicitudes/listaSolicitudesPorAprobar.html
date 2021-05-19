@@ -24,7 +24,7 @@
 <body class="app header-fixed sidebar-fixed sidebar-lg-show" ng-app="app" ng-controller="controller" data-ng-init="getData()">
   <header class="app-header navbar navbar-expand-xl">
     <a class="navbar-brand mr-4" href="#">
-      <img class="navbar-brand-full" th:src="@{/img/brand/logo.svg}" width="89" height="25" alt="CoreUI Logo">
+      <img class="navbar-brand-full" th:src="@{/img/brand/logo_banco.svg}" width="89" height="25" alt="CoreUI Logo">
     </a>
 
     <ul class="nav ml-auto mr-5">
@@ -81,10 +81,10 @@
 		            <!--      <th>Referencia Debito</th>
 		                  <th>Referencia Credito</th>-->
 		                  <th>Descripcion</th>
-		                  <th>Estatus</th>
+		            <!--      <th>Estatus</th>-->
 		                  
-		                  <th>Aprobar</th>
-		                  <th>Rechazar</th>
+		                  <th>Procesar</th>
+		             <!--     <th>Rechazar</th>-->
 		                </tr>
 		              </thead>
 		              <tbody>
@@ -106,20 +106,23 @@
 		             <!--     <td th:text="${solicitud.referenciaDebito}"></td>
 		                  <td th:text="${solicitud.referenciaCredito}"></td>-->
 		                  <td th:text="${solicitud.descripcion}"></td>
-		                  <td>
+		             <!--     <td>
 		                  	<span th:if="${solicitud.estatus == 0}">Por Aprobar</span>
 		                  	<span th:if="${solicitud.estatus == 1}">Aprobada Automática</span>
 		                  	<span th:if="${solicitud.estatus == 2}">Aprobada Funcional</span>
 		                  	<span th:if="${solicitud.estatus == 3}">Rechazada Automática</span>
 		                  	<span th:if="${solicitud.estatus == 4}">Rechazada Funcional</span>
-		                  </td>
+		                  </td>-->
 		                  
 		                  <td>
-		                    <a  class="btn btn-success" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Aprobar</a>
+		                  	<a  class="btn btn-primary" th:href="@{/solicitudes/edit/{id} (id=${solicitud.codOperacion}) }" role="button" title="Editar el registro.">Procesar</a>
+		                    
 		                  </td>
+		             <!--   
+		             	<a  class="btn btn-success" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Aprobar</a>  
 		                  <td>
 		                  	<a  onclick="return confirm('¿Estas seguro?')" th:href="@{/vacantes/create}" class="btn btn-danger" role="button" title="Rehcazar solicitud.">Rechazar</a>
-		                  </td>
+		                  </td>-->
 		                </tr>
 		              </tbody>
 		            </table> 

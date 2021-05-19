@@ -10,5 +10,5 @@ public interface ISolicitudService {
 	
 	public List<Solicitud> buscarTodas();
 	
-	
+	public Solicitud findById(String codOperacion);
 }
