@@ -56,42 +56,56 @@
       </ol>
       <div class="container-fluid">
         <div class="animated fadeIn">
-			    <div class="card">
-			      <div class="card-header">
-			        <strong>Crear Cliente Personalizado</strong>
-			      </div>
-			      <div class="card-body">
-			        <form  class="form-horizontal">
-			          <div class="form-group row">
-			            <label class="col-sm-5 col-form-label" for="codMoneda">Codigo Ibs:</label>
-			            <div class="col-sm-3">
-			              <input type="text" class="form-control" id="codigoIbs" name="codigoIbs"><a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Buscar</a>
-			              
-			            </div>
-			          </div>
-			          <div class="form-group row">
-			            <label class="col-sm-5 col-form-label" for="descripcion">Nro. IdCliente:</label>
-			            <div class="col-sm-6">
-			              <input type="text"  class="form-control" id="nroIdCliente" name="nroIdCliente">
-			              
-			            </div>
-			          </div>
-			          <div class="form-group row">
-			            <label class="col-sm-5 col-form-label" for="input-large">Nombre/Razon Social:</label>
-			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="nombreRif" name="nombreRif">
-			              
-			            </div>
-			          </div>
-			          
-			        </form>
-			      </div>
-			      <div class="card-footer">
-			         <button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
-			        <button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
-			      </div>
-			    </div>
-			  </div><!--/.col-->			   	      
+		    <div class="row">
+		      <div class="col-lg-1-12">
+		        <div class="card">
+		          <div class="card-header">
+		            <i class="fa fa-align-justify"></i> Listado de Agencias
+		            <p align="right"></p>
+		            <div class="my-2 text-left">
+		              <a class="btn btn-primary" th:href="@{/agencias/formAgencia}" title="Crear Agencia" role="button"><i class="fas fa-file" aria-hidden="true"></i> Crear Agencia</a>
+		            </div>
+		          </div><!--/.card-header-->
+		          <div class="card-body">
+		            <table class="table">
+		              <thead>
+		                <tr>
+		                  <th>Codigo Agencia</th>
+		                  <th>Nombre Agencia</th>
+		                  <th>Cod. Usuario</th>
+		                  <th>Flag Activo</th>
+		                  <th>Fecha Modificacion</th>
+		                  <th>Editar</th>
+		                  <th>Desactivar</th>
+		                </tr>
+		              </thead>
+		              <tbody>
+		                <tr th:each = "agencia: ${listaAgencias}">
+		                  <td th:text="${agencia.codAgencia}"></td>
+		                  <td th:text="${agencia.nombreAgencia}"></td>
+		                  <td th:text="${agencia.codUsuario}"></td>
+		                  <td>
+	                		<span class="badge badge-primary" th:if="${agencia.flagActivo}">Activo</span>
+	                		<span class="badge badge-danger" th:unless="${agencia.flagActivo }">Desactivo</span>
+	                	  </td>
+		                  <td th:text="${agencia.fechaModificacion}"></td>
+		                  <td>
+		                      <a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Editar</a>
+		                  </td>
+		                  <td th:if="${agencia.flagActivo}">
+		                   		<a  onclick="return confirm('¿Estas seguro?')" th:href="@{/vacantes/create}" class="btn btn-danger" role="button" title="Eliminar el registro.">Desactivar</a>
+			              </td>
+		                  <td th:unless="${agencia.flagActivo }"> 
+		                    	<a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Activar</a>
+		                   </td>
+		                </tr>
+		              </tbody>
+		            </table> 
+		          </div><!--/.card-body-->
+		        </div><!--/.card-->
+		      </div><!--/.col-lg-1-12-->
+		    </div><!--/.row-->    
+		  </div><!--/.animated fadeIn-->      
 
 
       </div><!-- Container fluid -->

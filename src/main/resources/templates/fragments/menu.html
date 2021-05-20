@@ -1,11 +1,6 @@
 <nav th:fragment="menu-principal" class="sidebar-nav">
         <ul class="nav">
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/user/index}">
-              <i class="nav-icon icon-speedometer"></i> Dashboard
-              <span class="badge badge-primary">NEW</span>
-            </a>
-          </li>
+          
           <li class="nav-item nav-dropdown">
             <a class="nav-link nav-dropdown-toggle" href="#">
               <i class="nav-icon icon-cursor"></i> Convenio</a>
@@ -48,6 +43,10 @@
 		              <li class="nav-item">
 		                <a class="nav-link" th:href="@{/limitesPersonalizados/index}">
 		                  <i class="nav-icon icon-cursor"></i> Limites Personalizados</a>
+		              </li>
+		              <li class="nav-item">
+		                <a class="nav-link" th:href="@{/agencias/index}">
+		                  <i class="nav-icon icon-cursor"></i> Agencia</a>
 		              </li>
 		            </ul>
           		 	</li>

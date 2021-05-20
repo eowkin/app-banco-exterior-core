@@ -9,7 +9,7 @@
   <meta name="description" content="File Manager - Login page">
   <meta name="author" content="Michal Kuvik">
   <meta name="keyword" content="Spring,Thymeleaf,Bootstrap,jQuery,CSS,HTML">
-  <title>File Manager</title>
+  <title>Banco Exterior</title>
   <!-- Icons-->
   <link th:href="@{/node_modules/@coreui/icons/css/coreui-icons.min.css}" rel="stylesheet">
   <link th:href="@{/node_modules/flag-icon-css/css/flag-icon.min.css}" rel="stylesheet">
@@ -31,6 +31,7 @@
                     <div class="card-group">
                         <div class="card p-4">
                             <div class="card-body">
+                            	<p th:if="${loginError}" class="error text-danger">Error usuario o password incorrectos</p>
                                 <form th:action="@{/login}" method="post">
                                     <img th:src="@{/img/brand/logo_banco.svg}" alt="Logo Banco Exterior" width="100%" height="100%">
                                     <p class="text-muted">Iniciar sesión con su cuenta</p>
