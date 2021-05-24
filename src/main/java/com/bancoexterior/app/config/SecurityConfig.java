@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				"/node_modules/**").permitAll()
 					//Asignar permisos a URLs por ROLES 
 		.antMatchers("/monedas/**").hasAnyAuthority("ROLE_USER") 
-		
+		.antMatchers("/tasas/**").hasAnyAuthority("ROLE_USER")
 
 					
 		// Todas las demás URLs de la Aplicación requieren autenticación

@@ -62,22 +62,28 @@
 			      </div>
 			      <div class="card-body">
 			        <form  th:action = "@{/monedas/save}"  method="post"  th:object="${moneda}"   class="form-horizontal">
+			          <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+		            		Por favor corrija los siguientes errores:
+		            		<ul>
+		            			<li th:each="err : ${#fields.errors('*')}"  th:text="${err}"></li>
+		            		</ul>
+		            	</div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="codMoneda">Codigo Moneda:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="codMoneda" name="codMoneda" th:field="*{codMoneda}" placeholder="Codigo de la moneda" required="required"> 
+			              <input type="text" class="form-control" id="codMoneda" name="codMoneda" th:field="*{codMoneda}" placeholder="Codigo de la moneda" maxlength="3" required="required"> 
 			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="descripcion">Descripcion:</label>
 			            <div class="col-sm-6">
-			              <input type="text"  class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}"  placeholder="Descripcion de la moneda" required="required">
+			              <input type="text"  class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}"  placeholder="Descripcion de la moneda"  required="required">
 			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Codigo Alterno:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="codAlterno" name="codAlterno" th:field="*{codAlterno}" placeholder="Codigo alterno de la moneda" required="required">
+			              <input type="text" class="form-control" id="codAlterno" name="codAlterno" th:field="*{codAlterno}" placeholder="Codigo alterno de la moneda" maxlength="3" required="required">
 			            </div>
 			          </div>
 			          <div class="card-footer">

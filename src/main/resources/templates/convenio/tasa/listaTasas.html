@@ -67,6 +67,12 @@
 		            </div>
 		          </div><!--/.card-header-->
 		          <div class="card-body">
+		          	<div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
+		            		Ocurrio los siguientes errores:
+		            		<ul>
+		            			<li th:text="${mensajeError}"></li>
+		            		</ul>
+		            	</div>
 		          	<div th:if="${mensaje != null}" class="alert alert-success" th:text="${mensaje}" role="alert"></div>
 		            <table class="table">
 		              <thead>
@@ -96,7 +102,7 @@
 		                  <td th:text="${tasa.codUsuario}"></td>
 		                  <td th:text="${tasa.fechaModificacion}"></td>
 		                  <td>
-		                  	<a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Editar</a>
+		                  	<a  class="btn btn-primary" th:href="@{/tasas/edit/{id}/{id2}/{id3} (id=${tasa.codMonedaOrigen}, id2=${tasa.codMonedaDestino}, id3=${tasa.tipoOperacion}) }" role="button" title="Editar el registro.">Editar</a>
 		                  </td>
 		                </tr>
 		              </tbody>

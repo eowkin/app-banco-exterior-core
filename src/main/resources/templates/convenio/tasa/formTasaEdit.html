@@ -56,66 +56,70 @@
       </ol>
       <div class="container-fluid">
         <div class="animated fadeIn">
-	  <div class="row">
-	    <div class="col-lg-1-12">
-	      <div class="card">
-	        <div class="card-header">
-	          <i class="fa fa-align-justify"></i> Listado de Monedas
-	          <p align="right"></p>
-	          <div class="my-2 text-left">
-	          	<a class="btn btn-rounded btn-primary" th:href="@{/monedas/formMoneda}"><i class="fas fa-file" aria-hidden="true"></i> Crear Moneda</a>
-	          </div>
-	        </div><!--/.card-header-->
-	        <div class="card-body">
-	          <div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
-		            		Ocurrio los siguientes errores:
+		    <div class="card">
+		      <div class="card-header">
+		        <strong>Editar Tasa</strong>
+		      </div>
+		      <div class="card-body">
+		        <form  th:action = "@{/tasas/guardar}"   method="post" th:object="${tasa}"   class="form-horizontal">
+		          <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+		            		Por favor corrija los siguientes errores:
 		            		<ul>
-		            			<li th:text="${mensajeError}"></li>
+		            			<li th:each="err : ${#fields.errors('*')}"  th:text="${err}"></li>
 		            		</ul>
 		            	</div>
-	          	
-	          <div th:if="${mensaje != null}" class="alert alert-success" th:text="${mensaje}" role="alert"></div>	
-	          <table class="table">
-	            <thead>
-	              <tr>
-	                <th>Codigo Moneda</th>
-	                <th>Descripcion</th>
-	                <th>Cod. Alterno</th>
-	                <th>Flag Activo</th>
-	                <th>Cod. Usuario</th>
-	                <th>Fecha Modificacion</th>
-	                <th>Editar</th>
-	                <th>Accion</th>
-	              </tr>
-	            </thead>
-	            <tbody>
-	              <tr th:each = "moneda: ${listMonedas}">
-	                <td th:text="${moneda.codMoneda}"></td>
-	                <td th:text="${moneda.descripcion}"></td>
-	                <td th:text="${moneda.codAlterno}"></td>
-	                <td>
-	                	<span class="badge badge-primary" th:if="${moneda.flagActivo}">Activo</span>
-	                	<span class="badge badge-danger" th:unless="${moneda.flagActivo }">Desactivo</span>
-	                </td>
-	                <td th:text="${moneda.codUsuario}"></td>
-	                <td th:text="${moneda.fechaModificacion}"></td>
-	                <td>
-                      <a  class="btn btn-primary" th:href="@{/monedas/edit/{id} (id=${moneda.codMoneda}) }" role="button" title="Editar el registro.">Editar</a>
-                    </td>
-                    <td th:if="${moneda.flagActivo}">
-                   		<a  onclick="return confirm('¿Estas seguro de desactivar la moneda?')" th:href="@{/monedas/desactivar/{codMoneda} (codMoneda=${moneda.codMoneda}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
-	                </td>
-                    <td th:unless="${moneda.flagActivo }"> 
-                    	<a  onclick="return confirm('¿Estas seguro de activar la moneda?')" class="btn btn-primary" th:href="@{/monedas/activar/{codMoneda} (codMoneda=${moneda.codMoneda}) }" role="button" title="Editar el registro.">Activar</a>
-                  	</td>
-	              </tr>
-	            </tbody>
-	          </table> 
-	        </div><!--/.card-body-->
-	      </div><!--/.card-->
-	    </div><!--/.col-lg-1-12-->
-	  </div><!--/.row-->    
-	</div><!--/.animated fadeIn-->
+		          <div class="form-group row">
+		          		<input type="hidden" th:field="*{codMonedaOrigen}">
+		          		<input type="hidden" th:field="*{codMonedaDestino}">
+		          		<input type="hidden" th:field="*{tipoOperacion}">
+			          	
+		            <label class="col-sm-5 col-form-label" for="codMonedaOrigen">Codigo Moneda Origen:</label>
+		            <div class="col-sm-6">
+		            	<input type="text" class="form-control" id="codMonedaOrigen" name="codMonedaOrigen" th:field="*{codMonedaOrigen}" placeholder="Codigo de la moneda origen" required="required" disabled="disabled">
+		            </div>
+		          </div>
+		          <div class="form-group row">
+		            <label class="col-sm-5 col-form-label" for="codMonedaDestino">Codigo Moneda Destino:</label>
+		            <div class="col-sm-6">
+		              <input type="text" class="form-control" id="codMonedaDestino" name="codMonedaDestino" th:field="*{codMonedaDestino}" placeholder="Codigo de la moneda origen" required="required" disabled="disabled">
+		   	        </div>
+		          </div>
+		          <div class="form-group row">
+		            <label class="col-sm-5 col-form-label" for="tipoOperacion">Tipo Operacion:</label>
+		            <div class="col-sm-6">
+		              <select  class="form-control"  name="tipoOperacion" th:field="*{tipoOperacion}" required="required" disabled="disabled">
+		                <option value = "">----Selecionar Tipo----</option>
+		                <option value = 0>Mercado Internacional</option>
+		                <option value = 1>Mesa Cambio</option>
+		                <option value = 2>Intervencion</option>
+		                <option value = 3>Menudeo</option>
+		              </select>
+		              
+		            </div>
+		          </div>
+		          <div class="form-group row">
+		            <label class="col-sm-5 col-form-label" for="input-large">Monto Tasa Compra:</label>
+		            <div class="col-sm-6">
+		              <input type="text" class="form-control" id="montoTasaCompra" name="montoTasaCompra" th:field="*{montoTasaCompra}" placeholder="Monto tasa compra" required="required">
+		            </div>
+		          </div>
+		          <div class="form-group row">
+		            <label class="col-sm-5 col-form-label" for="input-large">Monto Tasa Venta:</label>
+		            <div class="col-sm-6">
+		              <input type="text" class="form-control"  id="montoTasaVenta" name="montoTasaVenta" th:field="*{montoTasaVenta}" placeholder="Monto tasa venta" required="required">
+		            </div>
+		          </div>
+		          <div class="card-footer">
+		        	<button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
+					<button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
+		      	  </div>
+		        </form>
+		      </div>
+		      
+		    </div>
+		  </div><!--/.col-->  	
+      
+
       </div><!-- Container fluid -->
 
     </main>

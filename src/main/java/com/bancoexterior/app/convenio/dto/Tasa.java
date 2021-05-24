@@ -1,12 +1,14 @@
-package com.bancoexterior.app.convenio.model;
+package com.bancoexterior.app.convenio.dto;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,6 +49,7 @@ public class Tasa {
 	
 	@JsonProperty("fechaModificacion")
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Date fechaModificacion;
-	
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	//private Date fechaModificacion;
+	private Timestamp fechaModificacion;
 }

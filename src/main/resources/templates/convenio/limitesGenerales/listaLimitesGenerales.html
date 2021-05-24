@@ -67,6 +67,13 @@
 		            </div>
 		          </div><!--/.card-header-->
 		          <div class="card-body">
+		          	<div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
+		            		Ocurrio los siguientes errores:
+		            		<ul>
+		            			<li th:text="${mensajeError}"></li>
+		            		</ul>
+		            	</div>
+		          	<div th:if="${mensaje != null}" class="alert alert-success" th:text="${mensaje}" role="alert"></div>
 		            <table class="table">
 		              <thead>
 		                <tr>
@@ -79,7 +86,8 @@
 		                    <th>Monto Men</th>
 		                    <th>Monto Diario</th>
 		                    <th>Monto Banco</th>
-		                    <th>Cod. Usuario</th>
+		                    <!--  
+		                    <th>Cod. Usuario</th>-->
 		                    <th>Flag Activo</th>
 		                    <th>Fecha Modificacion</th>
 		                    <th>Editar</th>
@@ -103,7 +111,8 @@
 		                  <td th:text="${limitesGenerales.montoMensual}"></td>
 		                  <td th:text="${limitesGenerales.montoDiario}"></td>
 		                  <td th:text="${limitesGenerales.montoBanco}"></td>
-		                  <td th:text="${limitesGenerales.codUsuario}"></td>
+		                  <!--  
+		                  <td th:text="${limitesGenerales.codUsuario}"></td>-->
 		                  <td>
 	                		<span class="badge badge-primary" th:if="${limitesGenerales.flagActivo}">Activo</span>
 	                		<span class="badge badge-danger" th:unless="${limitesGenerales.flagActivo }">Desactivo</span>
@@ -111,13 +120,13 @@
 		               	  <td th:text="${limitesGenerales.fechaModificacion}"></td>
 		                  
 		                  <td>
-                      		<a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Editar</a>
+                      		<a  class="btn btn-primary" th:href="@{/limitesGenerales/activar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Editar el registro.">Editar</a>
                     	  </td>
                           <td th:if="${limitesGenerales.flagActivo}">
-                   		    <a  onclick="return confirm('¿Estas seguro?')" th:href="@{/vacantes/create}" class="btn btn-danger" role="button" title="Eliminar el registro.">Desactivar</a>
+                   		    <a  onclick="return confirm('¿Estas seguro de desactivar?')" th:href="@{/limitesGenerales/desactivar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
 	                      </td>
                           <td th:unless="${limitesGenerales.flagActivo }"> 
-                    	    <a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Activar</a>
+                    	    <a  onclick="return confirm('¿Estas seguro de activar?')" class="btn btn-primary" th:href="@{/limitesGenerales/activar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Activar el registro.">Activar</a>
                   	      </td>
 		                </tr>
 		              </tbody>
