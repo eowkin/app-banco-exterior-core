@@ -7,4 +7,6 @@ public interface ILimitesGeneralesServiceApirest {
 	public WSResponse consultarWs(LimiteRequest limiteRequest);
 	
 	public WSResponse actualizarWs(LimiteRequest limiteRequest);
+	
+	public WSResponse crearWs(LimiteRequest limiteRequest);
 }

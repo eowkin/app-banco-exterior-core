@@ -61,11 +61,11 @@
 			        <strong>Crear Limites Personalizados</strong>
 			      </div>
 			      <div class="card-body">
-			        <form #limitesGeneralesForm="ngForm" class="form-horizontal">
+			        <form th:action = "@{/limitesGenerales/save}"   method="post" th:object="${limitesPersonalizados}" class="form-horizontal">
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="codigoIbs">Codigo Ibs:</label>
 			            <div class="col-sm-6">
-			              <select  class="form-control"  name="codigoIbs">
+			              <select  class="form-control" th:field="*{codigoIbs}"  name="codigoIbs">
 			                <option value="undefined">----Selecionar Codigo Ibs----</option>
 			                <option th:each = "clientePersonalizado: ${listaClientesPersonalizados}" th:value="${clientePersonalizado.codigoIbs}" th:text="${clientePersonalizado.codigoIbs}"></option>
 			              </select>
@@ -74,7 +74,7 @@
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="codMoneda">Codigo Moneda:</label>
 			            <div class="col-sm-6">
-			              <select  class="form-control"  name="codMoneda">
+			              <select  class="form-control" th:field="*{codMoneda}" name="codMoneda">
 			                <option value="undefined">----Selecionar Moneda----</option>
 			                <option th:each = "moneda: ${listaMonedas}" th:value="${moneda.codMoneda}" th:text="${moneda.descripcion}"></option>
 			              </select>
@@ -83,7 +83,7 @@
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="tipoTransaccion">Tipo Transaccion:</label>
 			            <div class="col-sm-6">
-			              <select  class="form-control"  name="tipoTransaccion">
+			              <select  class="form-control" th:field="*{tipoTransaccion}" name="tipoTransaccion">
 			                <option value = "">----Selecionar Tipo Transaccion----</option>
 			                <option value = "C" >Compra</option>
 			                <option value = "V" >Venta</option>
@@ -93,31 +93,31 @@
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Minimo:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="montoMin" name="montoMin">
+			              <input type="text" class="form-control" th:field="*{montoMin}" id="montoMin" name="montoMin">
 			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Maximo:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="montoMax" name="montoMax">
+			              <input type="text" class="form-control" th:field="*{montoMax}" id="montoMax" name="montoMax">
 			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Tope:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="montoTope" name="montoTope">
+			              <input type="text" class="form-control" th:field="*{montoTope}" id="montoTope" name="montoTope">
 			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Mensual:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control"  id="montoMensual" name="montoMensual">
+			              <input type="text" class="form-control" th:field="*{montoMensual}" id="montoMensual" name="montoMensual">
 			              			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Diario:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control"  id="montoDiario" name="montoDiario">
+			              <input type="text" class="form-control" th:field="*{montoDiario}" id="montoDiario" name="montoDiario">
 			            </div>
 			          </div>
 			        </form>

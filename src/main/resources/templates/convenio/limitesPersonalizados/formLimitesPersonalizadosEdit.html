@@ -26,9 +26,7 @@
     <a class="navbar-brand mr-4" href="#">
       <img class="navbar-brand-full" th:src="@{/img/brand/logo_banco.svg}" width="89" height="25" alt="CoreUI Logo">
     </a>
-	<button class="navbar-toggler sidebar-toggler" type="button" data-toggle="sidebar-show">
-    	<span class="navbar-toggler-icon"></span>
-  	</button>
+
     <ul class="nav ml-auto mr-5">
     	<li>
       	<div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
@@ -57,52 +55,78 @@
         <li class="breadcrumb-item active">Dashboard</li>
       </ol>
       <div class="container-fluid">
-        <div class="animated fadeIn">
+            		<div class="animated fadeIn">
 			    <div class="card">
 			      <div class="card-header">
-			        <strong>Editar Moneda</strong>
+			        <strong>Editar Limites Personalizados</strong>
 			      </div>
 			      <div class="card-body">
-			        <form  th:action = "@{/monedas/guardar}"  method="post"  th:object="${moneda}"   class="form-horizontal">
-			          <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
-		            		Por favor corrija los siguientes errores:
-		            		<ul>
-		            			<li th:each="err : ${#fields.errors('*')}"  th:text="${err}"></li>
-		            		</ul>
-		            	</div>
+			        <form th:action = "@{/limitesGenerales/save}"   method="post" th:object="${limitesPersonalizados}"   class="form-horizontal">
 			          <div class="form-group row">
 			          	<input type="hidden" th:field="*{codMoneda}">
-			          	<input type="hidden" th:field="*{flagActivo}">
-			          	<input type="hidden" th:field="*{fechaModificacion}">
-			          	<input type="hidden" th:field="*{codUsuario}">
+		          		<input type="hidden" th:field="*{tipoTransaccion}">
+		          		<input type="hidden" th:field="*{codigoIbs}">
+		          		<input type="hidden" th:field="*{flagActivo}">
+			            <label class="col-sm-5 col-form-label" for="codigoIbs">Codigo Ibs:</label>
+			            <div class="col-sm-6">
+			            	<input type="text" class="form-control" th:field="*{codigoIbs}" id="codigoIbs" name="codigoIbs" disabled="disabled">
+			            </div>
+			          </div>
+			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="codMoneda">Codigo Moneda:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="codMoneda" name="codMoneda" th:field="*{codMoneda}" placeholder="Codigo de la moneda" required="required" disabled="disabled"> 
+			            	<input type="text" class="form-control" th:field="*{codMoneda}" id="codMoneda" name="codMoneda" disabled="disabled">
 			            </div>
 			          </div>
 			          <div class="form-group row">
-			            <label class="col-sm-5 col-form-label" for="descripcion">Descripcion:</label>
+			            <label class="col-sm-5 col-form-label" for="tipoTransaccion">Tipo Transaccion:</label>
 			            <div class="col-sm-6">
-			              <input   type="text"  class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}"  placeholder="Descripcion de la moneda"   required="required">
+			              <select  class="form-control"  th:field="*{tipoTransaccion}" name="tipoTransaccion" disabled="disabled">
+			                <option value = "">----Selecionar Tipo Transaccion----</option>
+			                <option value = "C" >Compra</option>
+			                <option value = "V" >Venta</option>
+			              </select>
 			            </div>
 			          </div>
 			          <div class="form-group row">
-			            <label class="col-sm-5 col-form-label" for="input-large">Codigo Alterno:</label>
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Minimo:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="codAlterno" name="codAlterno" th:field="*{codAlterno}" placeholder="Codigo alterno de la moneda" maxlength="3" required="required">
+			              <input type="text" class="form-control" th:field="*{montoMin}" id="montoMin" name="montoMin">
 			            </div>
 			          </div>
-			          <div class="card-footer">
-			        	<button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
-			        	<button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
-			      	  </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Maximo:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoMax}" id="montoMax" name="montoMax">
+			            </div>
+			          </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Tope:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoTope}" id="montoTope" name="montoTope">
+			            </div>
+			          </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Mensual:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoMensual}" id="montoMensual" name="montoMensual">
+			              			            </div>
+			          </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Diario:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoDiario}" id="montoDiario" name="montoDiario">
+			            </div>
+			          </div>
 			        </form>
 			      </div>
-			      
+			      <div class="card-footer">
+			         <button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
+			        <button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
+			      </div>
 			    </div>
-			  </div><!--/.col-->
-      </div><!-- Container fluid -->
-
+			  </div><!--/.col-->      
+      </div> <!-- /container -->
     </main>
   </div>
   <footer class="app-footer" th:insert="fragments/footer :: pie-pagina">

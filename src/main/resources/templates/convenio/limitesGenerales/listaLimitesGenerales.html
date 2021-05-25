@@ -26,7 +26,9 @@
     <a class="navbar-brand mr-4" href="#">
       <img class="navbar-brand-full" th:src="@{/img/brand/logo_banco.svg}" width="89" height="25" alt="CoreUI Logo">
     </a>
-
+	<button class="navbar-toggler sidebar-toggler" type="button" data-toggle="sidebar-show">
+    	<span class="navbar-toggler-icon"></span>
+  	</button>
     <ul class="nav ml-auto mr-5">
     	<li>
       	<div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
@@ -40,6 +42,9 @@
         </div>
       </li>
     </ul>
+    
+  
+
   </header>
   <div class="app-body">
     <div class="sidebar" th:insert="fragments/menu :: menu-principal">
@@ -74,63 +79,75 @@
 		            		</ul>
 		            	</div>
 		          	<div th:if="${mensaje != null}" class="alert alert-success" th:text="${mensaje}" role="alert"></div>
-		            <table class="table">
-		              <thead>
-		                <tr>
-		                  <th>Codigo Moneda</th>
-		                    <th>Tipo Trans.</th>
-		                    <th>Tipo Clien</th>
-		                    <th>Monto Min</th>
-		                    <th>Monto Max</th>
-		                    <th>Monto Tope</th>
-		                    <th>Monto Men</th>
-		                    <th>Monto Diario</th>
-		                    <th>Monto Banco</th>
-		                    <!--  
-		                    <th>Cod. Usuario</th>-->
-		                    <th>Flag Activo</th>
-		                    <th>Fecha Modificacion</th>
-		                    <th>Editar</th>
-		                    <th>Accion</th>
-		                </tr>
-		              </thead>
-		              <tbody>
-		                <tr th:each = "limitesGenerales: ${listaLimitesGenerales}">
-		                  <td th:text="${limitesGenerales.codMoneda}"></td>
-		                  <td>
-		                  	<span th:if="${limitesGenerales.tipoTransaccion == 'V'}">Venta</span>
-		                  	<span th:if="${limitesGenerales.tipoTransaccion == 'C'}">Compra</span>
-		                  </td>
-		                  <td>
-		                  	<span th:if="${limitesGenerales.tipoCliente == 'N'}">Natural</span>
-		                  	<span th:if="${limitesGenerales.tipoCliente == 'J'}">Juridico</span>
-		                  </td>  
-		                  <td th:text="${limitesGenerales.montoMin}"></td>
-		                  <td th:text="${limitesGenerales.montoMax}"></td>
-		                  <td th:text="${limitesGenerales.montoTope}"></td>
-		                  <td th:text="${limitesGenerales.montoMensual}"></td>
-		                  <td th:text="${limitesGenerales.montoDiario}"></td>
-		                  <td th:text="${limitesGenerales.montoBanco}"></td>
-		                  <!--  
-		                  <td th:text="${limitesGenerales.codUsuario}"></td>-->
-		                  <td>
-	                		<span class="badge badge-primary" th:if="${limitesGenerales.flagActivo}">Activo</span>
-	                		<span class="badge badge-danger" th:unless="${limitesGenerales.flagActivo }">Desactivo</span>
-	                	  </td>
-		               	  <td th:text="${limitesGenerales.fechaModificacion}"></td>
-		                  
-		                  <td>
-                      		<a  class="btn btn-primary" th:href="@{/limitesGenerales/activar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Editar el registro.">Editar</a>
-                    	  </td>
-                          <td th:if="${limitesGenerales.flagActivo}">
-                   		    <a  onclick="return confirm('¿Estas seguro de desactivar?')" th:href="@{/limitesGenerales/desactivar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
-	                      </td>
-                          <td th:unless="${limitesGenerales.flagActivo }"> 
-                    	    <a  onclick="return confirm('¿Estas seguro de activar?')" class="btn btn-primary" th:href="@{/limitesGenerales/activar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Activar el registro.">Activar</a>
-                  	      </td>
-		                </tr>
-		              </tbody>
-		            </table> 
+		          	<div class="table-responsive">
+		          		<!--
+  						<table class=".table-responsive{-sm|-md|-lg|-xl}">
+    					-->	
+    					<table class="table">
+					              <thead>
+					                <tr>
+					                  <th>Codigo Moneda</th>
+					                    <th>Tipo Trans.</th>
+					                    <th>Tipo Clien</th>
+					                   <!--  
+					                    <th>Monto Min</th>
+					                    <th>Monto Max</th>
+					                    <th>Monto Tope</th>
+					                    <th>Monto Men</th>
+					                    <th>Monto Diario</th>
+					                    <th>Monto Banco</th>
+					                    -->  
+					                    <th>Cod. Usuario</th>
+					                    <th>Flag Activo</th>
+					                    <th>Fecha Modificacion</th>
+					                    <th>Detalle</th>
+					                    <th>Editar</th>
+					                    <th>Accion</th>
+					                </tr>
+					              </thead>
+					              <tbody>
+					                <tr th:each = "limitesGenerales: ${listaLimitesGenerales}">
+					                  <td th:text="${limitesGenerales.codMoneda}"></td>
+					                  <td>
+					                  	<span th:if="${limitesGenerales.tipoTransaccion == 'V'}">Venta</span>
+					                  	<span th:if="${limitesGenerales.tipoTransaccion == 'C'}">Compra</span>
+					                  </td>
+					                  <td>
+					                  	<span th:if="${limitesGenerales.tipoCliente == 'N'}">Natural</span>
+					                  	<span th:if="${limitesGenerales.tipoCliente == 'J'}">Juridico</span>
+					                  </td>  
+					                  <!--  
+					                  <td th:text="${limitesGenerales.montoMin}"></td>
+					                  <td th:text="${limitesGenerales.montoMax}"></td>
+					                  <td th:text="${limitesGenerales.montoTope}"></td>
+					                  <td th:text="${limitesGenerales.montoMensual}"></td>
+					                  <td th:text="${limitesGenerales.montoDiario}"></td>
+					                  <td th:text="${limitesGenerales.montoBanco}"></td>
+					                  -->  
+					                  <td th:text="${limitesGenerales.codUsuario}"></td>
+					                  <td>
+				                		<span class="badge badge-primary" th:if="${limitesGenerales.flagActivo}">Activo</span>
+				                		<span class="badge badge-danger" th:unless="${limitesGenerales.flagActivo }">Desactivo</span>
+				                	  </td>
+					               	  <td th:text="${limitesGenerales.fechaModificacion}"></td>
+					                  <td>
+			                      		<a  class="btn btn-info" th:href="@{/limitesGenerales/detalle/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Detalle el registro.">Ver</a>
+			                    	  </td>
+					                  <td>
+			                      		<a  class="btn btn-primary" th:href="@{/limitesGenerales/edit/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Editar el registro.">Editar</a>
+			                    	  </td>
+			                          <td th:if="${limitesGenerales.flagActivo}">
+			                   		    <a  onclick="return confirm('¿Estas seguro de desactivar?')" th:href="@{/limitesGenerales/desactivar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
+				                      </td>
+			                          <td th:unless="${limitesGenerales.flagActivo }"> 
+			                    	    <a  onclick="return confirm('¿Estas seguro de activar?')" class="btn btn-primary" th:href="@{/limitesGenerales/activar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Activar el registro.">Activar</a>
+			                  	      </td>
+					                </tr>
+					              </tbody>
+					             
+  						</table>
+					</div>
+		            
 		          </div><!--/.card-body-->
 		        </div><!--/.card-->
 		      </div><!--/.col-lg-1-12-->

@@ -67,6 +67,13 @@
 		            </div>
 		          </div><!--/.card-header-->
 		          <div class="card-body">
+		          	<div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
+		            		Ocurrio los siguientes errores:
+		            		<ul>
+		            			<li th:text="${mensajeError}"></li>
+		            		</ul>
+		            	</div>
+		          	<div th:if="${mensaje != null}" class="alert alert-success" th:text="${mensaje}" role="alert"></div>
 		            <table class="table">
 		              <thead>
 		                <tr>
@@ -106,13 +113,13 @@
 		               	  <td th:text="${limitesPersonalizados.fechaModificacion}"></td>
 		                  
 		                  <td>
-                      		<a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Editar</a>
+                      		<a  class="btn btn-primary" th:href="@{/limitesPersonalizados/edit/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }" role="button" title="Editar el registro.">Editar</a>
                     	  </td>
                           <td th:if="${limitesPersonalizados.flagActivo}">
-                   		    <a  onclick="return confirm('¿Estas seguro?')" th:href="@{/vacantes/create}" class="btn btn-danger" role="button" title="Eliminar el registro.">Desactivar</a>
+                   		    <a  onclick="return confirm('¿Estas seguro de desactivar?')" th:href="@{/limitesPersonalizados/desactivar/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
 	                      </td>
                           <td th:unless="${limitesPersonalizados.flagActivo }"> 
-                    	    <a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Activar</a>
+                    	    <a onclick="return confirm('¿Estas seguro de desactivar?')" th:href="@{/limitesPersonalizados/activar/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }"  class="btn btn-primary"  role="button" title="Activar el registro.">Activar</a>
                   	      </td>
 		                </tr>
 		              </tbody>

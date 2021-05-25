@@ -60,10 +60,10 @@
         <div class="animated fadeIn">
 			    <div class="card">
 			      <div class="card-header">
-			        <strong>Editar Moneda</strong>
+			        <strong>Editar Limites Generales</strong>
 			      </div>
 			      <div class="card-body">
-			        <form  th:action = "@{/monedas/guardar}"  method="post"  th:object="${moneda}"   class="form-horizontal">
+			        <form th:action = "@{/limitesGenerales/guardar}"   method="post" th:object="${limitesGenerales}"   class="form-horizontal">
 			          <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
 		            		Por favor corrija los siguientes errores:
 		            		<ul>
@@ -72,35 +72,82 @@
 		            	</div>
 			          <div class="form-group row">
 			          	<input type="hidden" th:field="*{codMoneda}">
-			          	<input type="hidden" th:field="*{flagActivo}">
-			          	<input type="hidden" th:field="*{fechaModificacion}">
-			          	<input type="hidden" th:field="*{codUsuario}">
+		          		<input type="hidden" th:field="*{tipoTransaccion}">
+		          		<input type="hidden" th:field="*{tipoCliente}">
+		          		<input type="hidden" th:field="*{flagActivo}">
 			            <label class="col-sm-5 col-form-label" for="codMoneda">Codigo Moneda:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="codMoneda" name="codMoneda" th:field="*{codMoneda}" placeholder="Codigo de la moneda" required="required" disabled="disabled"> 
+			            	<input type="text" class="form-control" th:field="*{codMoneda}" id="codMoneda" name="codMoneda" disabled="disabled">
+			            	
 			            </div>
 			          </div>
 			          <div class="form-group row">
-			            <label class="col-sm-5 col-form-label" for="descripcion">Descripcion:</label>
+			            <label class="col-sm-5 col-form-label" for="tipoTransaccion">Tipo Transaccion:</label> 
 			            <div class="col-sm-6">
-			              <input   type="text"  class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}"  placeholder="Descripcion de la moneda"   required="required">
+			              <select  class="form-control" th:field="*{tipoTransaccion}"  name="tipoTransaccion" disabled="disabled">
+			                <option value = "">----Selecionar Tipo Transaccion----</option>
+			                <option value = "C" >Compra</option>
+			                <option value = "V" >Venta</option>
+			              </select>
 			            </div>
 			          </div>
 			          <div class="form-group row">
-			            <label class="col-sm-5 col-form-label" for="input-large">Codigo Alterno:</label>
+			            <label class="col-sm-5 col-form-label" for="tipoCliente">Tipo Cliente:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" id="codAlterno" name="codAlterno" th:field="*{codAlterno}" placeholder="Codigo alterno de la moneda" maxlength="3" required="required">
+			              <select  class="form-control" th:field="*{tipoCliente}" name="tipoCliente" disabled="disabled">
+			                <option value = "">----Selecionar Tipo Cleinte----</option>
+			                <option value = "J" >Juridico</option>
+			                <option value = "N" >Natural</option>
+			              </select>
+			            </div>
+			          </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Minimo:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoMin}" id="montoMin" name="montoMin" required="required">
+			            </div>
+			          </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Maximo:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoMax}" id="montoMax" name="montoMax" required="required">
+			            </div>
+			          </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Tope:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoTope}" id="montoTope" name="montoTope" required="required">
+			            </div>
+			          </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Mensual:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoMensual}" id="montoMensual" name="montoMensual" required="required">
+			              			            </div>
+			          </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Diario:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoDiario}" id="montoDiario" name="montoDiario" required="required">
+			            </div>
+			          </div>
+			          <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="input-large">Monto Banco:</label>
+			            <div class="col-sm-6">
+			              <input type="text" class="form-control" th:field="*{montoBanco}"  id="montoBanco" name="montoBanco" required="required">
 			            </div>
 			          </div>
 			          <div class="card-footer">
-			        	<button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
+			         	<button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
 			        	<button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
-			      	  </div>
+			      	 </div>
 			        </form>
 			      </div>
 			      
 			    </div>
-			  </div><!--/.col-->
+			  </div><!--/.col-->	
+      
+
       </div><!-- Container fluid -->
 
     </main>
