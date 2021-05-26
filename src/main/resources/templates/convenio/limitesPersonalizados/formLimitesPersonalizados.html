@@ -61,12 +61,18 @@
 			        <strong>Crear Limites Personalizados</strong>
 			      </div>
 			      <div class="card-body">
-			        <form th:action = "@{/limitesGenerales/save}"   method="post" th:object="${limitesPersonalizados}" class="form-horizontal">
+			        <form th:action = "@{/limitesPersonalizados/save}"   method="post" th:object="${limitesPersonalizados}" class="form-horizontal">
+			          <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+		            		Por favor corrija los siguientes errores:
+		            		<ul>
+		            			<li th:each="err : ${#fields.errors('*')}"  th:text="${err}"></li>
+		            		</ul>
+		            	</div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="codigoIbs">Codigo Ibs:</label>
 			            <div class="col-sm-6">
-			              <select  class="form-control" th:field="*{codigoIbs}"  name="codigoIbs">
-			                <option value="undefined">----Selecionar Codigo Ibs----</option>
+			              <select  class="form-control" th:field="*{codigoIbs}"  name="codigoIbs" required="required">
+			                <option value="">----Selecionar Codigo Ibs----</option>
 			                <option th:each = "clientePersonalizado: ${listaClientesPersonalizados}" th:value="${clientePersonalizado.codigoIbs}" th:text="${clientePersonalizado.codigoIbs}"></option>
 			              </select>
 			            </div>
@@ -74,8 +80,8 @@
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="codMoneda">Codigo Moneda:</label>
 			            <div class="col-sm-6">
-			              <select  class="form-control" th:field="*{codMoneda}" name="codMoneda">
-			                <option value="undefined">----Selecionar Moneda----</option>
+			              <select  class="form-control" th:field="*{codMoneda}" name="codMoneda" required="required">
+			                <option value="">----Selecionar Moneda----</option>
 			                <option th:each = "moneda: ${listaMonedas}" th:value="${moneda.codMoneda}" th:text="${moneda.descripcion}"></option>
 			              </select>
 			            </div>
@@ -83,7 +89,7 @@
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="tipoTransaccion">Tipo Transaccion:</label>
 			            <div class="col-sm-6">
-			              <select  class="form-control" th:field="*{tipoTransaccion}" name="tipoTransaccion">
+			              <select  class="form-control" th:field="*{tipoTransaccion}" name="tipoTransaccion" required="required">
 			                <option value = "">----Selecionar Tipo Transaccion----</option>
 			                <option value = "C" >Compra</option>
 			                <option value = "V" >Venta</option>
@@ -93,39 +99,40 @@
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Minimo:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" th:field="*{montoMin}" id="montoMin" name="montoMin">
+			              <input type="text" class="form-control" th:field="*{montoMin}" id="montoMin" name="montoMin" required="required">
 			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Maximo:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" th:field="*{montoMax}" id="montoMax" name="montoMax">
+			              <input type="text" class="form-control" th:field="*{montoMax}" id="montoMax" name="montoMax" required="required">
 			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Tope:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" th:field="*{montoTope}" id="montoTope" name="montoTope">
+			              <input type="text" class="form-control" th:field="*{montoTope}" id="montoTope" name="montoTope" required="required">
 			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Mensual:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" th:field="*{montoMensual}" id="montoMensual" name="montoMensual">
+			              <input type="text" class="form-control" th:field="*{montoMensual}" id="montoMensual" name="montoMensual" required="required">
 			              			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="input-large">Monto Diario:</label>
 			            <div class="col-sm-6">
-			              <input type="text" class="form-control" th:field="*{montoDiario}" id="montoDiario" name="montoDiario">
+			              <input type="text" class="form-control" th:field="*{montoDiario}" id="montoDiario" name="montoDiario" required="required">
 			            </div>
 			          </div>
+			          <div class="card-footer">
+			         	<button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
+			        	<button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
+			      	  </div>
 			        </form>
 			      </div>
-			      <div class="card-footer">
-			         <button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
-			        <button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
-			      </div>
+			      
 			    </div>
 			  </div><!--/.col-->      
       </div> <!-- /container -->

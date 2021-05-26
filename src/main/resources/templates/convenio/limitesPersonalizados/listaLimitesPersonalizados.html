@@ -112,9 +112,12 @@
 	                	  </td>
 		               	  <td th:text="${limitesPersonalizados.fechaModificacion}"></td>
 		                  
-		                  <td>
+		                  <td th:if="${limitesPersonalizados.flagActivo}">
                       		<a  class="btn btn-primary" th:href="@{/limitesPersonalizados/edit/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }" role="button" title="Editar el registro.">Editar</a>
                     	  </td>
+                    	  <td th:unless="${limitesPersonalizados.flagActivo }">
+		           			<button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
+		                  </td>
                           <td th:if="${limitesPersonalizados.flagActivo}">
                    		    <a  onclick="return confirm('¿Estas seguro de desactivar?')" th:href="@{/limitesPersonalizados/desactivar/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
 	                      </td>

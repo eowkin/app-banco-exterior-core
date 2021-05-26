@@ -61,29 +61,31 @@
 			        <strong>Crear Agencia</strong>
 			      </div>
 			      <div class="card-body">
-			        <form  class="form-horizontal">
+			        <form th:action = "@{/agencias/save}"  method="post"  th:object="${agencia}" class="form-horizontal">
 			          <div class="form-group row">
+			          	<input type="hidden" th:field="*{codAgencia}">
+			          	<input type="hidden" th:field="*{nombreAgencia}">
 			            <label class="col-sm-5 col-form-label" for="codAgencia">Codigo Agencia:</label>
 			            <div class="col-sm-3">
-			              <input type="text" class="form-control" id="codAgencia" name="codAgencia"><a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Buscar</a>
+			              <input type="text" class="form-control" th:field="*{codAgencia}" id="codAgencia" name="codAgencia" disabled="disabled">
 			              
 			            </div>
 			          </div>
 			          <div class="form-group row">
 			            <label class="col-sm-5 col-form-label" for="nombreAgencia">Nombre Agencia:</label>
 			            <div class="col-sm-6">
-			              <input type="text"  class="form-control" id="nombreAgencia" name="nombreAgencia">
+			              <input type="text"  class="form-control" th:field="*{nombreAgencia}" id="nombreAgencia" name="nombreAgencia" disabled="disabled">
 			              
 			            </div>
 			          </div>
-			          
+			      	  <div class="card-footer">
+			         	<button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
+			        	<button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
+			      	  </div>	    
 			          
 			        </form>
 			      </div>
-			      <div class="card-footer">
-			         <button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
-			        <button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
-			      </div>
+			      
 			    </div>
 			  </div><!--/.col-->			   	      
 

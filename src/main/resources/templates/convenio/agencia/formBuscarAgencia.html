@@ -56,76 +56,32 @@
       </ol>
       <div class="container-fluid">
         <div class="animated fadeIn">
-		    <div class="row">
-		      <div class="col-lg-1-12">
-		        <div class="card">
-		          <div class="card-header">
-		            <i class="fa fa-align-justify"></i> Listado de Agencias
-		            <p align="right"></p>
-		            <div class="my-2 text-right">
-         					<form th:action="@{/agencias/search}"  th:object="${agenciaSearch}"  method="get" class="form-inline">
-        						<input type="text"  class="form-control mb-3"  th:field="*{codAgencia}" maxlength="3" placeholder="Escriba una búsqueda" >&nbsp;
-            					<button type="submit" class="btn btn-primary mb-3">Buscar por codigo agencia</button>            
-          					</form>
-        			</div>
-        			
-		            <div class="my-2 text-right">
-		              <a class="btn btn-primary" th:href="@{/agencias/formBuscarAgencia}" title="Crear Agencia" role="button"><i class="fas fa-file" aria-hidden="true"></i> Crear Agencia</a>
-		            </div>
-		          </div><!--/.card-header-->
-		          <div class="card-body">
-		          	<div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
+			    <div class="card">
+			      <div class="card-header">
+			        <strong>Buscar Agencia</strong>
+			      </div>
+			      <div class="card-body">
+			        <div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
 		            		Ocurrio los siguientes errores:
 		            		<ul>
 		            			<li th:text="${mensajeError}"></li>
 		            		</ul>
 		            	</div>
-	          	
-	          			<div th:if="${mensaje != null}" class="alert alert-success" th:text="${mensaje}" role="alert"></div>
-		            <table class="table">
-		              <thead>
-		                <tr>
-		                  <th>Codigo Agencia</th>
-		                  <th>Nombre Agencia</th>
-		                  <th>Cod. Usuario</th>
-		                  <th>Flag Activo</th>
-		                  <th>Fecha Modificacion</th>
-		                  <th>Editar</th>
-		                  <th>Desactivar</th>
-		                </tr>
-		              </thead>
-		              <tbody>
-		                <tr th:each = "agencia: ${listaAgencias}">
-		                  <td th:text="${agencia.codAgencia}"></td>
-		                  <td th:text="${agencia.nombreAgencia}"></td>
-		                  <td th:text="${agencia.codUsuario}"></td>
-		                  <td>
-	                		<span class="badge badge-primary" th:if="${agencia.flagActivo}">Activo</span>
-	                		<span class="badge badge-danger" th:unless="${agencia.flagActivo }">Desactivo</span>
-	                	  </td>
-		                  <td th:text="${agencia.fechaModificacion}"></td>
-		                  
-		                  <td th:if="${agencia.flagActivo}">
-		                      <a  class="btn btn-primary" th:href="@{/agencias/edit/{id} (id=${agencia.codAgencia}) }" role="button" title="Editar el registro." >Editar</a>
-		                  </td>
-		                  <td th:unless="${agencia.flagActivo}">
-		                      <button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
-		                      
-		                  </td>
-		                  <td th:if="${agencia.flagActivo}">
-		                   		<a  onclick="return confirm('¿Estas seguro de desactivar la moneda?')" th:href="@{/agencias/desactivar/{codAgencia} (codAgencia=${agencia.codAgencia}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
-			              </td>
-		                  <td th:unless="${agencia.flagActivo}"> 
-		                    	<a onclick="return confirm('¿Estas seguro de activar la moneda?')" th:href="@{/agencias/activar/{codAgencia} (codAgencia=${agencia.codAgencia}) }" class="btn btn-primary" role="button" title="Activar el registro.">Activar</a>
-		                   </td>
-		                </tr>
-		              </tbody>
-		            </table> 
-		          </div><!--/.card-body-->
-		        </div><!--/.card-->
-		      </div><!--/.col-lg-1-12-->
-		    </div><!--/.row-->    
-		  </div><!--/.animated fadeIn-->      
+		            
+			        <form  th:action="@{/agencias/searchCrear}"  th:object="${agencia}"  method="get" class="form-inline">
+			         	<div class="form-group"> 
+			         		
+			            	<input type="text"  class="form-control mb-3"  th:field="*{codAgencia}" maxlength="3" placeholder="Escriba una búsqueda" required="required">&nbsp;
+            				<button type="submit" class="btn btn-primary mb-3">Buscar por codigo agencia</button>
+			          	</div>
+			          
+			        </form>
+			        
+			      </div>
+			      <div class="card-footer">
+			      </div>
+			    </div>
+			  </div><!--/.col-->			   	      
 
 
       </div><!-- Container fluid -->

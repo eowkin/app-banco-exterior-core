@@ -61,7 +61,13 @@
 			        <strong>Editar Limites Personalizados</strong>
 			      </div>
 			      <div class="card-body">
-			        <form th:action = "@{/limitesGenerales/save}"   method="post" th:object="${limitesPersonalizados}"   class="form-horizontal">
+			        <form th:action = "@{/limitesPersonalizados/guardar}"   method="post" th:object="${limitesPersonalizados}"   class="form-horizontal">
+			          <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+		            		Por favor corrija los siguientes errores:
+		            		<ul>
+		            			<li th:each="err : ${#fields.errors('*')}"  th:text="${err}"></li>
+		            		</ul>
+		            	</div>
 			          <div class="form-group row">
 			          	<input type="hidden" th:field="*{codMoneda}">
 		          		<input type="hidden" th:field="*{tipoTransaccion}">
@@ -118,12 +124,13 @@
 			              <input type="text" class="form-control" th:field="*{montoDiario}" id="montoDiario" name="montoDiario">
 			            </div>
 			          </div>
+			          <div class="card-footer">
+			         	<button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
+			        	<button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
+			      	  </div>
 			        </form>
 			      </div>
-			      <div class="card-footer">
-			         <button type="submit" class="btn btn-sm btn-primary"><i class="far fa-circle"></i> Aceptar</button>
-			        <button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Cancelar</button>
-			      </div>
+			      
 			    </div>
 			  </div><!--/.col-->      
       </div> <!-- /container -->

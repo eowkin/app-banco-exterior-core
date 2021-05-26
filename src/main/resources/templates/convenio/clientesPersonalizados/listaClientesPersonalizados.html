@@ -62,11 +62,26 @@
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado de Clientes Personalizados
 		            <p align="right"></p>
-		            <div class="my-2 text-left">
+		            <div class="my-2 text-right">
+         					<form th:action="@{/clientesPersonalizados/search}"  th:object="${clientesPersonalizadosSearch}"  method="get" class="form-inline">
+        						<input type="text"  class="form-control mb-3"  th:field="*{codigoIbs}" maxlength="10" placeholder="Escriba una búsqueda" >&nbsp;
+            					<button type="submit" class="btn btn-primary mb-3">Buscar por codigo ibs</button>            
+          					</form>
+        			</div>
+        			
+		            <div class="my-2 text-right">
 		              <a class="btn btn-primary" th:href="@{/clientesPersonalizados/formClientePersonalizado}" title="Crear Cliente Personalizado" role="button"><i class="fas fa-file" aria-hidden="true"></i> Crear Cliente Personalizado</a>
 		            </div>
 		          </div><!--/.card-header-->
 		          <div class="card-body">
+		          	<div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
+		            		Ocurrio los siguientes errores:
+		            		<ul>
+		            			<li th:text="${mensajeError}"></li>
+		            		</ul>
+		            	</div>
+	          	
+	          			<div th:if="${mensaje != null}" class="alert alert-success" th:text="${mensaje}" role="alert"></div>	
 		            <table class="table">
 		              <thead>
 		                <tr>
@@ -91,14 +106,18 @@
 	                		<span class="badge badge-danger" th:unless="${cliente.flagActivo }">Desactivo</span>
 	                	  </td>
 		                  <td th:text="${cliente.fechaModificacion}"></td>
-		                  <td>
+		                  <td th:if="${cliente.flagActivo}">
 		                      <a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Editar</a>
 		                  </td>
+		                  <td th:unless="${cliente.flagActivo}">
+		                      <button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
+		                      
+		                  </td>
 		                  <td th:if="${cliente.flagActivo}">
-		                   		<a  onclick="return confirm('¿Estas seguro?')" th:href="@{/vacantes/create}" class="btn btn-danger" role="button" title="Eliminar el registro.">Desactivar</a>
+		                   		<a  onclick="return confirm('¿Estas seguro de desactivar la moneda?')" th:href="@{/clientesPersonalizados/desactivar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
 			              </td>
 		                  <td th:unless="${cliente.flagActivo }"> 
-		                    	<a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Activar</a>
+		                    	<a  onclick="return confirm('¿Estas seguro de activar la moneda?')" th:href="@{/clientesPersonalizados/activar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-primary"  role="button" title="Activar el registro.">Activar</a>
 		                   </td>
 		                </tr>
 		              </tbody>

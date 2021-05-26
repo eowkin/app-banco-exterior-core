@@ -101,9 +101,12 @@
 	                </td>
 	                <td th:text="${moneda.codUsuario}"></td>
 	                <td th:text="${moneda.fechaModificacion}"></td>
-	                <td>
+	                <td th:if="${moneda.flagActivo}">
                       <a  class="btn btn-primary" th:href="@{/monedas/edit/{id} (id=${moneda.codMoneda}) }" role="button" title="Editar el registro.">Editar</a>
                     </td>
+                    <td th:unless="${moneda.flagActivo }">
+		           		<button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
+		            </td>
                     <td th:if="${moneda.flagActivo}">
                    		<a  onclick="return confirm('¿Estas seguro de desactivar la moneda?')" th:href="@{/monedas/desactivar/{codMoneda} (codMoneda=${moneda.codMoneda}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
 	                </td>

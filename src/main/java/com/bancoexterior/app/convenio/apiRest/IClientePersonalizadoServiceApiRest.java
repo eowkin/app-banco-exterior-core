@@ -10,4 +10,6 @@ public interface IClientePersonalizadoServiceApiRest {
 	public WSResponse actualizarWs(ClienteRequest clienteRequest);
 	
 	public WSResponse crearWs(ClienteRequest clienteRequest);
+	
+	public WSResponse consultarDatosClienteWs(ClienteRequest clienteRequest);
 }
