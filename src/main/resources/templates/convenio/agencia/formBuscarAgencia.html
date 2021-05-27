@@ -70,8 +70,13 @@
 		            
 			        <form  th:action="@{/agencias/searchCrear}"  th:object="${agencia}"  method="get" class="form-inline">
 			         	<div class="form-group"> 
-			         		
-			            	<input type="text"  class="form-control mb-3"  th:field="*{codAgencia}" maxlength="3" placeholder="Escriba una búsqueda" required="required">&nbsp;
+			         		<select  class="form-control"  name="codAgencia" th:field="*{codAgencia}"  required="required">
+		                		<option value="">----Selecionar Moneda----</option>
+		                																											
+		                		<option th:each = "agenciaB: ${listaAgencias}" th:value="${agenciaB.codAgencia}" th:text="${agenciaB.codAgencia} + ' - ' + ${agenciaB.nombreAgencia}"></option>&nbsp;
+		              		</select>
+		              		<!-- 
+			            	<input type="text"  class="form-control mb-3"  th:field="*{codAgencia}" maxlength="3" placeholder="Escriba una búsqueda" required="required">&nbsp; -->
             				<button type="submit" class="btn btn-primary mb-3">Buscar por codigo agencia</button>
 			          	</div>
 			          

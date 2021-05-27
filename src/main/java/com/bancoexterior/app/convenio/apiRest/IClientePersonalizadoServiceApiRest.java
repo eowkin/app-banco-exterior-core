@@ -7,15 +7,10 @@ import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.ClientesPersonalizados;
 import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
 
+
 public interface IClientePersonalizadoServiceApiRest {
 
 	public WSResponse consultarWs(ClienteRequest clienteRequest);
-	
-	public WSResponse actualizarWs(ClienteRequest clienteRequest);
-	
-	public WSResponse crearWs(ClienteRequest clienteRequest);
-	
-	public WSResponse consultarDatosClienteWs(ClienteRequest clienteRequest);
 	
 	public List<ClientesPersonalizados> listaClientesPersonalizados(ClienteRequest clienteRequest) throws CustomException;
 	

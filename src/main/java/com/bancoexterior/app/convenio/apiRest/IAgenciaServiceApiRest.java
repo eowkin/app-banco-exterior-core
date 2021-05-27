@@ -2,16 +2,21 @@ package com.bancoexterior.app.convenio.apiRest;
 
 
 
+import java.util.List;
+
 import com.bancoexterior.app.convenio.dto.AgenciaRequest;
-import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
+import com.bancoexterior.app.convenio.exception.CustomException;
+import com.bancoexterior.app.convenio.model.Agencia;
 
 public interface IAgenciaServiceApiRest {
 
-	public WSResponse consultarWs(AgenciaRequest agenciaRequest);
 	
-	public WSResponse actualizarWs(AgenciaRequest agenciaRequest);
+	public List<Agencia> listaAgencias(AgenciaRequest agenciaRequest)throws CustomException;
 	
-	public WSResponse crearWs(AgenciaRequest agenciaRequest);
+	public Agencia buscarAgencia(AgenciaRequest agenciaRequest)throws CustomException;
 	
+	public String actualizar(AgenciaRequest agenciaRequest)throws CustomException;
+	
+	public String crear(AgenciaRequest agenciaRequest)throws CustomException;
 	
 }

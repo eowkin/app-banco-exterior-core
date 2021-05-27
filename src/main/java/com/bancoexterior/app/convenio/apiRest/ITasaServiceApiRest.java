@@ -1,14 +1,22 @@
 package com.bancoexterior.app.convenio.apiRest;
 
 
+import java.util.List;
+
+
 import com.bancoexterior.app.convenio.dto.TasaRequest;
-import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
+import com.bancoexterior.app.convenio.exception.CustomException;
+import com.bancoexterior.app.convenio.model.Tasa;
+
 
 public interface ITasaServiceApiRest {
 
-	public WSResponse consultarWs(TasaRequest tasaRequest);
 	
-	public WSResponse actualizarWs(TasaRequest tasaRequest);
+	public List<Tasa> listaTasas(TasaRequest tasaRequest) throws CustomException;
 	
-	public WSResponse crearWs(TasaRequest tasaRequest);
+	public Tasa buscarTasa(TasaRequest tasaRequest) throws CustomException;
+	
+	public String actualizar(TasaRequest tasaRequest) throws CustomException;
+	
+	public String crear(TasaRequest tasaRequest) throws CustomException;
 }

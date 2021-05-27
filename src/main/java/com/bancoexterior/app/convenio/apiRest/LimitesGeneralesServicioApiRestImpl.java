@@ -57,7 +57,7 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 		
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista tasa");
+				log.info("Respusta codigo 200 en buscar la lista limitesGenerales");
 	            try {
 					limiteResponse = mapper.jsonToClass(retorno.getBody(), LimiteResponse.class);
 				} catch (IOException e) {
@@ -113,7 +113,7 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 		
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista tasa");
+				log.info("Respusta codigo 200 en buscar la lista limitesGenerales");
 	            try {
 					limiteResponse = mapper.jsonToClass(retorno.getBody(), LimiteResponse.class);
 				} catch (IOException e) {

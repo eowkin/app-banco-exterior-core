@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import com.bancoexterior.app.convenio.repository.restApi.MonedaRepositoryRestImpl;
 import com.bancoexterior.app.convenio.services.restApi.model.WSRequest;
 import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
 
