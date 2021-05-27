@@ -1,12 +1,19 @@
 package com.bancoexterior.app.convenio.apiRest;
 
+import java.util.List;
+
 import com.bancoexterior.app.convenio.dto.LimiteRequest;
-import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
+import com.bancoexterior.app.convenio.exception.CustomException;
+import com.bancoexterior.app.convenio.model.LimitesGenerales;
+
 
 public interface ILimitesGeneralesServiceApirest {
-	public WSResponse consultarWs(LimiteRequest limiteRequest);
 	
-	public WSResponse actualizarWs(LimiteRequest limiteRequest);
+	public List<LimitesGenerales> listaLimitesGenerales(LimiteRequest limiteRequest) throws CustomException;
 	
-	public WSResponse crearWs(LimiteRequest limiteRequest);
+	public LimitesGenerales buscarLimitesGenerales(LimiteRequest limiteRequest) throws CustomException;
+	
+	public String actualizar(LimiteRequest limiteRequest) throws CustomException;
+	
+	public String crear(LimiteRequest limiteRequest) throws CustomException;
 }

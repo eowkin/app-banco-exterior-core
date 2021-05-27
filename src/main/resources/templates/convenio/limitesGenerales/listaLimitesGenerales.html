@@ -67,7 +67,13 @@
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado de Limites Generales
 		            <p align="right"></p>
-		            <div class="my-2 text-left">
+		            <div class="my-2 text-right">
+         					<form th:action="@{/limitesGenerales/search}"  th:object="${limitesGeneralesSearch}"  method="get" class="form-inline">
+        						<input type="text"  class="form-control mb-3"  th:field="*{codMoneda}" maxlength="3" placeholder="Escriba una búsqueda" >&nbsp;
+            					<button type="submit" class="btn btn-primary mb-3">Buscar por codigo moneda</button>            
+          					</form>
+        			</div>
+		            <div class="my-2 text-right">
 		              <a class="btn btn-primary" th:href="@{/limitesGenerales/formLimitesGenerales}" title="Crear nueva Tasa" role="button"><i class="fas fa-file" aria-hidden="true"></i> Crear Limites Generales</a>
 		            </div>
 		          </div><!--/.card-header-->

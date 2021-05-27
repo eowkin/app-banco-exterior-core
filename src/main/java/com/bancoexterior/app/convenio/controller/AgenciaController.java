@@ -563,7 +563,7 @@ public class AgenciaController {
 	@GetMapping("/search")
 	public String search(@ModelAttribute("agenciaSearch") Agencia agenciaSearch,
 			Agencia agencia, Model model, RedirectAttributes redirectAttributes) {
-		log.info("si me llamo a search clientesPersonalizadosWs");
+		log.info("si me llamo a search agenciasWs");
 		log.info(agenciaSearch.getCodAgencia());
 		
 		List<Agencia> listaAgencias = new ArrayList<>();

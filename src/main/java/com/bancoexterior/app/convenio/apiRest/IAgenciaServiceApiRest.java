@@ -1,5 +1,7 @@
 package com.bancoexterior.app.convenio.apiRest;
 
+
+
 import com.bancoexterior.app.convenio.dto.AgenciaRequest;
 import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
 
@@ -10,4 +12,6 @@ public interface IAgenciaServiceApiRest {
 	public WSResponse actualizarWs(AgenciaRequest agenciaRequest);
 	
 	public WSResponse crearWs(AgenciaRequest agenciaRequest);
+	
+	
 }
