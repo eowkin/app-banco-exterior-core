@@ -2,15 +2,15 @@ package com.bancoexterior.app.convenio.dto;
 
 import java.io.Serializable;
 
-import com.bancoexterior.app.convenio.model.ClientesPersonalizados;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
 
 @Data
-public class ClienteRequest implements Serializable{
-
+public class ClienteDatosBasicoRequest implements Serializable{
+	
 	@JsonProperty("idSesion")
 	private String idSesion;
 	
@@ -22,19 +22,16 @@ public class ClienteRequest implements Serializable{
 	
 	@JsonProperty("canal")
 	private String canal;
-
-	@JsonProperty("cliente")
-	private ClientesPersonalizados cliente;
 	
+	@JsonProperty("ip")
+	private String ip;
 	
+	@JsonProperty("codigoIbs")
+	private String codigoIbs;
 	
-	public ClienteRequest() {
-		super();
-		this.cliente = new ClientesPersonalizados();
-	}
-
-
-
+	@JsonProperty("nroIdCliente")
+	private String nroIdCliente;
+	
 	/**
 	 * 
 	 */

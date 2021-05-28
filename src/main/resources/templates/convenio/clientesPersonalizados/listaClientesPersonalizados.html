@@ -70,7 +70,7 @@
         			</div>
         			
 		            <div class="my-2 text-right">
-		              <a class="btn btn-primary" th:href="@{/clientesPersonalizados/formClientePersonalizado}" title="Crear Cliente Personalizado" role="button"><i class="fas fa-file" aria-hidden="true"></i> Crear Cliente Personalizado</a>
+		              <a class="btn btn-primary" th:href="@{/clientesPersonalizados/formClientePersonalizadoBuscar}" title="Crear Cliente Personalizado" role="button"><i class="fas fa-file" aria-hidden="true"></i> Crear Cliente Personalizado</a>
 		            </div>
 		          </div><!--/.card-header-->
 		          <div class="card-body">
@@ -107,7 +107,7 @@
 	                	  </td>
 		                  <td th:text="${cliente.fechaModificacion}"></td>
 		                  <td th:if="${cliente.flagActivo}">
-		                      <a  class="btn btn-primary" th:href="@{/vacantes/create}" role="button" title="Editar el registro.">Editar</a>
+		                      <a  class="btn btn-primary" th:href="@{/clientesPersonalizados/edit/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" role="button" title="Editar el registro.">Editar</a>
 		                  </td>
 		                  <td th:unless="${cliente.flagActivo}">
 		                      <button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>

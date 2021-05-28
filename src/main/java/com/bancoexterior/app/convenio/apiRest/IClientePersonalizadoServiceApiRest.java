@@ -2,9 +2,11 @@ package com.bancoexterior.app.convenio.apiRest;
 
 import java.util.List;
 
+import com.bancoexterior.app.convenio.dto.ClienteDatosBasicoRequest;
 import com.bancoexterior.app.convenio.dto.ClienteRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.ClientesPersonalizados;
+import com.bancoexterior.app.convenio.model.DatosClientes;
 import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
 
 
@@ -13,6 +15,8 @@ public interface IClientePersonalizadoServiceApiRest {
 	public WSResponse consultarWs(ClienteRequest clienteRequest);
 	
 	public List<ClientesPersonalizados> listaClientesPersonalizados(ClienteRequest clienteRequest) throws CustomException;
+	
+	public DatosClientes buscarDatosBasicos(ClienteDatosBasicoRequest clienteDatosBasicoRequest) throws CustomException;
 	
 	public ClientesPersonalizados buscarClientesPersonalizados(ClienteRequest clienteRequest) throws CustomException;
 	

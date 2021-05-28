@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +20,12 @@ import com.bancoexterior.app.convenio.apiRest.IClientePersonalizadoServiceApiRes
 import com.bancoexterior.app.convenio.apiRest.ILimitesPersonalizadosServiceApiRest;
 import com.bancoexterior.app.convenio.apiRest.IMonedaServiceApiRest;
 import com.bancoexterior.app.convenio.dto.ClienteRequest;
+import com.bancoexterior.app.convenio.dto.LimiteRequest;
 import com.bancoexterior.app.convenio.dto.LimitesPersonalizadosRequest;
 import com.bancoexterior.app.convenio.dto.MonedasRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.ClientesPersonalizados;
+import com.bancoexterior.app.convenio.model.LimitesGenerales;
 import com.bancoexterior.app.convenio.model.LimitesPersonalizados;
 import com.bancoexterior.app.convenio.model.Moneda;
 
@@ -349,8 +352,54 @@ public class LimitesPersonalizadosController {
 	
 	}
 	
+	@GetMapping("/search")
+	public String search(@ModelAttribute("limitesPersonalizadosSearch") LimitesPersonalizados limitesPersonalizadosSearch, 
+			Model model, RedirectAttributes redirectAttributes) {
+		log.info("si me llamo a search limitesPersonalizadosWs");
+		log.info(limitesPersonalizadosSearch.getCodigoIbs());
+		
+		List<LimitesPersonalizados> listaLimitesPersonalizados = new ArrayList<>();
+		
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
+		limitesPersonalizadosRequest.setIdUsuario("test");
+		limitesPersonalizadosRequest.setIdSesion("20210101121213");
+		limitesPersonalizadosRequest.setCodUsuario("E66666");
+		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizados limite = new LimitesPersonalizados();
+		if(!limitesPersonalizadosSearch.getCodigoIbs().equals(""))
+			limite.setCodigoIbs(limitesPersonalizadosSearch.getCodigoIbs());
+		limitesPersonalizadosRequest.setLimiteCliente(limite);
+		
+		try {
+			listaLimitesPersonalizados = limitesPersonalizadosServiceApiRest.listaLimitesPersonalizados(limitesPersonalizadosRequest);
+			log.info("lista: "+listaLimitesPersonalizados.isEmpty());
+			if(!listaLimitesPersonalizados.isEmpty()) {
+				model.addAttribute("listaLimitesPersonalizados", listaLimitesPersonalizados);
+	    		return "convenio/limitesPersonalizados/listaLimitesPersonalizados";
+			}else {
+				//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				model.addAttribute("listaLimitesPersonalizados", listaLimitesPersonalizados);
+				model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				return "convenio/limitesPersonalizados/listaLimitesPersonalizados";
+			}
+			
+		} catch (CustomException e) {
+			
+			log.error("error: "+e);
+			model.addAttribute("listaLimitesPersonalizados", listaLimitesPersonalizados);
+			model.addAttribute("mensajeError", e.getMessage());
+			return "convenio/limitesPersonalizados/listaLimitesPersonalizados";
+		}
+		
+	}	
 	
 	
+	
+	@ModelAttribute
+	public void setGenericos(Model model) {
+		LimitesPersonalizados limitesPersonalizadosSearch = new LimitesPersonalizados();
+		model.addAttribute("limitesPersonalizadosSearch", limitesPersonalizadosSearch); 
+	}
 	
 	
 }

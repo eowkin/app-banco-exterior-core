@@ -62,6 +62,10 @@
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado de Limites Personalizados
 		            <p align="right"></p>
+		            <form th:action="@{/limitesPersonalizados/search}"  th:object="${limitesPersonalizadosSearch}"  method="get" class="form-inline">
+        						<input type="text"  class="form-control mb-3"  th:field="*{codigoIbs}" maxlength="10" placeholder="Escriba una búsqueda" >&nbsp;
+            					<button type="submit" class="btn btn-primary mb-3">Buscar por codigo ibs</button>            
+          					</form>
 		            <div class="my-2 text-right">
 		              <a class="btn btn-primary" th:href="@{/limitesPersonalizados/formLimitesPersonalizados}" title="Crear Limite Personalizado" role="button"><i class="fas fa-file" aria-hidden="true"></i> Crear Limites Personalizados</a>
 		            </div>
