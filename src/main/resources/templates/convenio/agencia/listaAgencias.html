@@ -89,7 +89,7 @@
 		                  <th>Nombre Agencia</th>
 		                  <th>Codigo Usuario</th>
 		                  <th>Fecha Modificacion</th>
-		                  <th>Desactivar</th>
+		                  <th>Activar/Inactivar</th>
 		                </tr>
 		              </thead>
 		              <tbody>
@@ -99,10 +99,22 @@
 		                  <td th:text="${agencia.codUsuario}"></td>
 		                  <td th:text="${agencia.fechaModificacion}"></td>
 		                  <td th:if="${agencia.flagActivo}">
+		                  	<label class="switch switch-pill switch-label switch-outline-primary-alt">
+								  <input th:onclick="|window.location.href='@{/agencias/desactivar/{codAgencia} (codAgencia=${agencia.codAgencia}) }'|" type="checkbox" class="switch-input" checked>
+								  <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+								</label>
+							  <!--  		
 		                   		<a  onclick="return confirm('¿Estas seguro de desactivar la moneda?')" th:href="@{/agencias/desactivar/{codAgencia} (codAgencia=${agencia.codAgencia}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
+		                   	  -->		
 			              </td>
 		                  <td th:unless="${agencia.flagActivo}"> 
+		                  	<label class="switch switch-pill switch-label switch-outline-primary-alt">
+								  <input th:onclick="|window.location.href='@{/agencias/activar/{codAgencia} (codAgencia=${agencia.codAgencia}) }'|" type="checkbox" class="switch-input">
+								  <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+							</label>
+								<!--
 		                    	<a onclick="return confirm('¿Estas seguro de activar la moneda?')" th:href="@{/agencias/activar/{codAgencia} (codAgencia=${agencia.codAgencia}) }" class="btn btn-primary" role="button" title="Activar el registro.">Activar</a>
+		                    	-->
 		                   </td>
 		                </tr>
 		              </tbody>

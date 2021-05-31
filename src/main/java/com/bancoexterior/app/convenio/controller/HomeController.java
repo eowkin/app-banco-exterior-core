@@ -48,7 +48,7 @@ public class HomeController {
 	@GetMapping("/login")
 	public String login() {
 		log.info("entre por login");
-		return "login";
+		return "/login";
 	}
 	
 	@GetMapping("/logout") 

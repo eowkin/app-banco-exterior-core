@@ -420,6 +420,80 @@ public class ClientesPersonalizadosController {
 	}	
 	
 	
+	@GetMapping("/activarLimiteCliente/{codigoIbs}/{codMoneda}/{tipoTransaccion}")
+	public String activarLimiteClienteWs(@PathVariable("codigoIbs") String codigoIbs, @PathVariable("codMoneda") String codMoneda, 
+			@PathVariable("tipoTransaccion") String tipoTransaccion,LimitesPersonalizados limitesPersonalizados,Model model, RedirectAttributes redirectAttributes) {
+		log.info("activarLimiteClienteWs");
+		log.info(codigoIbs);
+		log.info(codMoneda);
+		log.info(tipoTransaccion);
+		
+		LimitesPersonalizados limitesPersonalizadosEdit = new LimitesPersonalizados();
+		
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
+		limitesPersonalizadosRequest.setIdUsuario("test");
+		limitesPersonalizadosRequest.setIdSesion("20210101121213");
+		limitesPersonalizadosRequest.setCodUsuario("E66666");
+		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizados limitesP = new LimitesPersonalizados();
+		limitesP.setCodigoIbs(codigoIbs);
+		limitesP.setCodMoneda(codMoneda);
+		limitesP.setTipoTransaccion(tipoTransaccion);
+		limitesPersonalizadosRequest.setLimiteCliente(limitesP);
+		
+		try {
+			limitesPersonalizadosEdit = limitesPersonalizadosServiceApiRest.buscarLimitesPersonalizados(limitesPersonalizadosRequest);
+			limitesPersonalizadosEdit.setFlagActivo(true);
+			limitesPersonalizadosRequest.setLimiteCliente(limitesPersonalizadosEdit);
+			String respuesta = limitesPersonalizadosServiceApiRest.actualizar(limitesPersonalizadosRequest);
+			redirectAttributes.addFlashAttribute("mensaje", respuesta);
+			return "redirect:/clientesPersonalizados/verLimites/"+codigoIbs;
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+			return "redirect:/clientesPersonalizados/verLimites/"+codigoIbs;
+		}
+	
+		
+	}
+	
+	@GetMapping("/desactivarLimiteCliente/{codigoIbs}/{codMoneda}/{tipoTransaccion}")
+	public String desactivarLimiteClienteWs(@PathVariable("codigoIbs") String codigoIbs, @PathVariable("codMoneda") String codMoneda, 
+			@PathVariable("tipoTransaccion") String tipoTransaccion,LimitesPersonalizados limitesPersonalizados,Model model, RedirectAttributes redirectAttributes) {
+		log.info("activarWs");
+		log.info(codigoIbs);
+		log.info(codMoneda);
+		log.info(tipoTransaccion);
+		
+		LimitesPersonalizados limitesPersonalizadosEdit = new LimitesPersonalizados();
+		
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
+		limitesPersonalizadosRequest.setIdUsuario("test");
+		limitesPersonalizadosRequest.setIdSesion("20210101121213");
+		limitesPersonalizadosRequest.setCodUsuario("E66666");
+		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizados limitesP = new LimitesPersonalizados();
+		limitesP.setCodigoIbs(codigoIbs);
+		limitesP.setCodMoneda(codMoneda);
+		limitesP.setTipoTransaccion(tipoTransaccion);
+		limitesPersonalizadosRequest.setLimiteCliente(limitesP);
+		
+		try {
+			limitesPersonalizadosEdit = limitesPersonalizadosServiceApiRest.buscarLimitesPersonalizados(limitesPersonalizadosRequest);
+			limitesPersonalizadosEdit.setFlagActivo(false);
+			limitesPersonalizadosRequest.setLimiteCliente(limitesPersonalizadosEdit);
+			String respuesta = limitesPersonalizadosServiceApiRest.actualizar(limitesPersonalizadosRequest);
+			redirectAttributes.addFlashAttribute("mensaje", respuesta);
+			return "redirect:/clientesPersonalizados/verLimites/"+codigoIbs;
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+			return "redirect:/clientesPersonalizados/verLimites/"+codigoIbs;
+		}
+	
+		
+	}
+	
 	@GetMapping("/search")
 	public String search(
 			@ModelAttribute("clientesPersonalizadosSearch") ClientesPersonalizados clientesPersonalizadosSearch,
@@ -463,6 +537,52 @@ public class ClientesPersonalizadosController {
 		
 		
 	}	
+	
+	
+	@GetMapping("/searchNroIdCliente")
+	public String searchNroIdCliente(
+			@ModelAttribute("clientesPersonalizadosSearch") ClientesPersonalizados clientesPersonalizadosSearch,
+			Model model, RedirectAttributes redirectAttributes) {
+		log.info("si me llamo a search clientesPersonalizadosWs");
+		log.info(clientesPersonalizadosSearch.getCodigoIbs());
+
+		List<ClientesPersonalizados> listaClientesPersonalizados = new ArrayList<>();
+
+		ClienteRequest clienteRequest = new ClienteRequest();
+		clienteRequest.setIdUsuario("test");
+		clienteRequest.setIdSesion("20210101121213");
+		clienteRequest.setCodUsuario("E66666");
+		clienteRequest.setCanal("8");
+		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
+		if (!clientesPersonalizadosSearch.getNroIdCliente().equals(""))
+			clientesPersonalizados.setNroIdCliente(clientesPersonalizadosSearch.getNroIdCliente());
+		clienteRequest.setCliente(clientesPersonalizados);
+		
+		try {
+			listaClientesPersonalizados = clientePersonalizadoServiceApiRest.listaClientesPersonalizados(clienteRequest);
+			log.info("lista: "+listaClientesPersonalizados.isEmpty());
+			
+			if(!listaClientesPersonalizados.isEmpty()) {
+				model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
+				return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+			}else {
+				//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
+				model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+			}
+			
+		} catch (CustomException e) {
+			
+			log.error("error: "+e);
+			model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
+			model.addAttribute("mensajeError", e.getMessage());
+			return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+		}
+		
+		
+	}
+	
 	
 	@GetMapping("/searchCrear")
 	public String searchCrear(ClientesPersonalizados clientesPersonalizados,
@@ -556,8 +676,10 @@ public class ClientesPersonalizadosController {
 		
 		try {
 			String respuesta = clientePersonalizadoServiceApiRest.crear(clienteRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/clientesPersonalizados/index";
+			//redirectAttributes.addFlashAttribute("mensaje", respuesta);
+			//return "redirect:/clientesPersonalizados/index";
+			redirectAttributes.addFlashAttribute("mensaje", respuesta+ " Puede crear limites Personalizados al cliiente nuevo");
+			return "redirect:/clientesPersonalizados/formLimiteClientePersonalizado/"+clientesPersonalizados.getCodigoIbs();
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);

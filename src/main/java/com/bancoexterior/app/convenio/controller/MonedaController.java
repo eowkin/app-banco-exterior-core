@@ -105,7 +105,7 @@ public class MonedaController {
 	
 	@GetMapping("/desactivar/{codMoneda}")
 	public String desactivarWs(@PathVariable("codMoneda") String codMoneda, Moneda moneda, Model model, RedirectAttributes redirectAttributes) {
-		log.info("activarWs");
+		log.info("desactivarWs");
 		log.info(codMoneda);
 		
 		

@@ -109,7 +109,7 @@
 					                    <th>Fecha Modificacion</th>
 					                    <th>Detalle</th>
 					                    <th>Editar</th>
-					                    <th>Accion</th>
+					                    <th>Activar/Inactivar</th>
 					                </tr>
 					              </thead>
 					              <tbody>
@@ -149,10 +149,22 @@
 		                      			<button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
 		                    		  </td>
 			                          <td th:if="${limitesGenerales.flagActivo}">
+			                          	<label class="switch switch-pill switch-primary">
+										  <input th:onclick="|window.location.href='@{/limitesGenerales/desactivar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }'|"  type="checkbox" class="switch-input"  checked>
+										  <span class="switch-slider"></span>
+										</label>
+										<!--  
 			                   		    <a  onclick="return confirm('¿Estas seguro de desactivar?')" th:href="@{/limitesGenerales/desactivar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
+			                   		    -->
 				                      </td>
 			                          <td th:unless="${limitesGenerales.flagActivo }"> 
+			                    	    <label class="switch switch-pill switch-primary">
+										  <input th:onclick="|window.location.href='@{/limitesGenerales/activar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }'|" type="checkbox" class="switch-input">
+										  <span class="switch-slider"></span>
+										</label>
+			                    	    <!--
 			                    	    <a  onclick="return confirm('¿Estas seguro de activar?')" class="btn btn-primary" th:href="@{/limitesGenerales/activar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Activar el registro.">Activar</a>
+			                    	    -->
 			                  	      </td>
 					                </tr>
 					              </tbody>

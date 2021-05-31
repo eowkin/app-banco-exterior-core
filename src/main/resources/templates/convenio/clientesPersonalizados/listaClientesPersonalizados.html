@@ -63,12 +63,17 @@
 		            <i class="fa fa-align-justify"></i> Listado de Clientes Personalizados
 		            <p align="right"></p>
 		            <div class="my-2 text-right">
+         					<form th:action="@{/clientesPersonalizados/searchNroIdCliente}"  th:object="${clientesPersonalizadosSearch}"  method="get" class="form-inline">
+        						<input type="text"  class="form-control mb-3"  th:field="*{nroIdCliente}" maxlength="16" placeholder="Escriba una búsqueda" >&nbsp;
+            					<button type="submit" class="btn btn-primary mb-3">Buscar por Nro. IdCliente</button>            
+          					</form>
+        			</div>
+        			<div class="my-2 text-right">
          					<form th:action="@{/clientesPersonalizados/search}"  th:object="${clientesPersonalizadosSearch}"  method="get" class="form-inline">
         						<input type="text"  class="form-control mb-3"  th:field="*{codigoIbs}" maxlength="10" placeholder="Escriba una búsqueda" >&nbsp;
             					<button type="submit" class="btn btn-primary mb-3">Buscar por codigo ibs</button>            
           					</form>
         			</div>
-        			
 		            <div class="my-2 text-right">
 		              <a class="btn btn-primary" th:href="@{/clientesPersonalizados/formClientePersonalizadoBuscar}" title="Crear Cliente Personalizado" role="button"><i class="fas fa-file" aria-hidden="true"></i> Crear Cliente Personalizado</a>
 		            </div>
@@ -90,8 +95,8 @@
 		                  <th>Nombre/Razon Social</th>
 		                  <th>Cod. Usuario</th>
 		                  <th>Fecha Modificacion</th>
-		                  <th>Editar</th>
-		                  <th>Desactivar</th>
+		                  <th>Ver</th>
+		                  <th>Activar/Inactivar</th>
 		                </tr>
 		              </thead>
 		              <tbody>
@@ -102,17 +107,37 @@
 		                  <td th:text="${cliente.codUsuario}"></td>
 		                  <td th:text="${cliente.fechaModificacion}"></td>
 		                  <td th:if="${cliente.flagActivo}">
-		                      <a  class="btn btn-primary" th:href="@{/clientesPersonalizados/verLimites/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" role="button" title="Editar el registro.">Editar</a>
+		                      <a  class="btn btn-info" th:href="@{/clientesPersonalizados/verLimites/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" role="button" title="Editar el registro.">Limites</a>
 		                  </td>
 		                  <td th:unless="${cliente.flagActivo}">
-		                      <button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
+		                      <button type="submit" class="btn btn-info" disabled="disabled">Limites</button>
 		                      
 		                  </td>
 		                  <td th:if="${cliente.flagActivo}">
+		                  		<label class="switch switch-pill switch-primary">
+								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/desactivar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }'|"  type="checkbox" class="switch-input"  checked>
+								  <span class="switch-slider"></span>
+								</label>
+								<label class="switch switch-pill switch-label switch-outline-primary-alt">
+								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/desactivar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }'|" type="checkbox" class="switch-input" checked>
+								  <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+								</label>
+								<!-- 
 		                   		<a  onclick="return confirm('¿Estas seguro de desactivar el cliente?')" th:href="@{/clientesPersonalizados/desactivar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
+		                   		 -->
 			              </td>
-		                  <td th:unless="${cliente.flagActivo }"> 
+		                  <td th:unless="${cliente.flagActivo }">
+		                  		<label class="switch switch-pill switch-primary">
+								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/activar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }'|" type="checkbox" class="switch-input">
+								  <span class="switch-slider"></span>
+								</label>
+								<label class="switch switch-pill switch-label switch-outline-primary-alt">
+								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/activar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }'|" type="checkbox" class="switch-input">
+								  <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+								</label> 
+		                    	<!--
 		                    	<a  onclick="return confirm('¿Estas seguro de activar el cliente?')" th:href="@{/clientesPersonalizados/activar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-primary"  role="button" title="Activar el registro.">Activar</a>
+		                    	-->
 		                   </td>
 		                </tr>
 		              </tbody>

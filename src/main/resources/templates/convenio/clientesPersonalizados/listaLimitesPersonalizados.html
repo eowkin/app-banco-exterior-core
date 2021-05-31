@@ -91,7 +91,7 @@
 		                    <th>Flag Activo</th>-->
 		                    <th>Fecha Modificacion</th>
 		                    <th>Editar</th>
-		                    <th>Accion</th>
+		                    <th>Activar/Inactivar</th>
 		                </tr>
 		              </thead>
 		              <tbody>
@@ -122,10 +122,22 @@
 		           			<button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
 		                  </td>
                           <td th:if="${limitesPersonalizados.flagActivo}">
+                          	<label class="switch switch-pill switch-label switch-outline-primary-alt">
+								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/desactivarLimiteCliente/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }'|" type="checkbox" class="switch-input" checked>
+								  <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+								</label>
+							<!-- 	
                    		    <a  onclick="return confirm('¿Estas seguro de desactivar?')" th:href="@{/limitesPersonalizados/desactivar/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
+                   		     -->
 	                      </td>
                           <td th:unless="${limitesPersonalizados.flagActivo }"> 
+                          	<label class="switch switch-pill switch-label switch-outline-primary-alt">
+								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/activarLimiteCliente/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }'|" type="checkbox" class="switch-input">
+								  <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+							</label>
+							<!--	
                     	    <a onclick="return confirm('¿Estas seguro de desactivar?')" th:href="@{/limitesPersonalizados/activar/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }"  class="btn btn-primary"  role="button" title="Activar el registro.">Activar</a>
+                    	    -->
                   	      </td>
 		                </tr>
 		              </tbody>

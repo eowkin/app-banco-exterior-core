@@ -19,6 +19,9 @@
   <!-- Main styles for this application-->
   <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
   <link th:href="@{/vendors/pace-progress/css/pace.min.css}" rel="stylesheet" type="text/css">
+  
+
+
 </head>
 
 <body class="app header-fixed sidebar-fixed sidebar-lg-show" ng-app="app" ng-controller="controller" data-ng-init="getData()">
@@ -81,7 +84,7 @@
 	                <th>Descripcion</th>
 	                <th>Cod. Usuario</th>
 	                <th>Fecha Modificacion</th>
-	                <th>Accion</th>
+	                <th>Activar/Inactivar</th>
 	              </tr>
 	            </thead>
 	            <tbody>
@@ -91,10 +94,22 @@
 	                <td th:text="${moneda.codUsuario}"></td>
 	                <td th:text="${moneda.fechaModificacion}"></td>
 	               	<td th:if="${moneda.flagActivo}">
+	               		<label class="switch switch-pill switch-primary">
+						  <input th:onclick="|window.location.href='@{/monedas/desactivar/{codMoneda} (codMoneda=${moneda.codMoneda}) }'|"  type="checkbox" class="switch-input"  checked>
+						  <span class="switch-slider"></span>
+						</label>
+						<!--  
                    		<a  onclick="return confirm('¿Estas seguro de desactivar la moneda?')" th:href="@{/monedas/desactivar/{codMoneda} (codMoneda=${moneda.codMoneda}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
+                   		-->
 	                </td>
                     <td th:unless="${moneda.flagActivo }"> 
+                    	<label class="switch switch-pill switch-primary">
+						  <input th:onclick="|window.location.href='@{/monedas/activar/{codMoneda} (codMoneda=${moneda.codMoneda}) }'|" type="checkbox" class="switch-input">
+						  <span class="switch-slider"></span>
+						</label>
+                    	<!--
                     	<a  onclick="return confirm('¿Estas seguro de activar la moneda?')" class="btn btn-primary" th:href="@{/monedas/activar/{codMoneda} (codMoneda=${moneda.codMoneda}) }" role="button" title="Editar el registro.">Activar</a>
+                    	-->
                   	</td>
 	              </tr>
 	            </tbody>
@@ -111,8 +126,8 @@
   <footer class="app-footer" th:insert="fragments/footer :: pie-pagina">
     
   </footer>
-  <!-- Bootstrap and necessary plugins-->
   
+  <!-- Bootstrap and necessary plugins-->
   <script th:src="@{/node_modules/jquery/dist/jquery.min.js}" type="text/javascript"></script>
   <script th:src="@{/node_modules/popper.js/dist/umd/popper.min.js}" type="text/javascript"></script>
   <script th:src="@{/node_modules/bootstrap/dist/js/bootstrap.min.js}" type="text/javascript"></script>
