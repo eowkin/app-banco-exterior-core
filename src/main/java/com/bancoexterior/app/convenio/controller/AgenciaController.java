@@ -234,7 +234,7 @@ public class AgenciaController {
 		log.info("si me llamo a searchCrear clientesPersonalizadosWs");
 		log.info(agencia.getCodAgencia());
 		
-		
+		List<Agencia> listaAgencias = new ArrayList<>();
 		Agencia agenciaEdit = new Agencia(); 
 		AgenciaRequest agenciaRequest = new AgenciaRequest();
 		agenciaRequest.setIdUsuario("test");
@@ -249,13 +249,37 @@ public class AgenciaController {
 		
 		try {
 			agenciaEdit = agenciaServiceApiRest.buscarAgencia(agenciaRequest);
-			model.addAttribute("agencia", agenciaEdit);
-			return "convenio/agencia/formAgencia";
+			if(agenciaEdit != null) {
+				model.addAttribute("agencia", agenciaEdit);
+				return "convenio/agencia/formAgencia";
+			}else {
+				Agencia agenciaBuscarCargar = new Agencia();
+				agenciaBuscarCargar.setFlagDivisa(false);
+				agenciaRequest.setAgencia(agenciaBuscarCargar);
+				listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
+				model.addAttribute("listaAgencias", listaAgencias);
+				model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				return "convenio/agencia/formBuscarAgencia";
+			}
+			
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
-			model.addAttribute("mensajeError", e.getMessage());
-			return "convenio/agencia/formBuscarAgencia";
+			Agencia agenciaBuscarCargar = new Agencia();
+			agenciaBuscarCargar.setFlagDivisa(false);
+			agenciaRequest.setAgencia(agenciaBuscarCargar);
+			try {
+				listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
+				model.addAttribute("listaAgencias", listaAgencias);
+				model.addAttribute("mensajeError", e.getMessage());
+				return "convenio/agencia/formBuscarAgencia";
+			} catch (CustomException e1) {
+				// TODO Auto-generated catch block
+				log.error("error: "+e1);
+				model.addAttribute("mensajeError", e1.getMessage());
+				return "convenio/agencia/formBuscarAgencia";
+			}
+			
 		}
 		
 		

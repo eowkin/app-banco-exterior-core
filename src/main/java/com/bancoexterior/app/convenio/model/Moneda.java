@@ -42,11 +42,11 @@ public class Moneda implements Serializable{
 	@JsonProperty("codUsuario")
 	private String codUsuario;
 	
-	//@JsonSerialize(using = CustomDateSerializer.class)
 	@JsonProperty("fechaModificacion")
-	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Zagreb")
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Date fechaModificacion;
+	private String fechaModificacion;
+	//@JsonProperty("fechaModificacion")
+	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	//private Date fechaModificacion;
 	
 	/**
 	 * 

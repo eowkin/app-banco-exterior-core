@@ -71,9 +71,12 @@ public class LimitesPersonalizados implements Serializable{
 	@Digits(integer=13, fraction=2, message = "")
 	private String codUsuario;
 	
+	
 	@JsonProperty("fechaModificacion")
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Date fechaModificacion;
+	private String fechaModificacion;
+	//@JsonProperty("fechaModificacion")
+	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	//private Date fechaModificacion;
 	
 	/**
 	 * 

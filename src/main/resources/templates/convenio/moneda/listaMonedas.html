@@ -50,7 +50,7 @@
     <main class="main">
       <!-- Breadcrumb-->
       <ol class="breadcrumb">
-        <li class="breadcrumb-item">Home</li>
+      	<li class="breadcrumb-item">Home</li>
         <li class="breadcrumb-item">
           <a href="#">Admin</a>
         </li>
@@ -64,9 +64,6 @@
 	        <div class="card-header">
 	          <i class="fa fa-align-justify"></i> Listado de Monedas
 	          <p align="right"></p>
-	          <div class="my-2 text-right">
-	          	<a class="btn btn-rounded btn-primary" th:href="@{/monedas/formMoneda}"><i class="fas fa-file" aria-hidden="true"></i> Crear Moneda</a>
-	          </div>
 	        </div><!--/.card-header-->
 	        <div class="card-body">
 	          <div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
@@ -82,11 +79,8 @@
 	              <tr>
 	                <th>Codigo Moneda</th>
 	                <th>Descripcion</th>
-	                <th>Cod. Alterno</th>
-	                <th>Flag Activo</th>
 	                <th>Cod. Usuario</th>
 	                <th>Fecha Modificacion</th>
-	                <th>Editar</th>
 	                <th>Accion</th>
 	              </tr>
 	            </thead>
@@ -94,20 +88,9 @@
 	              <tr th:each = "moneda: ${listMonedas}">
 	                <td th:text="${moneda.codMoneda}"></td>
 	                <td th:text="${moneda.descripcion}"></td>
-	                <td th:text="${moneda.codAlterno}"></td>
-	                <td>
-	                	<span class="badge badge-primary" th:if="${moneda.flagActivo}">Activo</span>
-	                	<span class="badge badge-danger" th:unless="${moneda.flagActivo }">Desactivo</span>
-	                </td>
 	                <td th:text="${moneda.codUsuario}"></td>
 	                <td th:text="${moneda.fechaModificacion}"></td>
-	                <td th:if="${moneda.flagActivo}">
-                      <a  class="btn btn-primary" th:href="@{/monedas/edit/{id} (id=${moneda.codMoneda}) }" role="button" title="Editar el registro.">Editar</a>
-                    </td>
-                    <td th:unless="${moneda.flagActivo }">
-		           		<button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
-		            </td>
-                    <td th:if="${moneda.flagActivo}">
+	               	<td th:if="${moneda.flagActivo}">
                    		<a  onclick="return confirm('¿Estas seguro de desactivar la moneda?')" th:href="@{/monedas/desactivar/{codMoneda} (codMoneda=${moneda.codMoneda}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
 	                </td>
                     <td th:unless="${moneda.flagActivo }"> 
@@ -129,6 +112,7 @@
     
   </footer>
   <!-- Bootstrap and necessary plugins-->
+  
   <script th:src="@{/node_modules/jquery/dist/jquery.min.js}" type="text/javascript"></script>
   <script th:src="@{/node_modules/popper.js/dist/umd/popper.min.js}" type="text/javascript"></script>
   <script th:src="@{/node_modules/bootstrap/dist/js/bootstrap.min.js}" type="text/javascript"></script>

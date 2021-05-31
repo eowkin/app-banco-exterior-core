@@ -177,7 +177,7 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en Actualizar el limiteGenerales por codigo");
+				log.info("Respusta codigo 200 en Actualizar el limitePersonalizado por codigo");
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
 					log.info("response: "+response);
@@ -193,7 +193,7 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar la moneda por codigo");
+					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar el limite personalizado por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
@@ -240,7 +240,7 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en crear el limiteGenerales por codigo");
+				log.info("Respusta codigo 200 en crear el limitepersonalizado por codigo");
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
 					log.info("response: "+response);
@@ -256,7 +256,7 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar la moneda por codigo");
+					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar el limitePersonalizado por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);

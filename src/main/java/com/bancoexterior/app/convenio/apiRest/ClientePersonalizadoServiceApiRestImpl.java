@@ -138,9 +138,9 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 				if (retorno.getStatus() == 422) {
 					log.info("entro en error 422");
 					try {
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
-						String error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
+						log.info("resultado: "+resultado);
+						String error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						throw new CustomException(error);
 						
 					} catch (IOException e) {
@@ -183,7 +183,7 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en Actualizar el limiteGenerales por codigo");
+				log.info("Respusta codigo 200 en Actualizar el cliente por codigo");
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
 					log.info("response: "+response);
@@ -199,7 +199,7 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar la moneda por codigo");
+					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar el cliente por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);

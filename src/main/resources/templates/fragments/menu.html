@@ -3,51 +3,42 @@
         <ul class="nav">
           
           <li class="nav-item nav-dropdown">
-            <a class="nav-link nav-dropdown-toggle" href="#">
-              <i class="nav-icon icon-cursor"></i> Convenio</a>
+            <a class="nav-link nav-dropdown-toggle" href="#">Convenio</a>
 	            <ul class="nav-dropdown-items">
 	              <li class="nav-item nav-dropdown">
-		            	<a class="nav-link nav-dropdown-toggle" href="#">
-		              	<i class="nav-icon icon-cursor"></i> Solicitudes</a>
+		            	<a class="nav-link nav-dropdown-toggle" href="#" style="padding-left:20px;">Gestion de Divisas</a>
 			            <ul class="nav-dropdown-items">
 			              <li class="nav-item">
-			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesPorAprobar}">
-			                  <i class="nav-icon icon-cursor"></i> Por aprobar</a>
+			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/1}" style="padding-left:40px;">Solicitudes Por Aprobar</a>
 			              </li>
 			              <li class="nav-item">
-			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientos}">
-			                  <i class="nav-icon icon-cursor"></i> Movimientos</a>
+			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientos}" style="padding-left:40px;">Consulta de Solicitudes </a>
 			              </li>
-			              
+			              <li class="nav-item">
+			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/1}" style="padding-left:40px;">Consulta de Movimientos Ventas </a>
+			              </li>
 			            </ul>
 	          	  	  </li>	      	
 	              <li class="nav-item nav-dropdown">
-	            	<a class="nav-link nav-dropdown-toggle" href="#">
-	              	<i class="nav-icon icon-cursor"></i> Parametros</a>
+	            	<a class="nav-link nav-dropdown-toggle" href="#" style="padding-left:20px;">Configuracion</a>
 		            <ul class="nav-dropdown-items">
 		              <li class="nav-item">
-		                <a class="nav-link" th:href="@{/monedas/index}">
-		                  <i class="nav-icon icon-cursor"></i> Moneda</a>
+		                <a class="nav-link" th:href="@{/monedas/index}" style="padding-left:40px;">Moneda</a>
 		              </li>
 		              <li class="nav-item">
-		                <a class="nav-link" th:href="@{/tasas/index}">
-		                  <i class="nav-icon icon-cursor"></i> Tasa</a>
+		                <a class="nav-link" th:href="@{/tasas/index}" style="padding-left:40px;">Tipo de Cambio</a>
 		              </li>
 		              <li class="nav-item">
-		                <a class="nav-link" th:href="@{/limitesGenerales/index}">
-		                  <i class="nav-icon icon-cursor"></i> Limites Generales</a>
+		                <a class="nav-link" th:href="@{/limitesGenerales/index}" style="padding-left:40px;">Limites Generales</a>
 		              </li>
 		              <li class="nav-item">
-		                <a class="nav-link" th:href="@{/clientesPersonalizados/index}">
-		                  <i class="nav-icon icon-cursor"></i> Clientes Personalizados</a>
+		                <a class="nav-link" th:href="@{/clientesPersonalizados/index}" style="padding-left:40px;">Clientes Personalizados</a>
 		              </li>
 		              <li class="nav-item">
-		                <a class="nav-link" th:href="@{/limitesPersonalizados/index}">
-		                  <i class="nav-icon icon-cursor"></i> Limites Personalizados</a>
+		                <a class="nav-link" th:href="@{/limitesPersonalizados/index}" style="padding-left:40px;">Limites Personalizados</a>
 		              </li>
 		              <li class="nav-item">
-		                <a class="nav-link" th:href="@{/agencias/index}">
-		                  <i class="nav-icon icon-cursor"></i> Agencia</a>
+		                <a class="nav-link" th:href="@{/agencias/index}" style="padding-left:40px;">Agencia</a>
 		              </li>
 		            </ul>
           		 	</li>
@@ -56,8 +47,7 @@
           </li>
           
           <li class="nav-item nav-dropdown">
-            <a class="nav-link nav-dropdown-toggle" href="#">
-              <i class="nav-icon icon-cursor"></i> CCE</a>
+            <a class="nav-link nav-dropdown-toggle" href="#">CCE</a>
             <ul class="nav-dropdown-items">
               <li class="nav-item">
                 <a class="nav-link" href="buttons-buttons.html">

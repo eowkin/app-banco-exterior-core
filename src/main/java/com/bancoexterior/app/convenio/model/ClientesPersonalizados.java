@@ -32,8 +32,11 @@ public class ClientesPersonalizados implements Serializable{
 	private Boolean flagActivo;
 	
 	@JsonProperty("fechaModificacion")
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Date fechaModificacion;
+	private String fechaModificacion;
+	
+	//@JsonProperty("fechaModificacion")
+	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	//private Date fechaModificacion;
 	
 	/**
 	 * 

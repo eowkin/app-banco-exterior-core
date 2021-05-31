@@ -10,15 +10,15 @@
   <meta name="author" content="Michal Kuvik">
   <meta name="keyword" content="Spring,Thymeleaf,Bootstrap,jQuery,CSS,HTML">
   <title>Banco Exterior</title>
- <!-- Icons-->
-  <link th:href="@{/node_modules/@coreui/icons/css/coreui-icons.min.css}" rel="stylesheet" type="text/css">
-  <link th:href="@{/node_modules/flag-icon-css/css/flag-icon.min.css}" rel="stylesheet" type="text/css">
-  <link th:href="@{/node_modules/font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css">
-  <link th:href="@{/node_modules/simple-line-icons/css/simple-line-icons.css}" rel="stylesheet" type="text/css">
-  <link th:href="@{/node_modules/@fortawesome/fontawesome-free/css/all.css}" rel="stylesheet" type="text/css">
+  <!-- Icons-->
+  <link th:href="@{../node_modules/@coreui/icons/css/coreui-icons.min.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{../node_modules/flag-icon-css/css/flag-icon.min.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{../node_modules/font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{../node_modules/simple-line-icons/css/simple-line-icons.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{../node_modules/@fortawesome/fontawesome-free/css/all.css}" rel="stylesheet" type="text/css">
   <!-- Main styles for this application-->
-  <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
-  <link th:href="@{/vendors/pace-progress/css/pace.min.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{../css/style.css}" rel="stylesheet" type="text/css">
+  <link th:href="@{../vendors/pace-progress/css/pace.min.css}" rel="stylesheet" type="text/css">
 </head>
 
 <body class="app header-fixed sidebar-fixed sidebar-lg-show" ng-app="app" ng-controller="controller" data-ng-init="getData()">
@@ -55,21 +55,7 @@
         <li class="breadcrumb-item active">Dashboard</li>
       </ol>
       <div class="container-fluid">
-       
-       
-       
-       
-       <ul class="nav nav-tabs" id="myTab" role="tablist">
-		  <li class="nav-item">
-		    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-expanded="true">Oferta (Venta)</a>
-		  </li>
-		  <li class="nav-item">
-		    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile">Demanda (Compra)</a>
-		  </li>
-		</ul>
-		<div class="tab-content" id="myTabContent">
-		  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-		  	<div class="animated fadeIn">
+     	  <div class="animated fadeIn">
 		    <div class="row">
 		      <div class="col-lg-1-12">
 		        <div class="card">
@@ -144,25 +130,7 @@
 		        </div><!--/.card-->
 		      </div><!--/.col-lg-1-12-->
 		    </div><!--/.row-->    
-		  </div><!--/.animated fadeIn-->
-
-
-
-
-		  	
-		  
-		  
-		  </div>
-		  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-		</div>
-       
-       
-       
-       
-             
-       
-       	<!--  -->
-              
+		  </div><!--/.animated fadeIn-->      
       </div> <!-- /container -->
     </main>
   </div>
@@ -170,18 +138,18 @@
     
   </footer>
   <!-- Bootstrap and necessary plugins-->
-   <!-- Bootstrap and necessary plugins-->
-  <script th:src="@{/node_modules/jquery/dist/jquery.min.js}" type="text/javascript"></script>
-  <script th:src="@{/node_modules/popper.js/dist/umd/popper.min.js}" type="text/javascript"></script>
-  <script th:src="@{/node_modules/bootstrap/dist/js/bootstrap.min.js}" type="text/javascript"></script>
-  <script th:src="@{/js/angular.min.js}" type="text/javascript"></script>
-  <script th:src="@{/js/controller.js}" type="text/javascript"></script>
-  <script th:src="@{/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js}" type="text/javascript"></script>
-  <script th:src="@{/node_modules/@coreui/coreui/dist/js/coreui.min.js}" type="text/javascript"></script>
-  <script th:src="@{/node_modules/@fortawesome/fontawesome-free/js/all.js}" type="text/javascript"></script>
+    <!-- Bootstrap and necessary plugins-->
+  <script th:src="@{../node_modules/jquery/dist/jquery.min.js}" type="text/javascript"></script>
+  <script th:src="@{../node_modules/popper.js/dist/umd/popper.min.js}" type="text/javascript"></script>
+  <script th:src="@{../node_modules/bootstrap/dist/js/bootstrap.min.js}" type="text/javascript"></script>
+  <script th:src="@{../js/angular.min.js}" type="text/javascript"></script>
+  <script th:src="@{../js/controller.js}" type="text/javascript"></script>
+  <script th:src="@{../node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js}" type="text/javascript"></script>
+  <script th:src="@{../node_modules/@coreui/coreui/dist/js/coreui.min.js}" type="text/javascript"></script>
+  <script th:src="@{../node_modules/@fortawesome/fontawesome-free/js/all.js}" type="text/javascript"></script>
   <!-- Plugins and scripts required by this view-->
-  <script th:src="@{/node_modules/@coreui/coreui-plugin-chartjs-custom-tooltips/dist/js/custom-tooltips.min.js}" type="text/javascript"></script>
-  <script th:src="@{/js/main.js}" type="text/javascript"></script>
+  <script th:src="@{../node_modules/@coreui/coreui-plugin-chartjs-custom-tooltips/dist/js/custom-tooltips.min.js}" type="text/javascript"></script>
+  <script th:src="@{../js/main.js}" type="text/javascript"></script>
 </body>
 
 </html>

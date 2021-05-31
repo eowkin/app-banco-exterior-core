@@ -93,8 +93,8 @@
 					              <thead>
 					                <tr>
 					                  <th>Codigo Moneda</th>
-					                    <th>Tipo Trans.</th>
-					                    <th>Tipo Clien</th>
+					                    <th>Tipo Transaccion</th>
+					                    <th>Tipo Cliente</th>
 					                   <!--  
 					                    <th>Monto Min</th>
 					                    <th>Monto Max</th>
@@ -103,8 +103,9 @@
 					                    <th>Monto Diario</th>
 					                    <th>Monto Banco</th>
 					                    -->  
-					                    <th>Cod. Usuario</th>
-					                    <th>Flag Activo</th>
+					                    <th>Codigo Usuario</th>
+					                    <!--  
+					                    <th>Flag Activo</th>-->
 					                    <th>Fecha Modificacion</th>
 					                    <th>Detalle</th>
 					                    <th>Editar</th>
@@ -131,13 +132,14 @@
 					                  <td th:text="${limitesGenerales.montoBanco}"></td>
 					                  -->  
 					                  <td th:text="${limitesGenerales.codUsuario}"></td>
+					                  <!-- 
 					                  <td>
 				                		<span class="badge badge-primary" th:if="${limitesGenerales.flagActivo}">Activo</span>
 				                		<span class="badge badge-danger" th:unless="${limitesGenerales.flagActivo }">Desactivo</span>
-				                	  </td>
+				                	  </td> -->
 					               	  <td th:text="${limitesGenerales.fechaModificacion}"></td>
 					                  <td>
-			                      		<a  class="btn btn-info" th:href="@{/limitesGenerales/detalle/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Detalle el registro.">Ver</a>
+			                      		<a  class="btn btn-info" th:href="@{/limitesGenerales/detalle/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }" role="button" title="Detalle el registro.">Detalle</a>
 			                    	  </td>
 			                    	  
 					                  <td th:if="${limitesGenerales.flagActivo}">

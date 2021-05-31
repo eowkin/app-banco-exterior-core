@@ -89,7 +89,6 @@
 		                  <th>Nro. IdCliente</th>
 		                  <th>Nombre/Razon Social</th>
 		                  <th>Cod. Usuario</th>
-		                  <th>Flag Activo</th>
 		                  <th>Fecha Modificacion</th>
 		                  <th>Editar</th>
 		                  <th>Desactivar</th>
@@ -101,23 +100,19 @@
 		                  <td th:text="${cliente.nroIdCliente}"></td>
 		                  <td th:text="${cliente.nombreRif}"></td>
 		                  <td th:text="${cliente.codUsuario}"></td>
-		                  <td>
-	                		<span class="badge badge-primary" th:if="${cliente.flagActivo}">Activo</span>
-	                		<span class="badge badge-danger" th:unless="${cliente.flagActivo }">Desactivo</span>
-	                	  </td>
 		                  <td th:text="${cliente.fechaModificacion}"></td>
 		                  <td th:if="${cliente.flagActivo}">
-		                      <a  class="btn btn-primary" th:href="@{/clientesPersonalizados/edit/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" role="button" title="Editar el registro.">Editar</a>
+		                      <a  class="btn btn-primary" th:href="@{/clientesPersonalizados/verLimites/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" role="button" title="Editar el registro.">Editar</a>
 		                  </td>
 		                  <td th:unless="${cliente.flagActivo}">
 		                      <button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
 		                      
 		                  </td>
 		                  <td th:if="${cliente.flagActivo}">
-		                   		<a  onclick="return confirm('¿Estas seguro de desactivar la moneda?')" th:href="@{/clientesPersonalizados/desactivar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
+		                   		<a  onclick="return confirm('¿Estas seguro de desactivar el cliente?')" th:href="@{/clientesPersonalizados/desactivar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
 			              </td>
 		                  <td th:unless="${cliente.flagActivo }"> 
-		                    	<a  onclick="return confirm('¿Estas seguro de activar la moneda?')" th:href="@{/clientesPersonalizados/activar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-primary"  role="button" title="Activar el registro.">Activar</a>
+		                    	<a  onclick="return confirm('¿Estas seguro de activar el cliente?')" th:href="@{/clientesPersonalizados/activar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-primary"  role="button" title="Activar el registro.">Activar</a>
 		                   </td>
 		                </tr>
 		              </tbody>

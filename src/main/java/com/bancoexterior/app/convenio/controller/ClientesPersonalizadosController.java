@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,11 +19,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bancoexterior.app.convenio.apiRest.IClientePersonalizadoServiceApiRest;
+import com.bancoexterior.app.convenio.apiRest.ILimitesPersonalizadosServiceApiRest;
+import com.bancoexterior.app.convenio.apiRest.IMonedaServiceApiRest;
 import com.bancoexterior.app.convenio.dto.ClienteDatosBasicoRequest;
 import com.bancoexterior.app.convenio.dto.ClienteRequest;
+import com.bancoexterior.app.convenio.dto.LimitesPersonalizadosRequest;
+import com.bancoexterior.app.convenio.dto.MonedasRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.ClientesPersonalizados;
 import com.bancoexterior.app.convenio.model.DatosClientes;
+import com.bancoexterior.app.convenio.model.LimitesPersonalizados;
+import com.bancoexterior.app.convenio.model.Moneda;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +41,11 @@ public class ClientesPersonalizadosController {
 	@Autowired
 	private IClientePersonalizadoServiceApiRest clientePersonalizadoServiceApiRest;
 
+	@Autowired
+	private ILimitesPersonalizadosServiceApiRest limitesPersonalizadosServiceApiRest;
 	
+	@Autowired
+	private IMonedaServiceApiRest monedaServiceApiRest;
 	
 	
 	@GetMapping("/index")
@@ -160,6 +172,172 @@ public class ClientesPersonalizadosController {
 		}
 	}
 	
+	@GetMapping("/verLimites/{codigoIbs}")
+	public String verLimitesWs(@PathVariable("codigoIbs") String codigoIbs, 
+			ClientesPersonalizados clientesPersonalizados, Model model, RedirectAttributes redirectAttributes) {
+		log.info("verLimitesWs");
+		log.info("codigoIbs: " + codigoIbs);
+
+		
+		List<LimitesPersonalizados> listaLimitesPersonalizados = new ArrayList<>();
+		
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
+		limitesPersonalizadosRequest.setIdUsuario("test");
+		limitesPersonalizadosRequest.setIdSesion("20210101121213");
+		limitesPersonalizadosRequest.setCodUsuario("E66666");
+		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizados limite = new LimitesPersonalizados();
+		limite.setCodigoIbs(codigoIbs);
+		limitesPersonalizadosRequest.setLimiteCliente(limite);
+		
+		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
+
+		ClienteRequest clienteRequest = new ClienteRequest();
+		clienteRequest.setIdUsuario("test");
+		clienteRequest.setIdSesion("20210101121213");
+		clienteRequest.setCodUsuario("E66666");
+		clienteRequest.setCanal("8");
+		ClientesPersonalizados clientesPersonalizadosBuscar = new ClientesPersonalizados();
+		clientesPersonalizadosBuscar.setCodigoIbs(codigoIbs);
+		clienteRequest.setCliente(clientesPersonalizadosBuscar);
+			
+		try {
+			
+			clientesPersonalizadosEdit = clientePersonalizadoServiceApiRest.buscarClientesPersonalizados(clienteRequest);
+			if(clientesPersonalizadosEdit != null) {
+				listaLimitesPersonalizados = limitesPersonalizadosServiceApiRest.listaLimitesPersonalizados(limitesPersonalizadosRequest);
+				log.info("lista: "+listaLimitesPersonalizados.isEmpty());
+				if(!listaLimitesPersonalizados.isEmpty()) {
+					model.addAttribute("listaLimitesPersonalizados", listaLimitesPersonalizados);
+					model.addAttribute("codigoIbs", codigoIbs);
+		    		return "convenio/clientesPersonalizados/listaLimitesPersonalizados";
+				}else {
+					//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+					model.addAttribute("listaLimitesPersonalizados", listaLimitesPersonalizados);
+					model.addAttribute("codigoIbs", codigoIbs);
+					model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+					return "convenio/clientesPersonalizados/listaLimitesPersonalizados";
+				}
+			}else {
+				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				return "redirect:/clientesPersonalizados/index";
+			}		
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+			return "redirect:/clientesPersonalizados/index";
+		}
+	}
+	
+	@GetMapping("/formLimiteClientePersonalizado/{codigoIbs}")
+	public String formLimiteClientePersonalizado(@PathVariable("codigoIbs") String codigoIbs,LimitesPersonalizados limitesPersonalizados,  Model model, RedirectAttributes redirectAttributes) {
+		
+		log.info("formLimiteClientePersonalizado");
+		log.info("codigoIbs: " + codigoIbs);
+		List<Moneda> listaMonedas = new ArrayList<>();
+		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
+
+		ClienteRequest clienteRequest = new ClienteRequest();
+		clienteRequest.setIdUsuario("test");
+		clienteRequest.setIdSesion("20210101121213");
+		clienteRequest.setCodUsuario("E66666");
+		clienteRequest.setCanal("8");
+		ClientesPersonalizados clientesPersonalizadosBuscar = new ClientesPersonalizados();
+		clientesPersonalizadosBuscar.setCodigoIbs(codigoIbs);
+		clienteRequest.setCliente(clientesPersonalizadosBuscar);
+		
+		MonedasRequest monedasRequest = new MonedasRequest();
+		monedasRequest.setIdUsuario("test");
+		monedasRequest.setIdSesion("20210101121213");
+		monedasRequest.setCodUsuario("E66666");
+		monedasRequest.setCanal("8");
+		Moneda moneda = new Moneda();
+		moneda.setFlagActivo(true);
+		monedasRequest.setMoneda(moneda);
+			
+		try {
+			
+			clientesPersonalizadosEdit = clientePersonalizadoServiceApiRest.buscarClientesPersonalizados(clienteRequest);
+			if(clientesPersonalizadosEdit != null) {
+				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+				limitesPersonalizados.setCodigoIbs(codigoIbs);
+				model.addAttribute("listaMonedas", limitesPersonalizados);
+				model.addAttribute("listaMonedas", listaMonedas);
+	    		return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+			}else {
+				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				return "redirect:/clientesPersonalizados/index";
+			}
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+			return "redirect:/clientesPersonalizados/index";
+		}	
+	}
+	
+	@PostMapping("/saveLimiteCliente")
+	public String saveLimiteClienteWs(LimitesPersonalizados limitesPersonalizados, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+		log.info("saveLimiteClienteWs");
+		log.info("limitesPersonalizados: "+limitesPersonalizados);
+		
+		List<Moneda> listaMonedas = new ArrayList<>();
+		
+		MonedasRequest monedasRequest = new MonedasRequest();
+		monedasRequest.setIdUsuario("test");
+		monedasRequest.setIdSesion("20210101121213");
+		monedasRequest.setCodUsuario("E66666");
+		monedasRequest.setCanal("8");
+		Moneda moneda = new Moneda();
+		moneda.setFlagActivo(true);
+		monedasRequest.setMoneda(moneda);
+		
+		if (result.hasErrors()) {
+			for (ObjectError error : result.getAllErrors()) {
+				log.info("Ocurrio un error: " + error.getDefaultMessage());
+			}
+			
+			try {
+				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+				model.addAttribute("listaMonedas", listaMonedas);
+				//model.addAttribute("codigoIbs", limitesPersonalizados.getCodigoIbs());
+	    		return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+	    		//clientesPersonalizados/formLimiteClientePersonalizado/{codigoIbs}
+			} catch (CustomException e) {
+				log.error("error: "+e);
+				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+			}
+			
+		}
+		
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
+		limitesPersonalizadosRequest.setIdUsuario("test");
+		limitesPersonalizadosRequest.setIdSesion("20210101121213");
+		limitesPersonalizadosRequest.setCodUsuario("E66666");
+		limitesPersonalizadosRequest.setCanal("8");
+		limitesPersonalizados.setFlagActivo(true);
+		limitesPersonalizadosRequest.setLimiteCliente(limitesPersonalizados);
+		
+		try {
+			String respuesta = limitesPersonalizadosServiceApiRest.crear(limitesPersonalizadosRequest);
+			log.info(respuesta);
+			redirectAttributes.addFlashAttribute("mensaje", respuesta);
+			return "redirect:/clientesPersonalizados/verLimites/"+limitesPersonalizados.getCodigoIbs();
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			try {
+				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+				model.addAttribute("listaMonedas", listaMonedas);
+				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+	    		return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+			} catch (CustomException e1) {
+				log.error("error: "+e1);
+				result.addError(new ObjectError("codMoneda", " Codigo :" +e1.getMessage()));
+				return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+			}
+		
+		}
+	}	
 	
 	
 	@GetMapping("/search")

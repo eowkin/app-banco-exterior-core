@@ -90,7 +90,8 @@
 		                    <th>Monto Men</th>
 		                    <th>Monto Diario</th>
 		                    <th>Cod. Usuario</th>
-		                    <th>Flag Activo</th>
+		                    <!--  
+		                    <th>Flag Activo</th>-->
 		                    <th>Fecha Modificacion</th>
 		                    <th>Editar</th>
 		                    <th>Accion</th>
@@ -110,10 +111,11 @@
 		                  <td th:text="${limitesPersonalizados.montoMensual}"></td>
 		                  <td th:text="${limitesPersonalizados.montoDiario}"></td>
 		                  <td th:text="${limitesPersonalizados.codUsuario}"></td>
+		                  <!-- 
 		                  <td>
 	                		<span class="badge badge-primary" th:if="${limitesPersonalizados.flagActivo}">Activo</span>
 	                		<span class="badge badge-danger" th:unless="${limitesPersonalizados.flagActivo }">Desactivo</span>
-	                	  </td>
+	                	  </td> -->
 		               	  <td th:text="${limitesPersonalizados.fechaModificacion}"></td>
 		                  
 		                  <td th:if="${limitesPersonalizados.flagActivo}">
