@@ -229,6 +229,86 @@ public class ClientesPersonalizadosController {
 		}
 	}
 	
+	
+	@GetMapping("/editLimiteCliente/{codigoIbs}/{codMoneda}/{tipoTransaccion}")
+	public String editarLimiteClienteWs(@PathVariable("codigoIbs") String codigoIbs, @PathVariable("codMoneda") String codMoneda, 
+			@PathVariable("tipoTransaccion") String tipoTransaccion,LimitesPersonalizados limitesPersonalizados,Model model, RedirectAttributes redirectAttributes) {
+		log.info("editarLimiteClienteWs");
+		log.info(codigoIbs);
+		log.info(codMoneda);
+		log.info(tipoTransaccion);
+		
+		LimitesPersonalizados limitesPersonalizadosEdit = new LimitesPersonalizados();
+		
+		
+		
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
+		limitesPersonalizadosRequest.setIdUsuario("test");
+		limitesPersonalizadosRequest.setIdSesion("20210101121213");
+		limitesPersonalizadosRequest.setCodUsuario("E66666");
+		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizados limitesP = new LimitesPersonalizados();
+		limitesP.setCodigoIbs(codigoIbs);
+		limitesP.setCodMoneda(codMoneda);
+		limitesP.setTipoTransaccion(tipoTransaccion);
+		limitesPersonalizadosRequest.setLimiteCliente(limitesP);
+	
+		try {
+			limitesPersonalizadosEdit = limitesPersonalizadosServiceApiRest.buscarLimitesPersonalizados(limitesPersonalizadosRequest);
+			if(limitesPersonalizadosEdit != null) {
+				model.addAttribute("limitesPersonalizados", limitesPersonalizadosEdit);
+				return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
+			}else {
+				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				return "redirect:/clientesPersonalizados/index";
+			}
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+			return "redirect:/clientesPersonalizados/index";
+		}
+		
+		
+	}
+	
+	
+	@PostMapping("/guardarLimiteCliente")
+	public String guardarLimiteClienteWs(LimitesPersonalizados limitesPersonalizados, BindingResult result,  RedirectAttributes redirectAttributes) {
+		log.info("guardarWs");
+		log.info("limitesPersonalizados", limitesPersonalizados);
+		
+		if (result.hasErrors()) {
+			for (ObjectError error : result.getAllErrors()) {
+				log.info("Ocurrio un error: " + error.getDefaultMessage());
+			}
+		
+			return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
+		}
+		
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
+		limitesPersonalizadosRequest.setIdUsuario("test");
+		limitesPersonalizadosRequest.setIdSesion("20210101121213");
+		limitesPersonalizadosRequest.setCodUsuario("E66666");
+		limitesPersonalizadosRequest.setCanal("8");
+		limitesPersonalizadosRequest.setLimiteCliente(limitesPersonalizados);
+		
+		try {
+			
+			String respuesta = limitesPersonalizadosServiceApiRest.actualizar(limitesPersonalizadosRequest);
+			redirectAttributes.addFlashAttribute("mensaje", respuesta);
+			//return "redirect:/limitesPersonalizados/index";
+			return "redirect:/clientesPersonalizados/verLimites/"+limitesPersonalizados.getCodigoIbs();
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
+		}
+	
+		
+	}
+	
+	
+	
 	@GetMapping("/formLimiteClientePersonalizado/{codigoIbs}")
 	public String formLimiteClientePersonalizado(@PathVariable("codigoIbs") String codigoIbs,LimitesPersonalizados limitesPersonalizados,  Model model, RedirectAttributes redirectAttributes) {
 		

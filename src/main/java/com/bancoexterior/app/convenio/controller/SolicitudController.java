@@ -112,7 +112,7 @@ public class SolicitudController {
 			filtrosVenta.setTipoTransaccion("V");
 			filtrosVenta.setEstatus(0);
 			movimientosRequest.setFiltros(filtrosVenta);
-			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientosPorAprobar(movimientosRequest);
 			if(responseVenta != null) {
 				datosPaginacionVenta = responseVenta.getDatosPaginacion();
 				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
@@ -128,7 +128,7 @@ public class SolicitudController {
 				filtrosCompra.setTipoTransaccion("C");
 				filtrosCompra.setEstatus(0);
 				movimientosRequest.setFiltros(filtrosCompra);
-				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
+				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientosPorAprobar(movimientosRequest);
 				
 				if(responseCompra != null) {
 					datosPaginacionCompra = responseCompra.getDatosPaginacion();

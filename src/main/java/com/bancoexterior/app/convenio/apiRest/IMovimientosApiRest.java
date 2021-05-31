@@ -6,6 +6,7 @@ import com.bancoexterior.app.convenio.exception.CustomException;
 
 public interface IMovimientosApiRest {
 
-	public MovimientosResponse consultarMovimientos(MovimientosRequest movimientosRequest) throws CustomException;
+	public MovimientosResponse consultarMovimientosPorAprobar(MovimientosRequest movimientosRequest) throws CustomException;
 	
+	public MovimientosResponse consultarMovimientos(MovimientosRequest movimientosRequest) throws CustomException;
 }

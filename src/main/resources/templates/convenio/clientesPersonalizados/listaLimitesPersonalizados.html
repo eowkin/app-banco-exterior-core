@@ -116,7 +116,7 @@
 		               	  <td th:text="${limitesPersonalizados.fechaModificacion}"></td>
 		                  
 		                  <td th:if="${limitesPersonalizados.flagActivo}">
-                      		<a  class="btn btn-primary" th:href="@{/limitesPersonalizados/edit/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }" role="button" title="Editar el registro.">Editar</a>
+                      		<a  class="btn btn-primary" th:href="@{/clientesPersonalizados/editLimiteCliente/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }" role="button" title="Editar el registro.">Editar</a>
                     	  </td>
                     	  <td th:unless="${limitesPersonalizados.flagActivo }">
 		           			<button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
