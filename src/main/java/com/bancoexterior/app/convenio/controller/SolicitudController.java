@@ -28,7 +28,6 @@ import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.DatosPaginacion;
 import com.bancoexterior.app.convenio.model.Movimiento;
 import com.bancoexterior.app.convenio.model.Solicitud;
-import com.bancoexterior.app.convenio.services.ISolicitudService;
 import com.bancoexterior.app.util.UserExcelExporter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,52 +37,12 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/solicitudes")
 public class SolicitudController {
-	
-	@Autowired
-	private ISolicitudService solicitudService;
-	
+		
 	@Autowired
 	private IMovimientosApiRest movimientosApiRest;
 	
 	
-	@GetMapping("/listaSolicitudesPorAprobar")
-	public String porAprobar(Model model) {
-		
-		
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
-		movimientosRequest.setNumeroPagina(1);
-		movimientosRequest.setTamanoPagina(10);
-		Movimiento filtros = new Movimiento();
-		filtros.setEstatus(0);
-		movimientosRequest.setFiltros(filtros);
-		
-		try {
-			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
-			if(response != null) {
-				DatosPaginacion datosPaginacion = response.getDatosPaginacion();
-				log.info("datosPaginacion: "+datosPaginacion);
-				List<Movimiento> listaMovimientos = response.getMovimientos();
-				log.info("listaMovimientos: "+listaMovimientos);
-				log.info("listaMovimientos.size: "+listaMovimientos.size());
-				
-				
-				List<Solicitud> listaSolicitud = solicitudService.bucarPorAprobar();
-				
-				model.addAttribute("listaSolicitud", listaSolicitud);
-				return "convenio/solicitudes/listaSolicitudesPorAprobar";
-			}else {
-				return "redirect:/";
-			}
-		} catch (CustomException e) {
-			log.error("error: "+e);
-			return "redirect:/";
-		}
-		
-	}
+	
 	
 	
 	
@@ -361,6 +320,42 @@ public class SolicitudController {
 		}
 	}
 	
+	@GetMapping("/procesarCompra/{codOperacion}")
+	public String procesarCompra(@PathVariable("codOperacion") String codOperacion, @PathVariable("tasa") BigDecimal tasa, 
+			@PathVariable("page") int page, Model model,
+			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
+		log.info("procesarCompra");
+		log.info("codOperacion: "+codOperacion);
+		
+		MovimientosRequest movimientosRequest = new MovimientosRequest();
+		movimientosRequest.setIdUsuario("test");
+		movimientosRequest.setIdSesion("20210101121213");
+		movimientosRequest.setUsuario("E66666");
+		movimientosRequest.setCanal("8");
+		
+		
+		try {
+			movimientosRequest.setNumeroPagina(page);
+			movimientosRequest.setTamanoPagina(5);
+			Movimiento filtrosVenta = new Movimiento();
+			filtrosVenta.setTipoTransaccion("V");
+			filtrosVenta.setEstatus(0);
+			movimientosRequest.setFiltros(filtrosVenta);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientosPorAprobar(movimientosRequest);
+			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			
+			
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
+			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			
+			//model.addAttribute("mensajeError", e.getMessage());
+			//return "convenio/agencia/formBuscarAgencia";
+		}
+	}
+	
+	
 	
 	
 	@GetMapping("/rechazarCompra/{codOperacion}/{tasa}/{page}")
@@ -380,7 +375,7 @@ public class SolicitudController {
 		aprobarRechazarRequest.setCodUsuario("E66666");
 		aprobarRechazarRequest.setCanal("8");
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen("02");
+		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(codOperacion);
 		aprobarRechazarRequest.setTasa(tasa);
 		aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
@@ -416,7 +411,7 @@ public class SolicitudController {
 		aprobarRechazarRequest.setCodUsuario("E66666");
 		aprobarRechazarRequest.setCanal("8");
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen("02");
+		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(codOperacion);
 		aprobarRechazarRequest.setTasa(tasa);
 		aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
@@ -453,7 +448,7 @@ public class SolicitudController {
 		aprobarRechazarRequest.setCodUsuario("E66666");
 		aprobarRechazarRequest.setCanal("8");
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen("02");
+		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(codOperacion);
 		aprobarRechazarRequest.setTasa(tasa);
 		aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
@@ -489,7 +484,7 @@ public class SolicitudController {
 		aprobarRechazarRequest.setCodUsuario("E66666");
 		aprobarRechazarRequest.setCanal("8");
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen("02");
+		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(codOperacion);
 		aprobarRechazarRequest.setTasa(tasa);
 		aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
@@ -671,22 +666,6 @@ public class SolicitudController {
 	
 	///borrar
 	
-	@GetMapping("/listaSolicitudesMovimientos")
-	public String porMovimiestos(Model model) {
-		
-		List<Solicitud> listaSolicitud = solicitudService.buscarTodas();
-		model.addAttribute("listaSolicitud", listaSolicitud);
-		return "convenio/solicitudes/listaSolicitudesMovimientos";
-	}
 	
-	
-	@GetMapping("/edit/{codOperacion}")
-	public String editar(@PathVariable("codOperacion") String codOperacion, Solicitud solicitud, Model model ) {
-		
-		Solicitud solicitudEdit = solicitudService.findById(codOperacion);
-		model.addAttribute("solicitud", solicitudEdit);
-		log.info("solicitudEdit: "+solicitudEdit);
-		return "convenio/solicitudes/formSolicitud";
-	}
 
 }

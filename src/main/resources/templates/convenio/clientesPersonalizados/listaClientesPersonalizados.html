@@ -115,33 +115,49 @@
 		                  </td>
 		                  <td th:if="${cliente.flagActivo}">
 		                  		<label class="switch switch-pill switch-primary">
-								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/desactivar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }'|"  type="checkbox" class="switch-input"  checked>
+								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/desactivar/{codigoIbs}/{page} (codigoIbs=${cliente.codigoIbs}, page=${datosPaginacion.paginaActual}) }'|"  type="checkbox" class="switch-input"  checked>
 								  <span class="switch-slider"></span>
 								</label>
-								<label class="switch switch-pill switch-label switch-outline-primary-alt">
+								<!-- <label class="switch switch-pill switch-label switch-outline-primary-alt">
 								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/desactivar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }'|" type="checkbox" class="switch-input" checked>
 								  <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
 								</label>
-								<!-- 
+								
 		                   		<a  onclick="return confirm('¿Estas seguro de desactivar el cliente?')" th:href="@{/clientesPersonalizados/desactivar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
 		                   		 -->
 			              </td>
 		                  <td th:unless="${cliente.flagActivo }">
 		                  		<label class="switch switch-pill switch-primary">
-								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/activar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }'|" type="checkbox" class="switch-input">
+								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/activar/{codigoIbs}/{page} (codigoIbs=${cliente.codigoIbs}, page=${datosPaginacion.paginaActual}) }'|" type="checkbox" class="switch-input">
 								  <span class="switch-slider"></span>
 								</label>
-								<label class="switch switch-pill switch-label switch-outline-primary-alt">
+								<!--<label class="switch switch-pill switch-label switch-outline-primary-alt">
 								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/activar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }'|" type="checkbox" class="switch-input">
 								  <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
 								</label> 
-		                    	<!--
+		                    	
 		                    	<a  onclick="return confirm('¿Estas seguro de activar el cliente?')" th:href="@{/clientesPersonalizados/activar/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" class="btn btn-primary"  role="button" title="Activar el registro.">Activar</a>
 		                    	-->
 		                   </td>
 		                </tr>
 		              </tbody>
 		            </table> 
+		            
+		             <nav th:if="${datosPaginacion.totalPaginas > 0}" aria-label="Page navigation example" > 
+		            	<ul class="pagination justify-content-center">         
+		            		<li class="page-item" th:classappend="${datosPaginacion.paginaActual == 1 ? 'disabled' : ''}">
+		            			<a th:href="@{/clientesPersonalizados/index/{page}  (page=${datosPaginacion.paginaActual - 1})}" class="page-link">Anterior</a>
+		            		</li> 
+		            		<li class="page-item">
+								<a class="page-link"  th:text="${'Pagina '+ datosPaginacion.paginaActual + ' -  '+ datosPaginacion.totalPaginas}" th:title="${'Page '+ datosPaginacion.paginaActual}" data-toggle="tooltip"></a>
+							</li>
+		            		<li class="page-item" th:classappend="${datosPaginacion.paginaActual == (datosPaginacion.totalPaginas) ? 'disabled' : ''}">
+		            			<a th:href="@{/clientesPersonalizados/index/{page}  (page=${datosPaginacion.paginaActual + 1})}" class="page-link">Siguiente</a>
+		            		</li>  
+		            	</ul> 
+		            </nav>
+		            
+		            
 		          </div><!--/.card-body-->
 		        </div><!--/.card-->
 		      </div><!--/.col-lg-1-12-->

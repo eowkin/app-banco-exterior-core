@@ -25,6 +25,9 @@ public class ResultadoOperacion implements Serializable{
 	@JsonProperty("descripcion")
 	private String descripcion;
 	
+	@JsonProperty("fechaLiquidacion")
+	private String fechaLiquidacion;
+	
 	@JsonProperty("datosDebito")
 	private DatosDebito datosDebito;
 	

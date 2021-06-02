@@ -41,9 +41,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
 		
 		wsrequest.setBody(movimientosRequestJSON);
-		wsrequest.setConnectTimeout(10000);
+		wsrequest.setConnectTimeout(15000);
 		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setSocketTimeout(15000);
 			
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
@@ -56,7 +56,7 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista moneda");
+				log.info("Respusta codigo 200 en buscar el movimientosResponse");
 	            try {
 	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
 				} catch (IOException e) {
@@ -101,9 +101,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
 		
 		wsrequest.setBody(movimientosRequestJSON);
-		wsrequest.setConnectTimeout(10000);
+		wsrequest.setConnectTimeout(15000);
 		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setSocketTimeout(15000);
 			
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
@@ -165,9 +165,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
 		
 		wsrequest.setBody(aprobarRechazarRequestJSON);
-		wsrequest.setConnectTimeout(10000);
+		wsrequest.setConnectTimeout(15000);
 		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setSocketTimeout(15000);
 			
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
@@ -253,9 +253,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
 		
 		wsrequest.setBody(aprobarRechazarRequestJSON);
-		wsrequest.setConnectTimeout(10000);
+		wsrequest.setConnectTimeout(15000);
 		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setSocketTimeout(15000);
 			
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
@@ -341,9 +341,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
 		
 		wsrequest.setBody(aprobarRechazarRequestJSON);
-		wsrequest.setConnectTimeout(10000);
+		wsrequest.setConnectTimeout(15000);
 		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setSocketTimeout(15000);
 			
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
@@ -429,9 +429,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
 		
 		wsrequest.setBody(aprobarRechazarRequestJSON);
-		wsrequest.setConnectTimeout(10000);
+		wsrequest.setConnectTimeout(15000);
 		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setSocketTimeout(15000);
 			
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
 		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/

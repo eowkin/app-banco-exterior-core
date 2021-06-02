@@ -22,6 +22,12 @@ public class ClienteRequest implements Serializable{
 	
 	@JsonProperty("canal")
 	private String canal;
+	
+	@JsonProperty("numeroPagina")
+	private int numeroPagina;
+	
+	@JsonProperty("tamanoPagina")
+	private int tamanoPagina;
 
 	@JsonProperty("cliente")
 	private ClientesPersonalizados cliente;

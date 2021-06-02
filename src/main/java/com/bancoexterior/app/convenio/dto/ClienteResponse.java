@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bancoexterior.app.convenio.model.ClientesPersonalizados;
+import com.bancoexterior.app.convenio.model.DatosPaginacion;
 import com.bancoexterior.app.convenio.response.Resultado;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,6 +16,9 @@ public class ClienteResponse implements Serializable{
 
 	@JsonProperty("resultado")
 	private Resultado resultado;
+	
+	@JsonProperty("datosPaginacion")
+	private DatosPaginacion datosPaginacion;
 	
 	@JsonProperty("cliente")
 	private List<ClientesPersonalizados> listaClientes;
