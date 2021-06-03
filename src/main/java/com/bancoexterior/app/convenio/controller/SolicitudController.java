@@ -14,17 +14,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.bancoexterior.app.convenio.apiRest.IAcumuladosServiceApiRest;
 import com.bancoexterior.app.convenio.apiRest.IMovimientosApiRest;
+import com.bancoexterior.app.convenio.dto.AcumuladoRequest;
+import com.bancoexterior.app.convenio.dto.AcumuladoResponse;
 import com.bancoexterior.app.convenio.dto.AprobarRechazarRequest;
 import com.bancoexterior.app.convenio.dto.MovimientosRequest;
 import com.bancoexterior.app.convenio.dto.MovimientosResponse;
 import com.bancoexterior.app.convenio.exception.CustomException;
+import com.bancoexterior.app.convenio.model.DatosConsulta;
 import com.bancoexterior.app.convenio.model.DatosPaginacion;
 import com.bancoexterior.app.convenio.model.Movimiento;
 import com.bancoexterior.app.convenio.model.Solicitud;
@@ -41,7 +48,8 @@ public class SolicitudController {
 	@Autowired
 	private IMovimientosApiRest movimientosApiRest;
 	
-	
+	@Autowired
+	private IAcumuladosServiceApiRest acumuladosServiceApiRest;
 	
 	
 	
@@ -64,6 +72,7 @@ public class SolicitudController {
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
 		try {
+		
 			movimientosRequest.setNumeroPagina(page);
 			movimientosRequest.setTamanoPagina(5);
 			Movimiento filtrosVenta = new Movimiento();
@@ -320,12 +329,12 @@ public class SolicitudController {
 		}
 	}
 	
-	@GetMapping("/procesarCompra/{codOperacion}")
-	public String procesarCompra(@PathVariable("codOperacion") String codOperacion, @PathVariable("tasa") BigDecimal tasa, 
-			@PathVariable("page") int page, Model model,
-			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
+	@GetMapping("/procesarCompra/{codOperacion}/{page}")
+	public String procesarCompra(@PathVariable("codOperacion") String codOperacion, @PathVariable("page") int page, Model model,
+			RedirectAttributes redirectAttributes, Movimiento movimiento ) {
 		log.info("procesarCompra");
 		log.info("codOperacion: "+codOperacion);
+		log.info("page: "+page);
 		
 		MovimientosRequest movimientosRequest = new MovimientosRequest();
 		movimientosRequest.setIdUsuario("test");
@@ -333,29 +342,211 @@ public class SolicitudController {
 		movimientosRequest.setUsuario("E66666");
 		movimientosRequest.setCanal("8");
 		
+		Movimiento movimientoProcesar = new Movimiento();
 		
 		try {
-			movimientosRequest.setNumeroPagina(page);
+			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(5);
-			Movimiento filtrosVenta = new Movimiento();
-			filtrosVenta.setTipoTransaccion("V");
-			filtrosVenta.setEstatus(0);
-			movimientosRequest.setFiltros(filtrosVenta);
-			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientosPorAprobar(movimientosRequest);
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			Movimiento filtros = new Movimiento();
+			//filtrosVenta.setTipoTransaccion("V");
+			//filtrosVenta.setEstatus(0);
+			filtros.setCodOperacion(codOperacion);
+			movimientosRequest.setFiltros(filtros);
+			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			
+			if(response.getResultado().getCodigo().equals("0000")) {
+				movimientoProcesar = response.getMovimientos().get(0);
+				movimientoProcesar.setPaginaActual(page);
+				log.info("movimientoProcesar: "+movimientoProcesar);
+				model.addAttribute("paginaActual", page);
+				model.addAttribute("movimiento", movimientoProcesar);
+				return "convenio/solicitudes/formSolicitud";
+			}else {
+				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
+				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			}
+			
+			
 			
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
 			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+		}
+	}
+	
+	@PostMapping("/guardarProcesarCompra")
+	public String guardarProcesarCompra(Movimiento movimiento, BindingResult result, Model model,
+			RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		log.info("movimiento: "+movimiento);
+		model.addAttribute("paginaActual", movimiento.getPaginaActual());
+		if (result.hasErrors()) {
+			for (ObjectError error : result.getAllErrors()) {
+				log.info("Ocurrio un error: " + error.getDefaultMessage());
+			}
+			
+			
+			
+			return "convenio/solicitudes/formSolicitud";
+		}
+		
+		//firstBigDecimal.compareTo(secondBigDecimal) < 0 // "<"
+				//firstBigDecimal.compareTo(secondBigDecimal) > 0 // ">"    
+				//firstBigDecimal.compareTo(secondBigDecimal) == 0 // "=="  
+				//firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="
+		/*
+		 * log.info("Comparar tamaño:" + movimiento.getNuevaTasaCliente().compareTo
+		 * (movimiento.getTasaCliente())); if(movimiento.getNuevaTasaCliente().compareTo
+		 * (movimiento.getTasaCliente()) < 0) { result.addError(new
+		 * ObjectError("codMoneda", " La tasa de cambio es manor que la nueva tasa"));
+		 * return "convenio/solicitudes/formSolicitud"; }
+		 */
+		
+		if(!isFechaValida(movimiento.getFecha())) {
+			result.addError(new ObjectError("codMoneda", " La fecha liquidacion es invalida"));
+			return "convenio/solicitudes/formSolicitud";
+		}
+		
+		AprobarRechazarRequest aprobarRechazarRequest = new AprobarRechazarRequest();
+		aprobarRechazarRequest.setIdUsuario("test");
+		aprobarRechazarRequest.setIdSesion("20210101121213");
+		aprobarRechazarRequest.setCodUsuario("E66666");
+		aprobarRechazarRequest.setCanal("8");
+		aprobarRechazarRequest.setIp(request.getRemoteAddr());
+		aprobarRechazarRequest.setOrigen("01");
+		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
+		aprobarRechazarRequest.setTasa(movimiento.getNuevaTasaCliente());
+		aprobarRechazarRequest.setFechaLiquidacion(movimiento.getFecha());
+		aprobarRechazarRequest.setEstatus(1);
+		
+		try {
+			String respuesta = movimientosApiRest.aprobarCompra(aprobarRechazarRequest);
+			redirectAttributes.addFlashAttribute("mensaje", respuesta);
+			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+movimiento.getPaginaActual();
+			
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			//redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
+			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			return "convenio/solicitudes/formSolicitud";
+			//return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+movimiento.getPaginaActual();
 			
 			//model.addAttribute("mensajeError", e.getMessage());
 			//return "convenio/agencia/formBuscarAgencia";
 		}
 	}
 	
+	@GetMapping("/procesarVenta/{codOperacion}/{page}")
+	public String procesarVenta(@PathVariable("codOperacion") String codOperacion, @PathVariable("page") int page, Model model,
+			RedirectAttributes redirectAttributes, Movimiento movimiento ) {
+		log.info("procesarCompra");
+		log.info("codOperacion: "+codOperacion);
+		log.info("page: "+page);
+		
+		MovimientosRequest movimientosRequest = new MovimientosRequest();
+		movimientosRequest.setIdUsuario("test");
+		movimientosRequest.setIdSesion("20210101121213");
+		movimientosRequest.setUsuario("E66666");
+		movimientosRequest.setCanal("8");
+		
+		Movimiento movimientoProcesar = new Movimiento();
+		
+		try {
+			movimientosRequest.setNumeroPagina(1);
+			movimientosRequest.setTamanoPagina(5);
+			Movimiento filtros = new Movimiento();
+			filtros.setTipoTransaccion("V");
+			//filtrosVenta.setEstatus(0);
+			filtros.setCodOperacion(codOperacion);
+			movimientosRequest.setFiltros(filtros);
+			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			
+			if(response.getResultado().getCodigo().equals("0000")) {
+				movimientoProcesar = response.getMovimientos().get(0);
+				movimientoProcesar.setPaginaActual(page);
+				log.info("movimientoProcesar: "+movimientoProcesar);
+				model.addAttribute("paginaActual", page);
+				model.addAttribute("movimiento", movimientoProcesar);
+				return "convenio/solicitudes/formSolicitudVenta";
+			}else {
+				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
+				redirectAttributes.addFlashAttribute("mensajeErrorVenta", mensajeError);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+			}
+			
+			
+			
+			
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			redirectAttributes.addFlashAttribute("mensajeErrorVenta",e.getMessage());
+			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+		}
+	}
 	
+	
+	@PostMapping("/guardarProcesarVenta")
+	public String guardarProcesarVenta(Movimiento movimiento, BindingResult result, Model model,
+			RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		log.info("movimiento: "+movimiento);
+		model.addAttribute("paginaActual", movimiento.getPaginaActual());
+		if (result.hasErrors()) {
+			for (ObjectError error : result.getAllErrors()) {
+				log.info("Ocurrio un error: " + error.getDefaultMessage());
+			}
+			
+			
+			
+			return "convenio/solicitudes/formSolicitudVenta";
+		}
+		
+		//firstBigDecimal.compareTo(secondBigDecimal) < 0 // "<"
+				//firstBigDecimal.compareTo(secondBigDecimal) > 0 // ">"    
+				//firstBigDecimal.compareTo(secondBigDecimal) == 0 // "=="  
+				//firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="
+		/*
+		 * log.info("Comparar tamaño:" + movimiento.getNuevaTasaCliente().compareTo
+		 * (movimiento.getTasaCliente())); if(movimiento.getNuevaTasaCliente().compareTo
+		 * (movimiento.getTasaCliente()) < 0) { result.addError(new
+		 * ObjectError("codMoneda", " La tasa de cambio es manor que la nueva tasa"));
+		 * return "convenio/solicitudes/formSolicitud"; }
+		 */
+		
+		if(!isFechaValida(movimiento.getFecha())) {
+			result.addError(new ObjectError("codMoneda", " La fecha liquidacion es invalida"));
+			return "convenio/solicitudes/formSolicitudVenta";
+		}
+		
+		AprobarRechazarRequest aprobarRechazarRequest = new AprobarRechazarRequest();
+		aprobarRechazarRequest.setIdUsuario("test");
+		aprobarRechazarRequest.setIdSesion("20210101121213");
+		aprobarRechazarRequest.setCodUsuario("E66666");
+		aprobarRechazarRequest.setCanal("8");
+		aprobarRechazarRequest.setIp(request.getRemoteAddr());
+		aprobarRechazarRequest.setOrigen("01");
+		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
+		aprobarRechazarRequest.setTasa(movimiento.getNuevaTasaCliente());
+		aprobarRechazarRequest.setFechaLiquidacion(movimiento.getFecha());
+		aprobarRechazarRequest.setEstatus(1);
+		
+		try {
+			String respuesta = movimientosApiRest.aprobarVenta(aprobarRechazarRequest);
+			redirectAttributes.addFlashAttribute("mensajeVenta", respuesta);
+			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+movimiento.getPaginaActual();
+			
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			//redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
+			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			return "convenio/solicitudes/formSolicitudVenta";
+			//return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+movimiento.getPaginaActual();
+			
+			//model.addAttribute("mensajeError", e.getMessage());
+			//return "convenio/agencia/formBuscarAgencia";
+		}
+	}
 	
 	
 	@GetMapping("/rechazarCompra/{codOperacion}/{tasa}/{page}")
@@ -607,10 +798,34 @@ public class SolicitudController {
     }
 	
 	
+	public void ofertasPorAprobar()  {
+		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
+		acumuladoRequest.setIdUsuario("test");
+		acumuladoRequest.setIdSesion("20210101121213");
+		acumuladoRequest.setCanal("8");
+		acumuladoRequest.setTipoAcumuado("3");
+		DatosConsulta datosConsulta = new DatosConsulta();
+		datosConsulta.setFechaDesde("2021-05-01");
+		datosConsulta.setFechaHasta(fecha(new Date()));
+		acumuladoRequest.setDatosConsulta(datosConsulta);
+		
+		try {
+			AcumuladoResponse acumuladoResponse = acumuladosServiceApiRest.consultarAcumuladosDiariosBanco(acumuladoRequest);
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
 	@ModelAttribute
 	public void setGenericos(Model model) {
 		Movimiento movimientoSearch = new Movimiento();
 		model.addAttribute("movimientoSearch", movimientoSearch);
+		log.info("se ejecuta setGenericos");
+		ofertasPorAprobar();
 		
 	}
 	
@@ -625,6 +840,39 @@ public class SolicitudController {
         return objSDF.format(fecha);
 	}
 	
+	
+	public boolean isFechaValida(String fechaLiquidacion) {
+		
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+		//SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		
+        try {
+        	
+        	
+        	Date fechaDate1 = formato.parse(fechaLiquidacion);
+        	Date fechaDate2 = formato.parse(fecha(new Date()));
+        	
+        	if ( fechaDate1.before(fechaDate2) ){
+        	    log.info("La fechaLiquidacion es menor que la actual");
+        		return false;
+        	}else{
+        	     if ( fechaDate2.before(fechaDate1) ){
+        	    	 //resultado= "La Fecha 1 es Mayor ";
+        	    	 log.info("La fechaActual es menor que la fechaLiquidacion");
+        	    	 return true;
+        	     }else{
+        	    	 log.info("La fechaActual es igual que la fechaLiquidacion");
+        	    	 return true;
+        	     } 
+        	}
+        } 
+        catch (ParseException ex) 
+        {
+            System.out.println(ex);
+        }
+        
+        return false;
+	}
 	
 	@GetMapping("/listaSolicitudesMovimientosVentas")
 	public String consultaMovimientoVenta1(Model model) {

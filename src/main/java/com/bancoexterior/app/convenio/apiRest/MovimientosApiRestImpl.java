@@ -64,12 +64,14 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 				}
 	            log.info("movimientosResponse: "+movimientosResponse);
 	            log.info(movimientosResponse.getResultado().getCodigo());
+	            return movimientosResponse;
+	            /*
 	            if(movimientosResponse.getResultado().getCodigo().equals("0000")){
 	            	log.info("Respusta codigo 0000 si existe la modena");
 	            	return movimientosResponse;
 	            }else {
 	            	return null;
-	            }
+	            }*/
 				
 				
 			}else {
@@ -119,17 +121,21 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 				log.info("Respusta codigo 200 en buscar la lista moneda");
 	            try {
 	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
+	            	
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 	            log.info("movimientosResponse: "+movimientosResponse);
 	            log.info(movimientosResponse.getResultado().getCodigo());
+	            return movimientosResponse;
+	            
+	            /*
 	            if(movimientosResponse.getResultado().getCodigo().equals("0000")){
 	            	log.info("Respusta codigo 0000 si existe la modena");
 	            	return movimientosResponse;
 	            }else {
 	            	return null;
-	            }
+	            }*/
 				
 				
 			}else {

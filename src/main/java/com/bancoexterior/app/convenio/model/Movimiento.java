@@ -2,6 +2,7 @@ package com.bancoexterior.app.convenio.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -67,7 +68,11 @@ public class Movimiento implements Serializable{
 	@JsonProperty("estatus")
 	private Integer estatus;
 	
+	private BigDecimal nuevaTasaCliente;
 	
+	private String fecha;
+	
+	private Integer paginaActual;
 	/**
 	 * 
 	 */

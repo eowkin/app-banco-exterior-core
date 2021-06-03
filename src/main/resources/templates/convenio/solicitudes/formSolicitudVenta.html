@@ -58,10 +58,10 @@
         <div class="animated fadeIn">
 		    <div class="card">
 		      <div class="card-header">
-		        <strong>Procesar Solicitud Compra</strong>
+		        <strong>Procesar Solicitud Venta</strong>
 		      </div>
 		      <div class="card-body">
-		        <form  th:action = "@{/solicitudes/guardarProcesarCompra}"   method="post" th:object="${movimiento}"   class="form-horizontal">
+		        <form  th:action = "@{/solicitudes/guardarProcesarVenta}"   method="post" th:object="${movimiento}"   class="form-horizontal">
 		          <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
 		            		Por favor corrija los siguientes errores:
 		            		<ul>
@@ -114,7 +114,7 @@
 		          
 		          <div class="card-footer">
 		        	<button type="submit" class="btn btn-sm btn-success"><i class="far fa-circle"></i> Aprobar</button>
-					<a class="btn btn-sm btn-primary" th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/{page} (page=${paginaActual})}" title="Volver a lista limites" role="button">Volver</a>
+					<a class="btn btn-sm btn-primary" th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/{page} (page=${paginaActual})}" title="Volver a lista limites" role="button">Volver</a>
 		      	  </div>
 		        </form>
 		      </div>

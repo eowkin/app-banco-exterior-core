@@ -106,7 +106,7 @@
 							                  	<a onclick="return confirm('¿Estas seguro de aprobar la solicitud de Venta?')" class="btn btn-success" th:href="@{/solicitudes/aprobarVenta/{codOperacion}/{tasa}/{page} (codOperacion=${movimiento.codOperacion}, tasa=${movimiento.tasaCliente}, page=${datosPaginacionVenta.paginaActual}) }" role="button" title="Aprobar Solicitud.">Aprobar</a>
 							                  </td>
 							                  <td>
-							                  	<a  class="btn btn-primary" th:href="@{/solicitudes/edit/{id} (id=${movimiento.codOperacion}) }" role="button" title="Procesar Solicitud.">Procesar</a>
+							                  	<a  class="btn btn-primary" th:href="@{/solicitudes/procesarVenta/{id}/{page} (id=${movimiento.codOperacion}, page=${datosPaginacionVenta.paginaActual}) }" role="button" title="Procesar Solicitud.">Procesar</a>
 							                  </td>
 							                  <td>
 							                  	<a onclick="return confirm('¿Estas seguro de rechazar la solicitud de Venta?')" class="btn btn-danger" th:href="@{/solicitudes/rechazarVenta/{codOperacion}/{tasa}/{page} (codOperacion=${movimiento.codOperacion}, tasa=${movimiento.tasaCliente}, page=${datosPaginacionVenta.paginaActual}) }" role="button" title="Rechazar Solicitud.">Rechazar</a>
@@ -182,8 +182,8 @@
 							                  	<a  onclick="return confirm('¿Estas seguro de aprobar la solicitud de Compra?')" class="btn btn-success" th:href="@{/solicitudes/aprobarCompra/{codOperacion}/{tasa}/{page} (codOperacion=${movimientoCompra.codOperacion}, tasa=${movimientoCompra.tasaCliente}, page=${datosPaginacionCompra.paginaActual}) }" role="button" title="Aprobar Solicitud.">Aprobar</a>
 							                  </td>
 							                  <td>
-							                  	<a  class="btn btn-primary" th:href="@{/solicitudes/edit/{id} (id=${movimientoCompra.codOperacion}) }" role="button" title="Procesar Solicitud.">Procesar</a>
-							                  </td>
+							                  	<a  class="btn btn-primary" th:href="@{/solicitudes/procesarCompra/{id}/{page} (id=${movimientoCompra.codOperacion}, page=${datosPaginacionCompra.paginaActual}) }"  role="button" title="Procesar Solicitud.">Procesar</a>
+							                  </td>							
 							                  <td>
 							                  	<a onclick="return confirm('¿Estas seguro de rechazar la solicitud de Compra?')" class="btn btn-danger" th:href="@{/solicitudes/rechazarCompra/{codOperacion}/{tasa}/{page} (codOperacion=${movimientoCompra.codOperacion}, tasa=${movimientoCompra.tasaCliente}, page=${datosPaginacionCompra.paginaActual}) }" role="button" title="Rechazar Solicitud.">Rechazar</a>
 							                  </td>		             
