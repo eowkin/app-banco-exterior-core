@@ -21,8 +21,8 @@ public class AcumuladoRequest implements Serializable{
 	@JsonProperty("canal")
 	private String canal;
 	
-	@JsonProperty("tipoAcumuado")
-	private String tipoAcumuado;
+	@JsonProperty("tipoAcumulado")
+	private String tipoAcumulado;
 	
 	@JsonProperty("datosConsulta")
 	private DatosConsulta datosConsulta;

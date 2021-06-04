@@ -25,16 +25,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bancoexterior.app.convenio.apiRest.IAcumuladosServiceApiRest;
 import com.bancoexterior.app.convenio.apiRest.IMovimientosApiRest;
+import com.bancoexterior.app.convenio.dto.AcumuladoCompraVentaResponse;
 import com.bancoexterior.app.convenio.dto.AcumuladoRequest;
 import com.bancoexterior.app.convenio.dto.AcumuladoResponse;
 import com.bancoexterior.app.convenio.dto.AprobarRechazarRequest;
 import com.bancoexterior.app.convenio.dto.MovimientosRequest;
 import com.bancoexterior.app.convenio.dto.MovimientosResponse;
 import com.bancoexterior.app.convenio.exception.CustomException;
+import com.bancoexterior.app.convenio.model.Compra;
 import com.bancoexterior.app.convenio.model.DatosConsulta;
 import com.bancoexterior.app.convenio.model.DatosPaginacion;
 import com.bancoexterior.app.convenio.model.Movimiento;
 import com.bancoexterior.app.convenio.model.Solicitud;
+import com.bancoexterior.app.convenio.model.Venta;
 import com.bancoexterior.app.util.UserExcelExporter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -798,12 +801,106 @@ public class SolicitudController {
     }
 	
 	
+	
+	
+	
+	public void acumuladosCompraVenta()  {
+		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
+		acumuladoRequest.setIdUsuario("test");
+		acumuladoRequest.setIdSesion("20210101121213");
+		acumuladoRequest.setCanal("8");
+		acumuladoRequest.setTipoAcumulado("2");
+		DatosConsulta datosConsulta = new DatosConsulta();
+		datosConsulta.setFechaDesde("2021-05-01");
+		datosConsulta.setFechaHasta(fecha(new Date()));
+		acumuladoRequest.setDatosConsulta(datosConsulta);
+		
+		try {
+			AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = acumuladosServiceApiRest.consultarAcumuladosCompraVenta(acumuladoRequest);
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	public Venta acumuladosVenta(String codMoneda)  {
+		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
+		acumuladoRequest.setIdUsuario("test");
+		acumuladoRequest.setIdSesion("20210101121213");
+		acumuladoRequest.setCanal("8");
+		acumuladoRequest.setTipoAcumulado("2");
+		DatosConsulta datosConsulta = new DatosConsulta();
+		datosConsulta.setFechaDesde(fecha(new Date()));
+		datosConsulta.setFechaHasta(fecha(new Date()));
+		acumuladoRequest.setDatosConsulta(datosConsulta);
+		List<Venta> listaVenta = new ArrayList<>();
+		Venta ventaRes = new Venta("","", new BigDecimal(0), new BigDecimal(0));
+		try {
+			AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = acumuladosServiceApiRest.consultarAcumuladosCompraVenta(acumuladoRequest);
+			if(acumuladoCompraVentaResponse.getResultado().getCodigo().equals("0000")) {
+				listaVenta = acumuladoCompraVentaResponse.getAcumuladosCompraVenta().getVenta();
+				for (Venta venta : listaVenta) {
+					if(venta.getCodMoneda().equals(codMoneda)) {
+						ventaRes = venta;
+					}
+				}
+				
+				return ventaRes;
+			}else {
+				return ventaRes;
+			}
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return ventaRes;
+		}
+		
+		
+	}
+	
+	public Compra acumuladosCompra(String codMoneda)  {
+		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
+		acumuladoRequest.setIdUsuario("test");
+		acumuladoRequest.setIdSesion("20210101121213");
+		acumuladoRequest.setCanal("8");
+		acumuladoRequest.setTipoAcumulado("2");
+		DatosConsulta datosConsulta = new DatosConsulta();
+		datosConsulta.setFechaDesde(fecha(new Date()));
+		datosConsulta.setFechaHasta(fecha(new Date()));
+		acumuladoRequest.setDatosConsulta(datosConsulta);
+		List<Compra> listaCompra = new ArrayList<>();
+		Compra compraRes = new Compra();
+		try {
+			AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = acumuladosServiceApiRest.consultarAcumuladosCompraVenta(acumuladoRequest);
+			if(acumuladoCompraVentaResponse.getResultado().getCodigo().equals("0000")) {
+				listaCompra = acumuladoCompraVentaResponse.getAcumuladosCompraVenta().getCompra();
+				for (Compra compra : listaCompra) {
+					if(compra.getCodMoneda().equals(codMoneda)) {
+						compraRes = compra;
+					}
+				}
+				
+				return compraRes;
+			}else {
+				return compraRes;
+			}
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return compraRes;
+		}
+		
+		
+	}
+	
 	public void ofertasPorAprobar()  {
 		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
 		acumuladoRequest.setIdUsuario("test");
 		acumuladoRequest.setIdSesion("20210101121213");
 		acumuladoRequest.setCanal("8");
-		acumuladoRequest.setTipoAcumuado("3");
+		acumuladoRequest.setTipoAcumulado("3");
 		DatosConsulta datosConsulta = new DatosConsulta();
 		datosConsulta.setFechaDesde("2021-05-01");
 		datosConsulta.setFechaHasta(fecha(new Date()));
@@ -819,14 +916,396 @@ public class SolicitudController {
 		
 	}
 	
+	public Venta acumuladosPorAprobarVenta(String codMoneda)  {
+		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
+		acumuladoRequest.setIdUsuario("test");
+		acumuladoRequest.setIdSesion("20210101121213");
+		acumuladoRequest.setCanal("8");
+		acumuladoRequest.setTipoAcumulado("3");
+		DatosConsulta datosConsulta = new DatosConsulta();
+		datosConsulta.setFechaDesde("2021-01-01");
+		datosConsulta.setFechaHasta(fecha(new Date()));
+		acumuladoRequest.setDatosConsulta(datosConsulta);
+		List<Venta> listaPorAprobarVenta = new ArrayList<>();
+		Venta ventaPorAprobarRes = new Venta("","", new BigDecimal(0), new BigDecimal(0));
+		try {
+			AcumuladoResponse acumuladoResponse = acumuladosServiceApiRest.consultarAcumuladosDiariosBanco(acumuladoRequest);
+			if(acumuladoResponse.getResultado().getCodigo().equals("0000")) {
+				listaPorAprobarVenta = acumuladoResponse.getAcumuladosPorAprobar().getVenta();
+				for (Venta venta : listaPorAprobarVenta) {
+					if(venta.getCodMoneda().equals(codMoneda)) {
+						ventaPorAprobarRes = venta;
+					}
+				}
+				
+				return ventaPorAprobarRes;
+			}else {
+				return ventaPorAprobarRes;
+			}
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return ventaPorAprobarRes;
+		}
+	}
+	
+	public Compra acumuladosPorAprobarCompra(String codMoneda)  {
+		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
+		acumuladoRequest.setIdUsuario("test");
+		acumuladoRequest.setIdSesion("20210101121213");
+		acumuladoRequest.setCanal("8");
+		acumuladoRequest.setTipoAcumulado("3");
+		DatosConsulta datosConsulta = new DatosConsulta();
+		datosConsulta.setFechaDesde("2021-01-01");
+		datosConsulta.setFechaHasta(fecha(new Date()));
+		acumuladoRequest.setDatosConsulta(datosConsulta);
+		List<Compra> listaPorAprobarCompra = new ArrayList<>();
+		Compra compraPorAprobarRes = new Compra("","", new BigDecimal(0), new BigDecimal(0));
+		try {
+			AcumuladoResponse acumuladoResponse = acumuladosServiceApiRest.consultarAcumuladosDiariosBanco(acumuladoRequest);
+			if(acumuladoResponse.getResultado().getCodigo().equals("0000")) {
+				listaPorAprobarCompra = acumuladoResponse.getAcumuladosPorAprobar().getCompra();
+				for (Compra compra : listaPorAprobarCompra) {
+					if(compra.getCodMoneda().equals(codMoneda)) {
+						compraPorAprobarRes = compra;
+					}
+				}
+				
+				return compraPorAprobarRes;
+			}else {
+				return compraPorAprobarRes;
+			}
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return compraPorAprobarRes;
+		}
+	}
 	
 	@ModelAttribute
 	public void setGenericos(Model model) {
 		Movimiento movimientoSearch = new Movimiento();
 		model.addAttribute("movimientoSearch", movimientoSearch);
 		log.info("se ejecuta setGenericos");
-		ofertasPorAprobar();
+		//acumuladosCompraVenta();
+		//ofertasPorAprobar();
 		
+		Venta ventaAcumuladoUSD = acumuladosVenta("USD");
+		log.info("ventaAcumuladoUSD: "+ventaAcumuladoUSD);
+		model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
+		Venta ventaAcumuladoEUR = acumuladosVenta("EUR");
+		log.info("ventaAcumuladoEUR: "+ventaAcumuladoEUR);
+		model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
+		BigDecimal montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
+		model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
+		Compra compraAcumuladoUSD = acumuladosCompra("USD");
+		log.info("compraAcumuladoUSD: "+compraAcumuladoUSD);
+		model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
+		Compra compraAcumuladoEUR = acumuladosCompra("EUR");
+		log.info("compraAcumuladoEUR: "+compraAcumuladoEUR);
+		model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
+		BigDecimal montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
+		model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
+		
+		//ofertasPorAprobar();
+		Venta ventaPorAprobarUSD = acumuladosPorAprobarVenta("USD");
+		log.info("ventaPorAprobarUSD: "+ventaPorAprobarUSD);
+		model.addAttribute("ventaPorAprobarUSD", ventaPorAprobarUSD);
+		Venta ventaPorAprobarEUR = acumuladosPorAprobarVenta("EUR");
+		log.info("ventaPorAprobarEUR: "+ventaPorAprobarEUR);
+		model.addAttribute("ventaPorAprobarEUR", ventaPorAprobarEUR);
+		BigDecimal montoBsTotalPorAprobarVenta =  ventaPorAprobarEUR.getMontoBs().add(ventaPorAprobarUSD.getMontoBs());
+		model.addAttribute("montoBsTotalPorAprobarVenta", montoBsTotalPorAprobarVenta);
+		
+		Compra compraPorAprobarUSD = acumuladosPorAprobarCompra("USD");
+		log.info("compraPorAprobarUSD: "+compraPorAprobarUSD);
+		model.addAttribute("compraPorAprobarUSD", compraPorAprobarUSD);
+		Compra compraPorAprobarEUR = acumuladosPorAprobarCompra("EUR");
+		log.info("compraPorAprobarEUR: "+compraPorAprobarEUR);
+		model.addAttribute("compraPorAprobarEUR", compraPorAprobarEUR);
+		BigDecimal montoBsTotalPorAprobarCompra =  compraPorAprobarEUR.getMontoBs().add(compraPorAprobarUSD.getMontoBs());
+		model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
+		
+		//ofertasPorAprobar();
+	}
+	
+	
+	@GetMapping("/searchEstatus")
+	public String searchEstatus(@ModelAttribute("movimientoSearch") Movimiento movimientoSearch, 
+			Model model, RedirectAttributes redirectAttributes) {
+		
+		log.info("searchEstatus");
+		
+		MovimientosRequest movimientosRequest = new MovimientosRequest();
+		movimientosRequest.setIdUsuario("test");
+		movimientosRequest.setIdSesion("20210101121213");
+		movimientosRequest.setUsuario("E66666");
+		movimientosRequest.setCanal("8");
+		
+		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		
+		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		try {
+			movimientosRequest.setNumeroPagina(1);
+			movimientosRequest.setTamanoPagina(10);
+			Movimiento filtrosVenta = new Movimiento();
+			filtrosVenta.setTipoTransaccion("V");
+			filtrosVenta.setEstatus(movimientoSearch.getEstatus());
+			movimientosRequest.setFiltros(filtrosVenta);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			if(responseVenta != null) {
+				datosPaginacionVenta = responseVenta.getDatosPaginacion();
+				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				listaMovimientosVenta = responseVenta.getMovimientos();
+				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
+				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
+				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
+				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				
+				movimientosRequest.setNumeroPagina(1);
+				movimientosRequest.setTamanoPagina(10);
+				Movimiento filtrosCompra = new Movimiento();
+				filtrosCompra.setTipoTransaccion("C");
+				movimientosRequest.setFiltros(filtrosCompra);
+				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
+				
+				if(responseCompra != null) {
+					datosPaginacionCompra = responseCompra.getDatosPaginacion();
+					log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					listaMovimientosCompra = responseCompra.getMovimientos();
+					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
+					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute("estatus", movimientoSearch.getEstatus());
+					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					
+					
+					
+				}else {
+					datosPaginacionCompra.setTotalPaginas(0);
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					return "convenio/solicitudes/listaSolicitudesMovimientosVentaVentaSearchEstatus";
+				}
+				
+			}else {
+				return "redirect:/";
+			}
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			return "redirect:/";
+		}
+		
+	}
+	
+	@GetMapping("/listaSolicitudesMovimientosVentas/{page}/{estatus}")
+	public String consultaMovimientoVentaSearchEstatus(@PathVariable("page") int page,@PathVariable("estatus") int estatus, Model model) {
+		log.info("page: "+page);
+		log.info("estatus: "+estatus);
+		MovimientosRequest movimientosRequest = new MovimientosRequest();
+		movimientosRequest.setIdUsuario("test");
+		movimientosRequest.setIdSesion("20210101121213");
+		movimientosRequest.setUsuario("E66666");
+		movimientosRequest.setCanal("8");
+		
+		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		
+		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		try {
+			movimientosRequest.setNumeroPagina(page);
+			movimientosRequest.setTamanoPagina(10);
+			Movimiento filtrosVenta = new Movimiento();
+			filtrosVenta.setTipoTransaccion("V");
+			filtrosVenta.setEstatus(estatus);
+			movimientosRequest.setFiltros(filtrosVenta);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			if(responseVenta != null) {
+				datosPaginacionVenta = responseVenta.getDatosPaginacion();
+				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				listaMovimientosVenta = responseVenta.getMovimientos();
+				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
+				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
+				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
+				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				
+				movimientosRequest.setNumeroPagina(1);
+				movimientosRequest.setTamanoPagina(10);
+				Movimiento filtrosCompra = new Movimiento();
+				filtrosCompra.setTipoTransaccion("C");
+				movimientosRequest.setFiltros(filtrosCompra);
+				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
+				
+				if(responseCompra != null) {
+					datosPaginacionCompra = responseCompra.getDatosPaginacion();
+					log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					listaMovimientosCompra = responseCompra.getMovimientos();
+					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
+					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute("estatus", estatus);
+					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					
+					
+					
+				}else {
+					datosPaginacionCompra.setTotalPaginas(0);
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+				}
+				
+			}else {
+				return "redirect:/";
+			}
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			return "redirect:/";
+		}
+	}
+	
+	@GetMapping("/searchEstatusCompra")
+	public String searchEstatusCompra(@ModelAttribute("movimientoSearch") Movimiento movimientoSearch, 
+			Model model, RedirectAttributes redirectAttributes) {
+		
+		log.info("searchEstatusCompra");
+		
+		MovimientosRequest movimientosRequest = new MovimientosRequest();
+		movimientosRequest.setIdUsuario("test");
+		movimientosRequest.setIdSesion("20210101121213");
+		movimientosRequest.setUsuario("E66666");
+		movimientosRequest.setCanal("8");
+		
+		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		
+		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		try {
+			movimientosRequest.setNumeroPagina(1);
+			movimientosRequest.setTamanoPagina(10);
+			Movimiento filtrosVenta = new Movimiento();
+			filtrosVenta.setTipoTransaccion("V");
+			movimientosRequest.setFiltros(filtrosVenta);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			if(responseVenta != null) {
+				datosPaginacionVenta = responseVenta.getDatosPaginacion();
+				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				listaMovimientosVenta = responseVenta.getMovimientos();
+				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
+				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
+				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
+				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				
+				movimientosRequest.setNumeroPagina(1);
+				movimientosRequest.setTamanoPagina(10);
+				Movimiento filtrosCompra = new Movimiento();
+				filtrosCompra.setTipoTransaccion("C");
+				filtrosCompra.setEstatus(movimientoSearch.getEstatus());
+				movimientosRequest.setFiltros(filtrosCompra);
+				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
+				
+				if(responseCompra != null) {
+					datosPaginacionCompra = responseCompra.getDatosPaginacion();
+					log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					listaMovimientosCompra = responseCompra.getMovimientos();
+					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
+					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute("estatus", movimientoSearch.getEstatus());
+					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+					
+					
+					
+				}else {
+					datosPaginacionCompra.setTotalPaginas(0);
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					return "convenio/solicitudes/listaSolicitudesMovimientosCompraVentaSearchEstatus";
+				}
+				
+			}else {
+				return "redirect:/";
+			}
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			return "redirect:/";
+		}
+		
+	}
+	
+	@GetMapping("/listaSolicitudesMovimientosCompras/{page}/{estatus}")
+	public String consultaMovimientoCompraSearchEstatus(@PathVariable("page") int page,@PathVariable("estatus") int estatus, Model model) {
+		log.info("page: "+page);
+		log.info("estatus: "+estatus);
+		MovimientosRequest movimientosRequest = new MovimientosRequest();
+		movimientosRequest.setIdUsuario("test");
+		movimientosRequest.setIdSesion("20210101121213");
+		movimientosRequest.setUsuario("E66666");
+		movimientosRequest.setCanal("8");
+		
+		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		
+		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		try {
+			movimientosRequest.setNumeroPagina(1);
+			movimientosRequest.setTamanoPagina(10);
+			Movimiento filtrosVenta = new Movimiento();
+			filtrosVenta.setTipoTransaccion("V");
+			movimientosRequest.setFiltros(filtrosVenta);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			if(responseVenta != null) {
+				datosPaginacionVenta = responseVenta.getDatosPaginacion();
+				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				listaMovimientosVenta = responseVenta.getMovimientos();
+				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
+				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
+				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
+				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				
+				movimientosRequest.setNumeroPagina(page);
+				movimientosRequest.setTamanoPagina(10);
+				Movimiento filtrosCompra = new Movimiento();
+				filtrosCompra.setTipoTransaccion("C");
+				filtrosCompra.setEstatus(estatus);
+				movimientosRequest.setFiltros(filtrosCompra);
+				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
+				
+				if(responseCompra != null) {
+					datosPaginacionCompra = responseCompra.getDatosPaginacion();
+					log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					listaMovimientosCompra = responseCompra.getMovimientos();
+					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
+					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute("estatus", estatus);
+					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+					
+					
+					
+				}else {
+					datosPaginacionCompra.setTotalPaginas(0);
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+				}
+				
+			}else {
+				return "redirect:/";
+			}
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			return "redirect:/";
+		}
 	}
 	
 	public String fecha(Date fecha) {

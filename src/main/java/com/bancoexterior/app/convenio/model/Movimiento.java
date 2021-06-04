@@ -23,6 +23,14 @@ public class Movimiento implements Serializable{
 	@JsonProperty("codigoIbs")
 	private String codigoIbs;
 	
+	
+	@JsonProperty("fechaValor")
+	private String fechaValor;
+	
+	@JsonProperty("fechaPacto")
+	private String fechaPacto;
+	
+	
 	@JsonProperty("nroIdCliente")
 	private String nroIdCliente;
 	

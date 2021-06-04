@@ -57,13 +57,65 @@
         <li class="breadcrumb-item active">Dashboard</li>
       </ol>
       <div class="container-fluid">
+     	  	<div class="animated fadeIn">
+		 
+				  <div class="row">
+				    <div class="col-sm-3 col-md-3">
+				      <div class="card text-white bg-primary">
+				        <div class="card-header">
+							   Ofertas del Día
+				        </div>
+				       <div class="card-body">
+						  <p>Monto en Dólares: [[${ventaAcumuladoUSD.monto}]]</p>
+						  <p>Monto en Euros: [[${ventaAcumuladoEUR.monto}]]</p>
+				          <p>Monto en Bs: [[${montoBsTotalVenta}]]</p>  
+						</div>
+				      </div>
+				    </div><!--/.col-->
+				    <div class="col-sm-3 col-md-3">
+				      <div class="card text-white bg-primary">
+				        <div class="card-header">
+							   Demanda del Día
+				        </div>
+				       <div class="card-body">
+						  <p>Monto en Dólares: [[${compraAcumuladoUSD.monto}]]</p>
+						  <p>Monto en Euros: [[${compraAcumuladoEUR.monto}]]</p>
+				          <p>Monto en Bs: [[${montoBsTotalCompra}]]</p>  
+						</div>
+				      </div>
+				    </div><!--/.col-->
+				    <div class="col-sm-3 col-md-3">
+				      <div class="card text-white bg-primary">
+				        <div class="card-header">
+							   Ofertas por Aprobar
+				        </div>
+				       <div class="card-body">
+						  <p>Monto en Dólares: [[${ventaPorAprobarUSD.monto}]]</p>
+						  <p>Monto en Euros: [[${ventaPorAprobarEUR.monto}]]</p>
+				          <p>Monto en Bs: [[${montoBsTotalPorAprobarVenta}]]</p>  
+						</div>
+				      </div>
+				    </div><!--/.col-->
+				    <div class="col-sm-3 col-md-3">
+				      <div class="card text-white bg-primary">
+				        <div class="card-header">
+							   Demandas por Aprobar
+				        </div>
+				       <div class="card-body">
+						  <p>Monto en Dólares: [[${compraPorAprobarUSD.monto}]]</p>
+						  <p>Monto en Euros: [[${compraPorAprobarEUR.monto}]]</p>
+				          <p>Monto en Bs: [[${montoBsTotalPorAprobarCompra}]]</p>  
+						</div>
+				      </div>
+				    </div><!--/.col-->
+				  </div><!--/.row-->
+
+
+	
+     	  		
      	  
      	  	<table class="table table-responsive">
-		              <thead>
-		                <tr>
-		                  <th><h4>Venta</h4></th>
-		                  <th><h4>Compra</h4></th>
-     	  			</thead>
+		              
 		              <tbody>
 		                <tr>
 		                  <td>
@@ -225,7 +277,7 @@
 		  	
 		  
      	  
-     	  
+     	  </div>
      	        
       </div> <!-- /container -->
     </main>

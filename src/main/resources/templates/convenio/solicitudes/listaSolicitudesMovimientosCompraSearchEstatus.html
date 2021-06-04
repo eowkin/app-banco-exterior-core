@@ -59,14 +59,16 @@
      	  
      	  <ul class="nav nav-tabs" id="myTab" role="tablist">
 		  <li class="nav-item">
-		    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-expanded="true">Oferta (Venta)</a>
+		    <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-expanded="true">Oferta (Venta)</a>
+		    
 		  </li>
 		  <li class="nav-item">
-		    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile">Demanda (Compra)</a>
+		  	
+		    <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile">Demanda (Compra)</a>
 		  </li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
-		  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+		  <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
 		  	<h4>Venta</h4>
 		  	<div class="animated fadeIn">
 		    <div class="row">
@@ -74,7 +76,7 @@
 		        <div class="card">
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado Movimientos Venta
-		           <p align="right"></p>
+		             <p align="right"></p>
 		            <div class="my-2 text-right">
          					<form th:action="@{/solicitudes/searchEstatus}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
         						<div>
@@ -98,7 +100,6 @@
 		            <div class="my-2 text-right">
 		              	<a class="btn btn-primary" th:href="@{/solicitudes/movimientos/export/excel}" title="Exportar Excel" role="button">Exportar a Excel</a>
 		            </div>
-		            
 		          </div><!--/.card-header-->
 		          <div class="card-body">
 		            <table class="table">
@@ -131,8 +132,9 @@
 		                </tr>
 		              </tbody>
 		            </table>
-		           
-		           <nav th:if="${datosPaginacionVenta.totalPaginas > 0}" aria-label="Page navigation example" > 
+		            
+		            
+		            <nav th:if="${datosPaginacionVenta.totalPaginas > 0}" aria-label="Page navigation example" > 
 		            	<ul class="pagination justify-content-center">         
 		            		<li class="page-item" th:classappend="${datosPaginacionVenta.paginaActual == 1 ? 'disabled' : ''}">
 		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}  (page=${datosPaginacionVenta.paginaActual - 1})}" class="page-link">Anterior</a>
@@ -144,16 +146,14 @@
 		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}  (page=${datosPaginacionVenta.paginaActual + 1})}" class="page-link">Siguiente</a>
 		            		</li>  
 		            	</ul> 
-		            </nav> 
-		            
+		            </nav>
 		            
 		            <!-- vacantes.totalPages = datosPaginacion.totalPaginas -->
 		            <!-- vacantes.number = datosPaginacion.paginaActual -->
 		            <!-- th:href="@{/vacantes/indexPaginate(page=${datosPaginacion.paginaActual - 1})}" -->
 		            <!-- th:href="@{/vacantes/indexPaginate?page={tmpPag} (tmpPag=${i}) }" -->
 		            <!-- th:href="@{/vacantes/indexPaginate(page=${datosPaginacion.paginaActual + 1})}" -->
-		            <!--
-		            <nav th:if="${datosPaginacionVenta.totalPaginas > 0}" aria-label="Page navigation example" >
+		            <!--<nav th:if="${datosPaginacionVenta.totalPaginas > 0}" aria-label="Page navigation example" >
 						<ul class="pagination justify-content-center">
 							<li class="page-item" th:classappend="${datosPaginacionVenta.paginaActual == 1 ? 'disabled' : ''}">
 								<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}  (page=${datosPaginacionVenta.paginaActual - 1})}" class="page-link">Anterior</a>
@@ -176,7 +176,7 @@
 		    </div><!--/.row-->    
 		  </div><!--/.animated fadeIn-->
 		  </div>
-		  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+		  <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 		  	<h4>Compra</h4>
 		  	<div class="animated fadeIn">
 		    <div class="row">
@@ -238,18 +238,16 @@
 		              </tbody>
 		            </table>
 		            
-		            
-		            
 		            <nav th:if="${datosPaginacionCompra.totalPaginas > 0}" aria-label="Page navigation example" > 
 		            	<ul class="pagination justify-content-center">         
 		            		<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == 1 ? 'disabled' : ''}">
-		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}  (page=${datosPaginacionCompra.paginaActual - 1})}" class="page-link">Anterior</a>
+		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}/{estatus}  (page=${datosPaginacionCompra.paginaActual - 1}, estatus=${estatus})}" class="page-link">Anterior</a>
 		            		</li> 
 		            		<li class="page-item">
 								<a class="page-link"  th:text="${'Pagina '+ datosPaginacionCompra.paginaActual + ' - '+ datosPaginacionCompra.totalPaginas}" th:title="${'Page '+ datosPaginacionCompra.paginaActual}" data-toggle="tooltip"></a>
 							</li>
 		            		<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == (datosPaginacionCompra.totalPaginas) ? 'disabled' : ''}">
-		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}  (page=${datosPaginacionCompra.paginaActual + 1})}" class="page-link">Siguiente</a>
+		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}/{estatus}  (page=${datosPaginacionCompra.paginaActual + 1}, estatus=${estatus})}" class="page-link">Siguiente</a>
 		            		</li>  
 		            	</ul> 
 		            </nav>

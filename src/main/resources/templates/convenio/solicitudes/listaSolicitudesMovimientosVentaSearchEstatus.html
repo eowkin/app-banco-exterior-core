@@ -135,13 +135,13 @@
 		           <nav th:if="${datosPaginacionVenta.totalPaginas > 0}" aria-label="Page navigation example" > 
 		            	<ul class="pagination justify-content-center">         
 		            		<li class="page-item" th:classappend="${datosPaginacionVenta.paginaActual == 1 ? 'disabled' : ''}">
-		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}  (page=${datosPaginacionVenta.paginaActual - 1})}" class="page-link">Anterior</a>
+		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}/{estatus}  (page=${datosPaginacionVenta.paginaActual - 1}, estatus=${estatus})}" class="page-link">Anterior</a>
 		            		</li> 
 		            		<li class="page-item">
 								<a class="page-link"  th:text="${'Pagina '+ datosPaginacionVenta.paginaActual + ' - '+ datosPaginacionVenta.totalPaginas}" th:title="${'Page '+ datosPaginacionVenta.paginaActual}" data-toggle="tooltip"></a>
 							</li>
 		            		<li class="page-item" th:classappend="${datosPaginacionVenta.paginaActual == (datosPaginacionVenta.totalPaginas) ? 'disabled' : ''}">
-		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}  (page=${datosPaginacionVenta.paginaActual + 1})}" class="page-link">Siguiente</a>
+		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}/{estatus}  (page=${datosPaginacionVenta.paginaActual + 1}, estatus=${estatus})}" class="page-link">Siguiente</a>
 		            		</li>  
 		            	</ul> 
 		            </nav> 
@@ -185,7 +185,7 @@
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado Movimientos Compra
 		            <div class="my-2 text-right">
-         					<form th:action="@{/solicitudes/searchEstatusCompra}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
+         					<form th:action="@{/solicitudes/searchEstatus}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
         						<div>
             					<select  class="form-control" th:field="*{estatus}"  name="estatus" required="required">
 					                <option value = "">----Selecionar Estatus----</option>

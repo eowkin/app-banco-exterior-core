@@ -76,7 +76,30 @@
 		        <div class="card">
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado Movimientos Venta
+		             <p align="right"></p>
+		            <div class="my-2 text-right">
+         					<form th:action="@{/solicitudes/searchEstatus}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
+        						<div>
+            					<select  class="form-control" th:field="*{estatus}"  name="estatus" required="required">
+					                <option value = "">----Selecionar Estatus----</option>
+					                <option value = "0" >Por Aprobar</option>
+					                <option value = "1" >Aprobada Automática</option>
+					                <option value = "2" >Aprobada Funcional</option>
+					                <option value = "3" >Rechazada Automática</option>
+					                <option value = "4" >Rechazada Funcional</option>
+					              </select>
+            					
+            					
+            					
+            					<button type="submit" class="btn btn-primary mb-3">Buscar por estatus</button>
+            					</div>            
+          					</form>
+        			</div>
 		            
+		            
+		            <div class="my-2 text-right">
+		              	<a class="btn btn-primary" th:href="@{/solicitudes/movimientos/export/excel}" title="Exportar Excel" role="button">Exportar a Excel</a>
+		            </div>
 		          </div><!--/.card-header-->
 		          <div class="card-body">
 		            <table class="table">
@@ -117,7 +140,7 @@
 		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}  (page=${datosPaginacionVenta.paginaActual - 1})}" class="page-link">Anterior</a>
 		            		</li> 
 		            		<li class="page-item">
-								<a class="page-link"  th:text="${'Page nro '+ datosPaginacionVenta.paginaActual + ' -  Total Page '+ datosPaginacionVenta.totalPaginas}" th:title="${'Page '+ datosPaginacionVenta.paginaActual}" data-toggle="tooltip"></a>
+								<a class="page-link"  th:text="${'Pagina '+ datosPaginacionVenta.paginaActual + ' - '+ datosPaginacionVenta.totalPaginas}" th:title="${'Page '+ datosPaginacionVenta.paginaActual}" data-toggle="tooltip"></a>
 							</li>
 		            		<li class="page-item" th:classappend="${datosPaginacionVenta.paginaActual == (datosPaginacionVenta.totalPaginas) ? 'disabled' : ''}">
 		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}  (page=${datosPaginacionVenta.paginaActual + 1})}" class="page-link">Siguiente</a>
@@ -161,7 +184,27 @@
 		        <div class="card">
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado Movimientos Compra
-		            
+		            <div class="my-2 text-right">
+         					<form th:action="@{/solicitudes/searchEstatusCompra}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
+        						<div>
+            					<select  class="form-control" th:field="*{estatus}"  name="estatus" required="required">
+					                <option value = "">----Selecionar Estatus----</option>
+					                <option value = "0" >Por Aprobar</option>
+					                <option value = "1" >Aprobada Automática</option>
+					                <option value = "2" >Aprobada Funcional</option>
+					                <option value = "3" >Rechazada Automática</option>
+					                <option value = "4" >Rechazada Funcional</option>
+					              </select>
+            					
+            					
+            					
+            					<button type="submit" class="btn btn-primary mb-3">Buscar por estatus</button>
+            					</div>            
+          					</form>
+        			</div>
+		            <div class="my-2 text-right">
+		              	<a class="btn btn-primary" th:href="@{/solicitudes/movimientosCompras/export/excel}" title="Exportar Excel" role="button">Exportar a Excel</a>
+		            </div>
 		          </div><!--/.card-header-->
 		          <div class="card-body">
 		            <table class="table">
@@ -201,7 +244,7 @@
 		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}  (page=${datosPaginacionCompra.paginaActual - 1})}" class="page-link">Anterior</a>
 		            		</li> 
 		            		<li class="page-item">
-								<a class="page-link"  th:text="${'Page nro '+ datosPaginacionCompra.paginaActual + ' -  Total Page '+ datosPaginacionCompra.totalPaginas}" th:title="${'Page '+ datosPaginacionCompra.paginaActual}" data-toggle="tooltip"></a>
+								<a class="page-link"  th:text="${'Pagina '+ datosPaginacionCompra.paginaActual + ' - '+ datosPaginacionCompra.totalPaginas}" th:title="${'Page '+ datosPaginacionCompra.paginaActual}" data-toggle="tooltip"></a>
 							</li>
 		            		<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == (datosPaginacionCompra.totalPaginas) ? 'disabled' : ''}">
 		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}  (page=${datosPaginacionCompra.paginaActual + 1})}" class="page-link">Siguiente</a>
