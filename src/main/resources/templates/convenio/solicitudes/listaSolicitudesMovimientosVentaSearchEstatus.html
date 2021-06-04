@@ -185,7 +185,7 @@
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado Movimientos Compra
 		            <div class="my-2 text-right">
-         					<form th:action="@{/solicitudes/searchEstatus}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
+         					<form th:action="@{/solicitudes/searchEstatusCompra}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
         						<div>
             					<select  class="form-control" th:field="*{estatus}"  name="estatus" required="required">
 					                <option value = "">----Selecionar Estatus----</option>
