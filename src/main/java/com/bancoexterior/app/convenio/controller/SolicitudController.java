@@ -24,17 +24,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bancoexterior.app.convenio.apiRest.IAcumuladosServiceApiRest;
+import com.bancoexterior.app.convenio.apiRest.IMonedaServiceApiRest;
 import com.bancoexterior.app.convenio.apiRest.IMovimientosApiRest;
 import com.bancoexterior.app.convenio.dto.AcumuladoCompraVentaResponse;
 import com.bancoexterior.app.convenio.dto.AcumuladoRequest;
 import com.bancoexterior.app.convenio.dto.AcumuladoResponse;
 import com.bancoexterior.app.convenio.dto.AprobarRechazarRequest;
+import com.bancoexterior.app.convenio.dto.MonedasRequest;
 import com.bancoexterior.app.convenio.dto.MovimientosRequest;
 import com.bancoexterior.app.convenio.dto.MovimientosResponse;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.Compra;
 import com.bancoexterior.app.convenio.model.DatosConsulta;
 import com.bancoexterior.app.convenio.model.DatosPaginacion;
+import com.bancoexterior.app.convenio.model.Moneda;
 import com.bancoexterior.app.convenio.model.Movimiento;
 import com.bancoexterior.app.convenio.model.Solicitud;
 import com.bancoexterior.app.convenio.model.Venta;
@@ -53,6 +56,9 @@ public class SolicitudController {
 	
 	@Autowired
 	private IAcumuladosServiceApiRest acumuladosServiceApiRest;
+	
+	@Autowired
+	private IMonedaServiceApiRest monedaServiceApiRest;
 	
 	
 	
@@ -871,7 +877,7 @@ public class SolicitudController {
 		datosConsulta.setFechaHasta(fecha(new Date()));
 		acumuladoRequest.setDatosConsulta(datosConsulta);
 		List<Compra> listaCompra = new ArrayList<>();
-		Compra compraRes = new Compra();
+		Compra compraRes = new Compra("","", new BigDecimal(0), new BigDecimal(0));
 		try {
 			AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = acumuladosServiceApiRest.consultarAcumuladosCompraVenta(acumuladoRequest);
 			if(acumuladoCompraVentaResponse.getResultado().getCodigo().equals("0000")) {
@@ -1307,6 +1313,34 @@ public class SolicitudController {
 			return "redirect:/";
 		}
 	}
+	
+	@GetMapping("/formSolicitudGenerarReporte")
+	public String formSolicitudGenerarReporte(Movimiento movimiento, Model model, RedirectAttributes redirectAttributes) {
+		
+		List<Moneda> listaMonedas = new ArrayList<>();
+		
+		MonedasRequest monedasRequest = new MonedasRequest();
+		monedasRequest.setIdUsuario("test");
+		monedasRequest.setIdSesion("20210101121213");
+		monedasRequest.setCodUsuario("E66666");
+		monedasRequest.setCanal("8");
+		Moneda moneda = new Moneda();
+		moneda.setFlagActivo(true);
+		monedasRequest.setMoneda(moneda);
+		
+		try {
+			listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+			model.addAttribute("listaMonedas", listaMonedas);
+			return "convenio/solicitudes/formSolicitudGenerarReporte";
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+			return "redirect:/tasas/index";
+		}
+		
+	}
+	
+	
 	
 	public String fecha(Date fecha) {
 		
