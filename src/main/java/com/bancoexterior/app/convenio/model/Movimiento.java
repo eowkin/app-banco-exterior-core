@@ -81,6 +81,11 @@ public class Movimiento implements Serializable{
 	private String fecha;
 	
 	private Integer paginaActual;
+	
+	private String tipoCliente;
+	
+	
+	
 	/**
 	 * 
 	 */

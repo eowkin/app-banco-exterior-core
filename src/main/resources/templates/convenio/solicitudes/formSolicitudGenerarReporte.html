@@ -100,7 +100,17 @@
 					                <option value = "4" >Rechazada Funcional</option>
 					              </select>
 			            </div>
-			          </div>    
+			          </div>  
+			      <div class="form-group row">
+			            <label class="col-sm-5 col-form-label" for="tipoCliente">Tipo Cliente:</label>
+			            <div class="col-sm-6">
+			              <select  class="form-control" th:field="*{tipoCliente}" name="tipoCliente" required="required">
+			                <option value = "">----Selecionar Tipo Cleinte----</option>
+			                <option value = "J" >Juridico</option>
+			                <option value = "N" >Natural</option>
+			              </select>
+			            </div>
+			          </div>      
 		          <div class="form-group row">
 		            <label class="col-sm-5 col-form-label" for="input-large">Fecha Liquidacion:</label>
 		            <div class="col-sm-6">

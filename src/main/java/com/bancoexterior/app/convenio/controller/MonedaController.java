@@ -3,6 +3,7 @@ package com.bancoexterior.app.convenio.controller;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,14 +58,26 @@ public class MonedaController {
 		Moneda moneda = new Moneda();
 		//moneda.setCodMoneda("EUR1");
 		monedasRequest.setMoneda(moneda);
-	
+		List<Moneda> listMonedas = new ArrayList<>();
 		try {
-			List<Moneda> listMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+			listMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+			
+			for (Moneda moneda2 : listMonedas) {
+				log.info(moneda2.getFechaModificacion());
+				if(moneda2.getFechaModificacion() != null) {
+					String[] arrOfStr = moneda2.getFechaModificacion().split(" ", 2);
+					moneda2.setFechaModificacion(arrOfStr[0]);
+				}
+			}
+			
 			model.addAttribute("listMonedas", listMonedas);
 	    	return "convenio/moneda/listaMonedas";
 		} catch (CustomException e) {
 			log.error("error: "+e);
-			return "redirect:/";
+			model.addAttribute("mensajeError", e.getMessage());
+			model.addAttribute("listMonedas", listMonedas);
+			return "convenio/moneda/listaMonedas";
+			//return "redirect:/";
 		}
 		
 		 

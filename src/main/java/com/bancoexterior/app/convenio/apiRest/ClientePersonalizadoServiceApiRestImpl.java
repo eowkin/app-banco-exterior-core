@@ -89,6 +89,7 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 			}
 		} else {
 			log.info("error conectar microservicio consultarWs clientesPersonalizados");
+			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
 			
 		}
 		return null;
@@ -150,6 +151,7 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 			}
 		} else {
 			log.info("error conectar microservicio consultarWs clientesPersonalizados");
+			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
 			
 		}
 		return null;
@@ -370,6 +372,7 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 			}
 		} else {
 			log.info("error conectar microservicio consultarWs clientesPersonalizados");
+			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
 			
 		}
 		return null;
@@ -430,6 +433,7 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 			}
 		} else {
 			log.info("error conectar microservicio consultarWs clientesPersonalizados");
+			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
 			
 		}
 		return null;

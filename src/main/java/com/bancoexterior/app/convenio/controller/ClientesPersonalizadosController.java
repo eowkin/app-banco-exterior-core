@@ -66,7 +66,7 @@ public class ClientesPersonalizadosController {
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
 		clienteRequest.setCliente(clientesPersonalizados);
 		List<ClientesPersonalizados> listaClientesPersonalizados = new ArrayList<>();
-		DatosPaginacion datosPaginacion = new DatosPaginacion();
+		DatosPaginacion datosPaginacion = new DatosPaginacion(0,0,0,0);
 		try {
 			
 			ClienteResponse clienteResponse = clientePersonalizadoServiceApiRest.listaClientesPaginacion(clienteRequest);
@@ -74,6 +74,13 @@ public class ClientesPersonalizadosController {
 			
 			if(clienteResponse != null) {
 				listaClientesPersonalizados = clienteResponse.getListaClientes();
+				for (ClientesPersonalizados clientesPersonalizados2 : listaClientesPersonalizados) {
+					log.info(clientesPersonalizados2.getFechaModificacion());
+					if(clientesPersonalizados2.getFechaModificacion() != null) {
+						String[] arrOfStr = clientesPersonalizados2.getFechaModificacion().split(" ", 2);
+						clientesPersonalizados2.setFechaModificacion(arrOfStr[0]);
+					}
+				}
 				log.info("listaClientesPersonalizados: "+listaClientesPersonalizados);
 				datosPaginacion = clienteResponse.getDatosPaginacion();
 				log.info("datosPaginacion: "+datosPaginacion);
@@ -84,13 +91,20 @@ public class ClientesPersonalizadosController {
 				datosPaginacion.setTotalPaginas(0);
 				model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
 				model.addAttribute("datosPaginacion", datosPaginacion);
+				//redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
 				return "convenio/clientesPersonalizados/listaClientesPersonalizados";
 			}
 			
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
-			return "redirect:/";
+			log.error("se vino por aqui");
+			
+			model.addAttribute("datosPaginacion", datosPaginacion);
+			model.addAttribute("mensajeError", e.getMessage());
+			return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+			//redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+			//return "redirect:/";
 		}
 		
 		
@@ -238,6 +252,14 @@ public class ClientesPersonalizadosController {
 				listaLimitesPersonalizados = limitesPersonalizadosServiceApiRest.listaLimitesPersonalizados(limitesPersonalizadosRequest);
 				log.info("lista: "+listaLimitesPersonalizados.isEmpty());
 				if(!listaLimitesPersonalizados.isEmpty()) {
+					
+					for (LimitesPersonalizados limitesPersonalizados : listaLimitesPersonalizados) {
+						log.info(limitesPersonalizados.getFechaModificacion());
+						if(limitesPersonalizados.getFechaModificacion() != null) {
+							String[] arrOfStr = limitesPersonalizados.getFechaModificacion().split(" ", 2);
+							limitesPersonalizados.setFechaModificacion(arrOfStr[0]);
+						}
+					}
 					model.addAttribute("listaLimitesPersonalizados", listaLimitesPersonalizados);
 					model.addAttribute("codigoIbs", codigoIbs);
 		    		return "convenio/clientesPersonalizados/listaLimitesPersonalizados";
@@ -314,6 +336,23 @@ public class ClientesPersonalizadosController {
 		
 			return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
 		}
+		
+		//firstBigDecimal.compareTo(secondBigDecimal) < 0 // "<"
+		//firstBigDecimal.compareTo(secondBigDecimal) > 0 // ">"    
+		//firstBigDecimal.compareTo(secondBigDecimal) == 0 // "=="  
+		//firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="
+		  log.info("Comparar tamaño:" + limitesPersonalizados.getMontoMax().compareTo(limitesPersonalizados.getMontoMin())); 
+		  if(limitesPersonalizados.getMontoMax().compareTo(limitesPersonalizados.getMontoMin()) < 0) { 
+			  result.addError(new  ObjectError("codMoneda", " El monto mínimo no debe ser mayor al monto máximo"));
+			  return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit"; 
+		  }
+		 
+		  log.info("Comparar tamaño:" + limitesPersonalizados.getMontoMensual().compareTo(limitesPersonalizados.getMontoDiario())); 
+		  if(limitesPersonalizados.getMontoMensual().compareTo(limitesPersonalizados.getMontoDiario()) < 0) { 
+			  result.addError(new  ObjectError("codMoneda", " El monto diario no debe ser mayor al mensual"));
+			  return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit"; 
+		  }
+		
 		
 		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
 		limitesPersonalizadosRequest.setIdUsuario("test");

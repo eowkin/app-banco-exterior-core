@@ -806,6 +806,50 @@ public class SolicitudController {
 		}	    
     }
 	
+	@GetMapping("/movimientosConsulta/export/excel")
+    public void exportToExcelConsulta(HttpServletResponse response) throws IOException {
+		log.info("exportToExcelConsulta");
+        
+		
+		MovimientosRequest movimientosRequest = new MovimientosRequest();
+		movimientosRequest.setIdUsuario("test");
+		movimientosRequest.setIdSesion("20210101121213");
+		movimientosRequest.setUsuario("E66666");
+		movimientosRequest.setCanal("8");
+		
+		List<Movimiento> listaMovimientos = new ArrayList<>();
+		
+		try {
+			movimientosRequest.setNumeroPagina(1);
+			movimientosRequest.setTamanoPagina(2147483647);
+			Movimiento filtrosVenta = new Movimiento();
+			//filtrosVenta.setTipoTransaccion("C");
+			movimientosRequest.setFiltros(filtrosVenta);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			if(responseVenta != null) {
+				listaMovimientos = responseVenta.getMovimientos();
+				response.setContentType("application/octet-stream");
+		        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+		        String currentDateTime = dateFormatter.format(new Date());
+		         
+		        String headerKey = "Content-Disposition";
+		        String headerValue = "attachment; filename=movimientoscompras_" + currentDateTime + ".xlsx";
+		        response.setHeader(headerKey, headerValue);
+		         
+		        
+		         
+		        UserExcelExporter excelExporter = new UserExcelExporter(listaMovimientos);
+		         
+		        excelExporter.export(response);
+			}else {
+				
+			}
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			
+		}	    
+    }
+	
 	
 	
 	

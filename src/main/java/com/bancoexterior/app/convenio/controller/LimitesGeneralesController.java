@@ -52,15 +52,26 @@ public class LimitesGeneralesController {
 		LimitesGenerales limite = new LimitesGenerales();
 		//limite.setFlagActivo(false);
 		limiteRequest.setLimite(limite);
+		List<LimitesGenerales> listaLimitesGenerales = new ArrayList<>();
 		
 		try {
-			List<LimitesGenerales> listaLimitesGenerales = limitesGeneralesServiceApirest.listaLimitesGenerales(limiteRequest);
+			listaLimitesGenerales = limitesGeneralesServiceApirest.listaLimitesGenerales(limiteRequest);
+			for (LimitesGenerales limitesGenerales : listaLimitesGenerales) {
+				log.info(limitesGenerales.getFechaModificacion());
+				if(limitesGenerales.getFechaModificacion() != null) {
+					String[] arrOfStr = limitesGenerales.getFechaModificacion().split(" ", 2);
+					limitesGenerales.setFechaModificacion(arrOfStr[0]);
+				}
+			}
 			model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
     		return "convenio/limitesGenerales/listaLimitesGenerales";
 		} catch (CustomException e) {
 			
 			log.error("error: "+e);
-			return "redirect:/";
+			model.addAttribute("mensajeError", e.getMessage());
+			model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
+    		return "convenio/limitesGenerales/listaLimitesGenerales";
+			//return "redirect:/";
 		}
 	}
 	

@@ -60,12 +60,22 @@ public class TasaController {
 	
 		try {
 			listaTasas = tasaServiceApiRest.listaTasas(tasaRequest);
+			for (Tasa tasa2 : listaTasas) {
+				log.info(tasa2.getFechaModificacion());
+				if(tasa2.getFechaModificacion() != null) {
+					String[] arrOfStr = tasa2.getFechaModificacion().split(" ", 2);
+					tasa2.setFechaModificacion(arrOfStr[0]);
+				}
+			}
 			model.addAttribute("listaTasas", listaTasas);
 			return "convenio/tasa/listaTasas";
 		} catch (CustomException e) {
 			
 			log.error("error: "+e);
-			return "redirect:/";
+			model.addAttribute("mensajeError", e.getMessage());
+			model.addAttribute("listaTasas", listaTasas);
+			return "convenio/tasa/listaTasas";
+			//return "redirect:/";
 		}
 		
 		

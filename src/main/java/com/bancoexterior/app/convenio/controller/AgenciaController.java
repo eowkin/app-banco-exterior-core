@@ -55,7 +55,9 @@ public class AgenciaController {
 		} catch (CustomException e) {
 			
 			log.error("error: "+e);
-			return "redirect:/";
+			model.addAttribute("mensajeError", e.getMessage());
+			return "convenio/agencia/listaAgencias";
+			//return "redirect:/";
 		}
 		
 		
