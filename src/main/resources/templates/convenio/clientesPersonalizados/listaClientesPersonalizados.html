@@ -127,8 +127,8 @@
 		                   		 -->
 			              </td>
 		                  <td th:unless="${cliente.flagActivo }">
-		                  		<label class="switch switch-pill switch-primary">
-								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/activar/{codigoIbs}/{page} (codigoIbs=${cliente.codigoIbs}, page=${datosPaginacion.paginaActual}) }'|" type="checkbox" class="switch-input">
+		                  		<label class="switch switch-pill switch-secondary">
+								  <input th:onclick="|window.location.href='@{/clientesPersonalizados/activar/{codigoIbs}/{page} (codigoIbs=${cliente.codigoIbs}, page=${datosPaginacion.paginaActual}) }'|" type="checkbox" class="switch-input" checked>
 								  <span class="switch-slider"></span>
 								</label>
 								<!--<label class="switch switch-pill switch-label switch-outline-primary-alt">

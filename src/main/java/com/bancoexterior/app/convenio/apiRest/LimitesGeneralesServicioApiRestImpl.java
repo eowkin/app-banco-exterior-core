@@ -72,7 +72,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -133,7 +134,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						String error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						//String error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						String error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
 					} catch (IOException e) {
@@ -186,7 +188,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 						e.printStackTrace();
 					}
 					
-					respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+					//respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+					respuesta = response.getResultado().getDescripcion();
 					return respuesta;
 					
 					
@@ -196,7 +199,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 						try {
 							response = mapper.jsonToClass(retorno.getBody(), Response.class);
 							log.info("response: "+response);
-							error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+							//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+							error = response.getResultado().getDescripcion();
 							throw new CustomException(error);
 							
 						} catch (IOException e) {
@@ -250,7 +254,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 					e.printStackTrace();
 				}
 				
-				respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+				//respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+				respuesta = response.getResultado().getDescripcion();
 				return respuesta;
 				
 				
@@ -260,7 +265,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
 					} catch (IOException e) {

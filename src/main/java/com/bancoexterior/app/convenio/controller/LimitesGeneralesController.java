@@ -178,7 +178,7 @@ public class LimitesGeneralesController {
 				model.addAttribute("limitesGenerales", limitesGeneralesEdit);
             	return "convenio/limitesGenerales/formLimitesGeneralesDetalle";
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "redirect:/limitesGenerales/index";
 			}
 		} catch (CustomException e) {
@@ -218,7 +218,7 @@ public class LimitesGeneralesController {
 				model.addAttribute("limitesGenerales", limitesGeneralesEdit);
 				return "convenio/limitesGenerales/formLimitesGeneralesEdit";
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "redirect:/limitesGenerales/index";
 			}
 		} catch (CustomException e) {
@@ -229,20 +229,41 @@ public class LimitesGeneralesController {
 	}	
 	
 	@PostMapping("/guardar")
-	public String guardarWs(LimitesGenerales limitesGenerales, BindingResult result,  RedirectAttributes redirectAttributes) {
+	public String guardarWs(LimitesGenerales limitesGenerales, BindingResult result,
+			RedirectAttributes redirectAttributes, Model model) {
 		log.info("guardarWs");
 		log.info("limitesGenerales: "+limitesGenerales);
-		
+		List<String> listaError = new ArrayList<>();
 		
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
+				if(error.getCode().equals("typeMismatch")) {
+					listaError.add("Los valores de los montos debe ser numerico");
+				}
 			}
 			
 			
-			
+			model.addAttribute("listaError", listaError);
 			return "convenio/limitesGenerales/formLimitesGeneralesEdit";
 		}
+		
+		 log.info("Comparar tamaño:" + limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin())); 
+		  if(limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin()) < 0) { 
+			  listaError.add("El monto mínimo no debe ser mayor al monto máximo");
+			  model.addAttribute("listaError", listaError);
+			  result.addError(new  ObjectError("codMoneda", " El monto mínimo no debe ser mayor al monto máximo"));
+			  
+			  return "convenio/limitesGenerales/formLimitesGeneralesEdit"; 
+		  }
+		 
+		  log.info("Comparar tamaño:" + limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario())); 
+		  if(limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario()) < 0) { 
+			  result.addError(new  ObjectError("codMoneda", " El monto diario no debe ser mayor al mensual"));
+			  listaError.add("El monto diario no debe ser mayor al mensual");
+			  model.addAttribute("listaError", listaError);
+			  return "convenio/limitesGenerales/formLimitesGeneralesEdit"; 
+		  }
 		
 		LimiteRequest limiteRequest = new LimiteRequest(); 
 		limiteRequest.setIdUsuario("test");
@@ -259,6 +280,8 @@ public class LimitesGeneralesController {
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			listaError.add(e.getMessage());
+			model.addAttribute("listaError", listaError);
 			return "convenio/limitesGenerales/formLimitesGeneralesEdit";
 		}
 		
@@ -294,6 +317,7 @@ public class LimitesGeneralesController {
 	public String saveWs(LimitesGenerales limitesGenerales, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		log.info("saveWs");
 		log.info("limitesGenerales: "+limitesGenerales);
+		List<String> listaError = new ArrayList<>();
 		List<Moneda> listaMonedas = new ArrayList<>();
 		MonedasRequest monedasRequest = new MonedasRequest();
 		monedasRequest.setIdUsuario("test");
@@ -307,19 +331,66 @@ public class LimitesGeneralesController {
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
+				if(error.getCode().equals("typeMismatch")) {
+					listaError.add("Los valores de los montos debe ser numerico");
+				}
 			}
 			
 			try {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				model.addAttribute("listaMonedas", listaMonedas);
+				model.addAttribute("listaError", listaError);
 				return "convenio/limitesGenerales/formLimitesGenerales";
 			} catch (CustomException e) {
 				log.error("error: "+e);
 				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				model.addAttribute("listaError", e.getMessage());
 				return "convenio/limitesGenerales/formLimitesGenerales";
 			}
 			
 		}
+		
+		log.info("Comparar tamaño:" + limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin())); 
+		  if(limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin()) < 0) { 
+			  log.info("Se metio por aqui compa:");
+			  try {
+				  	log.info("Se metio por aqui compa 1.1");
+				  	listaError.add("El monto mínimo no debe ser mayor al monto máximo");
+					log.info("listaError: "+listaError);
+					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+					model.addAttribute("listaMonedas", listaMonedas);
+					model.addAttribute("listaError", listaError);
+					result.addError(new  ObjectError("codMoneda", " El monto mínimo no debe ser mayor al monto máximo"));
+					return "convenio/limitesGenerales/formLimitesGenerales";
+		    		//clientesPersonalizados/formLimiteClientePersonalizado/{codigoIbs}
+				} catch (CustomException e) {
+					log.error("error: "+e);
+					result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+					 listaError.add(e.getMessage());
+					 model.addAttribute("listaError", listaError);
+					 return "convenio/limitesGenerales/formLimitesGenerales";
+				}
+		  }
+		  
+		  log.info("Comparar tamaño:" + limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario())); 
+		  if(limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario()) < 0) { 
+			  log.info("Se metio por aqui compa 2:");
+			  try {
+					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+					model.addAttribute("listaMonedas", listaMonedas);
+					listaError.add("El monto diario no debe ser mayor al mensual");
+			        model.addAttribute("listaError", listaError);
+			        result.addError(new  ObjectError("codMoneda", " El monto diario no debe ser mayor al mensual"));
+			        return "convenio/limitesGenerales/formLimitesGenerales";
+		    		//clientesPersonalizados/formLimiteClientePersonalizado/{codigoIbs}
+				} catch (CustomException e) {
+					log.error("error: "+e);
+					result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+					 listaError.add(e.getMessage());
+					 model.addAttribute("listaError", listaError);
+					 return "convenio/limitesGenerales/formLimitesGenerales";
+				}
+		  }
 		
 		LimiteRequest limiteRequest = new LimiteRequest(); 
 		limiteRequest.setIdUsuario("test");
@@ -339,10 +410,14 @@ public class LimitesGeneralesController {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				model.addAttribute("listaMonedas", listaMonedas);
 				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				listaError.add(e.getMessage());
+				model.addAttribute("listaError", listaError);
 				return "convenio/limitesGenerales/formLimitesGenerales";
 			} catch (CustomException e1) {
 				log.error("error: "+e1);
-				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				result.addError(new ObjectError("codMoneda", " Codigo :" +e1.getMessage()));
+				listaError.add(e1.getMessage());
+				model.addAttribute("listaError", listaError);
 				return "convenio/limitesGenerales/formLimitesGenerales";
 			}
 			
@@ -376,7 +451,7 @@ public class LimitesGeneralesController {
 			}else {
 				//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
 				model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
-				model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "convenio/limitesGenerales/listaLimitesGenerales";
 			}
 			

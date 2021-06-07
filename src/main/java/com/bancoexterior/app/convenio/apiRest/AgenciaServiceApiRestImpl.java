@@ -72,7 +72,8 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -132,7 +133,8 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -185,7 +187,8 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 					e.printStackTrace();
 				}
 				
-				respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+				//respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+				respuesta = resultado.getDescripcion();
 				return respuesta;
 				
 				
@@ -195,7 +198,8 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
 					} catch (IOException e) {
@@ -248,7 +252,8 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 					e.printStackTrace();
 				}
 				
-				respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+				//respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+				respuesta = resultado.getDescripcion();
 				return respuesta;
 				
 				
@@ -259,7 +264,8 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 						
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
 					} catch (IOException e) {
@@ -271,7 +277,8 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 					try {
 						resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						//error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						error = resultado.getDescripcion();
 						throw new CustomException(error);
 						
 					} catch (IOException e) {

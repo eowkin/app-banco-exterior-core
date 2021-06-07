@@ -66,8 +66,12 @@
 			        <form th:action = "@{/limitesGenerales/save}"   method="post" th:object="${limitesGenerales}"   class="form-horizontal">
 			          <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
 		            		Por favor corrija los siguientes errores:
+		            		<!-- 
 		            		<ul>
 		            			<li th:each="err : ${#fields.errors('*')}"  th:text="${err}"></li>
+		            		</ul> -->
+		            		<ul>
+		            			<li th:each="error : ${listaError}"  th:text="${error}"></li>
 		            		</ul>
 		            	</div>
 			          <div class="form-group row">

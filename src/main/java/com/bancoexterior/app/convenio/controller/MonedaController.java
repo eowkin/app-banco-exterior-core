@@ -173,7 +173,7 @@ public class MonedaController {
 				model.addAttribute("moneda", monedaEdit);
         		return "convenio/moneda/formMonedaEdit";
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
         		return "redirect:/monedas/index";
 			}
 		} catch (CustomException e) {

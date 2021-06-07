@@ -72,7 +72,8 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -132,7 +133,8 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -189,7 +191,8 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 				
 				//respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 				//return respuesta;
-				respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+				//respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+				respuesta = resultado.getDescripcion();
 				return respuesta;
 				
 			}else {
@@ -198,7 +201,8 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
 					} catch (IOException e) {
@@ -256,7 +260,8 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 				
 				//respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 				//return respuesta;
-				respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+				//respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+				respuesta = resultado.getDescripcion();
 				return respuesta;
 				
 			}else {
@@ -265,7 +270,8 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
+						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
 					} catch (IOException e) {
@@ -279,7 +285,8 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 						//log.info("response: "+response);
 						resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						//log.info("response: "+response);
-						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						//error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
+						error = resultado.getDescripcion();
 						throw new CustomException(error);
 						
 					} catch (IOException e) {

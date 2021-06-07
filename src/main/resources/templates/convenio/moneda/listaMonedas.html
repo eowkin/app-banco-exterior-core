@@ -103,8 +103,8 @@
                    		-->
 	                </td>
                     <td th:unless="${moneda.flagActivo }"> 
-                    	<label class="switch switch-pill switch-primary">
-						  <input th:onclick="|window.location.href='@{/monedas/activar/{codMoneda} (codMoneda=${moneda.codMoneda}) }'|" type="checkbox" class="switch-input">
+                    	<label class="switch switch-pill switch-secondary">
+						  <input th:onclick="|window.location.href='@{/monedas/activar/{codMoneda} (codMoneda=${moneda.codMoneda}) }'|" type="checkbox" class="switch-input" checked>
 						  <span class="switch-slider"></span>
 						</label>
                     	<!--

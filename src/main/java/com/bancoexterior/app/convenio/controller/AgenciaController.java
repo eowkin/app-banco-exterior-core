@@ -50,6 +50,15 @@ public class AgenciaController {
 		
 		try {
 			listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
+			
+			for (Agencia agencia2 : listaAgencias) {
+				log.info(agencia2.getFechaModificacion());
+				if(agencia2.getFechaModificacion() != null) {
+					String[] arrOfStr = agencia2.getFechaModificacion().split(" ", 2);
+					agencia2.setFechaModificacion(arrOfStr[0]);
+				}
+			}
+			
 			model.addAttribute("listaAgencias", listaAgencias);
 			return "convenio/agencia/listaAgencias";
 		} catch (CustomException e) {
@@ -157,7 +166,7 @@ public class AgenciaController {
 				model.addAttribute("agencia", agenciaEdit);
 				return "convenio/agencia/formAgenciaEdit";
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "redirect:/agencias/index";
 			}
 		} catch (CustomException e) {
@@ -260,7 +269,7 @@ public class AgenciaController {
 				agenciaRequest.setAgencia(agenciaBuscarCargar);
 				listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
 				model.addAttribute("listaAgencias", listaAgencias);
-				model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "convenio/agencia/formBuscarAgencia";
 			}
 			
@@ -351,7 +360,7 @@ public class AgenciaController {
 			}else {
 				//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
 				model.addAttribute("listaAgencias", listaAgencias);
-				model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "convenio/agencia/listaAgencias";
 			}
 		} catch (CustomException e) {

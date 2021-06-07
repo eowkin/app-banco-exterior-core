@@ -105,7 +105,8 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
+						//String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
+						String mensaje = response.getResultado() .getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -168,7 +169,8 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
+						//String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
+						String mensaje = response.getResultado() .getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
 						e.printStackTrace();

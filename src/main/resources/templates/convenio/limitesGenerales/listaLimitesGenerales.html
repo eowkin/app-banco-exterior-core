@@ -158,8 +158,8 @@
 			                   		    -->
 				                      </td>
 			                          <td th:unless="${limitesGenerales.flagActivo }"> 
-			                    	    <label class="switch switch-pill switch-primary">
-										  <input th:onclick="|window.location.href='@{/limitesGenerales/activar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }'|" type="checkbox" class="switch-input">
+			                    	    <label class="switch switch-pill switch-secondary">
+										  <input th:onclick="|window.location.href='@{/limitesGenerales/activar/{id}/{id2}/{id3} (id=${limitesGenerales.codMoneda}, id2=${limitesGenerales.tipoTransaccion}, id3=${limitesGenerales.tipoCliente}) }'|" type="checkbox" class="switch-input" checked>
 										  <span class="switch-slider"></span>
 										</label>
 			                    	    <!--

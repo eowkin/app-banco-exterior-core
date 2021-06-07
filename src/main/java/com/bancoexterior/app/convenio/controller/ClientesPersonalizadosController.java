@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -204,7 +205,7 @@ public class ClientesPersonalizadosController {
 				model.addAttribute("clientesPersonalizados", clientesPersonalizadosEdit);
 				return "convenio/clientesPersonalizados/formClientesPersonalizadosEdit";
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "redirect:/clientesPersonalizados/index";
 			}
 		} catch (CustomException e) {
@@ -267,11 +268,11 @@ public class ClientesPersonalizadosController {
 					//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
 					model.addAttribute("listaLimitesPersonalizados", listaLimitesPersonalizados);
 					model.addAttribute("codigoIbs", codigoIbs);
-					model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 					return "convenio/clientesPersonalizados/listaLimitesPersonalizados";
 				}
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "redirect:/clientesPersonalizados/index/1";
 			}		
 		} catch (CustomException e) {
@@ -311,7 +312,7 @@ public class ClientesPersonalizadosController {
 				model.addAttribute("limitesPersonalizados", limitesPersonalizadosEdit);
 				return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "redirect:/clientesPersonalizados/index";
 			}
 		} catch (CustomException e) {
@@ -325,15 +326,23 @@ public class ClientesPersonalizadosController {
 	
 	
 	@PostMapping("/guardarLimiteCliente")
-	public String guardarLimiteClienteWs(LimitesPersonalizados limitesPersonalizados, BindingResult result,  RedirectAttributes redirectAttributes) {
+	public String guardarLimiteClienteWs(LimitesPersonalizados limitesPersonalizados, BindingResult result,
+			RedirectAttributes redirectAttributes, Model model) {
 		log.info("guardarWs");
 		log.info("limitesPersonalizados", limitesPersonalizados);
-		
+		List<String> listaError = new ArrayList<>();
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
+				//log.info("error.hashCode(): "+error.);
+				log.info("error.hashCode(): "+error.hashCode());
+				log.info("error.getCode(): "+error.getCode());
+				if(error.getCode().equals("typeMismatch")) {
+					listaError.add("Los valores de los montos debe ser numerico");
+				}
+				log.info("getObjectName(): "+error.getObjectName());
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
 			}
-		
+			model.addAttribute("listaError", listaError);
 			return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
 		}
 		
@@ -343,13 +352,18 @@ public class ClientesPersonalizadosController {
 		//firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="
 		  log.info("Comparar tamaño:" + limitesPersonalizados.getMontoMax().compareTo(limitesPersonalizados.getMontoMin())); 
 		  if(limitesPersonalizados.getMontoMax().compareTo(limitesPersonalizados.getMontoMin()) < 0) { 
+			  listaError.add("El monto mínimo no debe ser mayor al monto máximo");
+			  model.addAttribute("listaError", listaError);
 			  result.addError(new  ObjectError("codMoneda", " El monto mínimo no debe ser mayor al monto máximo"));
+			  
 			  return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit"; 
 		  }
 		 
 		  log.info("Comparar tamaño:" + limitesPersonalizados.getMontoMensual().compareTo(limitesPersonalizados.getMontoDiario())); 
 		  if(limitesPersonalizados.getMontoMensual().compareTo(limitesPersonalizados.getMontoDiario()) < 0) { 
 			  result.addError(new  ObjectError("codMoneda", " El monto diario no debe ser mayor al mensual"));
+			  listaError.add("El monto diario no debe ser mayor al mensual");
+			  model.addAttribute("listaError", listaError);
 			  return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit"; 
 		  }
 		
@@ -370,6 +384,8 @@ public class ClientesPersonalizadosController {
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			listaError.add(e.getMessage());
+			  model.addAttribute("listaError", listaError);
 			return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
 		}
 	
@@ -416,7 +432,7 @@ public class ClientesPersonalizadosController {
 				model.addAttribute("listaMonedas", listaMonedas);
 	    		return "convenio/clientesPersonalizados/formLimitesPersonalizados";
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "redirect:/clientesPersonalizados/index/1";
 			}
 		} catch (CustomException e) {
@@ -432,7 +448,7 @@ public class ClientesPersonalizadosController {
 		log.info("limitesPersonalizados: "+limitesPersonalizados);
 		
 		List<Moneda> listaMonedas = new ArrayList<>();
-		
+		List<String> listaError = new ArrayList<>();
 		MonedasRequest monedasRequest = new MonedasRequest();
 		monedasRequest.setIdUsuario("test");
 		monedasRequest.setIdSesion("20210101121213");
@@ -445,21 +461,69 @@ public class ClientesPersonalizadosController {
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
+				log.info("error.getCode(): "+error.getCode());
+				if(error.getCode().equals("typeMismatch")) {
+					listaError.add("Los valores de los montos debe ser numerico");
+				}
 			}
 			
 			try {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				model.addAttribute("listaMonedas", listaMonedas);
-				//model.addAttribute("codigoIbs", limitesPersonalizados.getCodigoIbs());
+				model.addAttribute("listaError", listaError);
 	    		return "convenio/clientesPersonalizados/formLimitesPersonalizados";
 	    		//clientesPersonalizados/formLimiteClientePersonalizado/{codigoIbs}
 			} catch (CustomException e) {
 				log.error("error: "+e);
 				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				 listaError.add(e.getMessage());
+				 model.addAttribute("listaError", e.getMessage());
 				return "convenio/clientesPersonalizados/formLimitesPersonalizados";
 			}
 			
 		}
+		
+		log.info("Comparar tamaño:" + limitesPersonalizados.getMontoMax().compareTo(limitesPersonalizados.getMontoMin())); 
+		  if(limitesPersonalizados.getMontoMax().compareTo(limitesPersonalizados.getMontoMin()) < 0) { 
+			  log.info("Se metio por aqui compa:");
+			  try {
+				  	log.info("Se metio por aqui compa 1.1");
+				  	listaError.add("El monto mínimo no debe ser mayor al monto máximo");
+					log.info("listaError: "+listaError);
+					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+					model.addAttribute("listaMonedas", listaMonedas);
+					model.addAttribute("listaError", listaError);
+					result.addError(new  ObjectError("codMoneda", " El monto mínimo no debe ser mayor al monto máximo"));
+					return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+		    		//clientesPersonalizados/formLimiteClientePersonalizado/{codigoIbs}
+				} catch (CustomException e) {
+					log.error("error: "+e);
+					result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+					 listaError.add(e.getMessage());
+					 model.addAttribute("listaError", listaError);
+					return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+				}
+		  }
+		 
+		  log.info("Comparar tamaño:" + limitesPersonalizados.getMontoMensual().compareTo(limitesPersonalizados.getMontoDiario())); 
+		  if(limitesPersonalizados.getMontoMensual().compareTo(limitesPersonalizados.getMontoDiario()) < 0) { 
+			  log.info("Se metio por aqui compa 2:");
+			  try {
+					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+					model.addAttribute("listaMonedas", listaMonedas);
+					listaError.add("El monto diario no debe ser mayor al mensual");
+			        model.addAttribute("listaError", listaError);
+			        result.addError(new  ObjectError("codMoneda", " El monto diario no debe ser mayor al mensual"));
+		    		return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+		    		//clientesPersonalizados/formLimiteClientePersonalizado/{codigoIbs}
+				} catch (CustomException e) {
+					log.error("error: "+e);
+					result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+					 listaError.add(e.getMessage());
+					 model.addAttribute("listaError", listaError);
+					return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+				}
+		  }
 		
 		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
 		limitesPersonalizadosRequest.setIdUsuario("test");
@@ -480,10 +544,14 @@ public class ClientesPersonalizadosController {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				model.addAttribute("listaMonedas", listaMonedas);
 				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				listaError.add(e.getMessage());
+				model.addAttribute("listaError", listaError);
 	    		return "convenio/clientesPersonalizados/formLimitesPersonalizados";
 			} catch (CustomException e1) {
 				log.error("error: "+e1);
 				result.addError(new ObjectError("codMoneda", " Codigo :" +e1.getMessage()));
+				listaError.add(e1.getMessage());
+				model.addAttribute("listaError", listaError);
 				return "convenio/clientesPersonalizados/formLimitesPersonalizados";
 			}
 		
@@ -608,7 +676,7 @@ public class ClientesPersonalizadosController {
 					datosPaginacion.setTotalPaginas(0);
 					model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
 					model.addAttribute("datosPaginacion", datosPaginacion);
-					model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 					return "convenio/clientesPersonalizados/listaClientesPersonalizados";
 				}
 				
@@ -617,7 +685,7 @@ public class ClientesPersonalizadosController {
 				datosPaginacion.setTotalPaginas(0);
 				model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
 				model.addAttribute("datosPaginacion", datosPaginacion);
-				model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "convenio/clientesPersonalizados/listaClientesPersonalizados";
 			}
 			
@@ -678,7 +746,7 @@ public class ClientesPersonalizadosController {
 					datosPaginacion.setTotalPaginas(0);
 					model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
 					model.addAttribute("datosPaginacion", datosPaginacion);
-					model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 					return "convenio/clientesPersonalizados/listaClientesPersonalizados";
 				}
 				
@@ -687,7 +755,7 @@ public class ClientesPersonalizadosController {
 				datosPaginacion.setTotalPaginas(0);
 				model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
 				model.addAttribute("datosPaginacion", datosPaginacion);
-				model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "convenio/clientesPersonalizados/listaClientesPersonalizados";
 			}
 			
@@ -743,7 +811,7 @@ public class ClientesPersonalizadosController {
 				return "convenio/clientesPersonalizados/formClientesPersonalizados";
 			}else {
 				//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
-				model.addAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				return "convenio/clientesPersonalizados/formClientesPersonalizadosBuscar";
 			}
 			
