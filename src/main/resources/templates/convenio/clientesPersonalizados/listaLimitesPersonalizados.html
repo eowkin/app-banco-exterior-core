@@ -116,10 +116,10 @@
 		               	  <td th:text="${limitesPersonalizados.fechaModificacion}"></td>
 		                  
 		                  <td th:if="${limitesPersonalizados.flagActivo}">
-                      		<a  class="btn btn-primary" th:href="@{/clientesPersonalizados/editLimiteCliente/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }" role="button" title="Editar el registro.">Editar</a>
+                      		<a  class="btn btn-primary" th:href="@{/clientesPersonalizados/editLimiteCliente/{id}/{id2}/{id3} (id=${limitesPersonalizados.codigoIbs}, id2=${limitesPersonalizados.codMoneda}, id3=${limitesPersonalizados.tipoTransaccion}) }" role="button" title="Editar el registro."><i class="fas fa-edit" aria-hidden="true"></i></a>
                     	  </td>
                     	  <td th:unless="${limitesPersonalizados.flagActivo }">
-		           			<button type="submit" class="btn btn-primary" disabled="disabled">Editar</button>
+		           			<button type="submit" class="btn btn-primary" disabled="disabled"><i class="fas fa-edit" aria-hidden="true"></i></button>
 		                  </td>
                           <td th:if="${limitesPersonalizados.flagActivo}">
                           	<label class="switch switch-pill switch-primary">

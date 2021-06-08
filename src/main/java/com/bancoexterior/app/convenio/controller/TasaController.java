@@ -128,15 +128,18 @@ public class TasaController {
 	
 	
 	@PostMapping("/guardar")
-	public String guardarWs(Tasa tasa, BindingResult result,  RedirectAttributes redirectAttributes) {
+	public String guardarWs(Tasa tasa, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		log.info("guardarWs");
 		log.info("tasa: "+tasa);
-		
+		List<String> listaError = new ArrayList<>();
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
+				if(error.getCode().equals("typeMismatch")) {
+					listaError.add("Los valores de los montos debe ser numerico");
+				}
 			}
-		
+			model.addAttribute("listaError", listaError);
 			return "convenio/tasa/formTasaEdit";
 		}
 		
@@ -155,6 +158,8 @@ public class TasaController {
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			listaError.add(e.getMessage());
+			model.addAttribute("listaError", listaError);
 			return "convenio/tasa/formTasaEdit";
 		}
 		
@@ -194,6 +199,7 @@ public class TasaController {
 	public String saveWs(Tasa tasa, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		log.info("save");
 		log.info("tasa: "+tasa);
+		List<String> listaError = new ArrayList<>();
 		List<Moneda> listaMonedas = new ArrayList<>();
 		MonedasRequest monedasRequest = new MonedasRequest();
 		monedasRequest.setIdUsuario("test");
@@ -207,14 +213,19 @@ public class TasaController {
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
+				if(error.getCode().equals("typeMismatch")) {
+					listaError.add("Los valores de los montos debe ser numerico");
+				}
 			}
 			try {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				model.addAttribute("listaMonedas", listaMonedas);
+				model.addAttribute("listaError", listaError);
 				return "convenio/tasa/formTasa";
 			} catch (CustomException e) {
 				log.error("error: "+e);
 				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				model.addAttribute("listaError", e.getMessage());
 				return "convenio/tasa/formTasa";
 			}
 		}
@@ -236,10 +247,14 @@ public class TasaController {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				model.addAttribute("listaMonedas", listaMonedas);
 				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				listaError.add(e.getMessage());
+				model.addAttribute("listaError", listaError);
 				return "convenio/tasa/formTasa";
 			} catch (CustomException e1) {
 				log.error("error: "+e1);
 				result.addError(new ObjectError("codMoneda", " Codigo :" +e1.getMessage()));
+				listaError.add(e1.getMessage());
+				model.addAttribute("listaError", listaError);
 				return "convenio/tasa/formTasa";
 			}
 			

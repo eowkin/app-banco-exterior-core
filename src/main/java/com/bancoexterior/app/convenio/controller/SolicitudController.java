@@ -390,14 +390,18 @@ public class SolicitudController {
 	public String guardarProcesarCompra(Movimiento movimiento, BindingResult result, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request) {
 		log.info("movimiento: "+movimiento);
+		List<String> listaError = new ArrayList<>();
 		model.addAttribute("paginaActual", movimiento.getPaginaActual());
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
+				if(error.getCode().equals("typeMismatch")) {
+					listaError.add("Los valores de los montos tasa debe ser numerico");
+				}
 			}
 			
 			
-			
+			model.addAttribute("listaError", listaError);
 			return "convenio/solicitudes/formSolicitud";
 		}
 		
@@ -415,6 +419,9 @@ public class SolicitudController {
 		
 		if(!isFechaValida(movimiento.getFecha())) {
 			result.addError(new ObjectError("codMoneda", " La fecha liquidacion es invalida"));
+			
+			listaError.add("La fecha liquidacion es invalida");
+			model.addAttribute("listaError", listaError);
 			return "convenio/solicitudes/formSolicitud";
 		}
 		
@@ -426,7 +433,7 @@ public class SolicitudController {
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
-		aprobarRechazarRequest.setTasa(movimiento.getNuevaTasaCliente());
+		aprobarRechazarRequest.setTasa(movimiento.getTasaOperacion());
 		aprobarRechazarRequest.setFechaLiquidacion(movimiento.getFecha());
 		aprobarRechazarRequest.setEstatus(1);
 		
@@ -437,13 +444,11 @@ public class SolicitudController {
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
-			//redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
 			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			listaError.add(e.getMessage());
+			model.addAttribute("listaError", listaError);
 			return "convenio/solicitudes/formSolicitud";
-			//return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+movimiento.getPaginaActual();
 			
-			//model.addAttribute("mensajeError", e.getMessage());
-			//return "convenio/agencia/formBuscarAgencia";
 		}
 	}
 	
@@ -500,14 +505,18 @@ public class SolicitudController {
 	public String guardarProcesarVenta(Movimiento movimiento, BindingResult result, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request) {
 		log.info("movimiento: "+movimiento);
+		List<String> listaError = new ArrayList<>();
 		model.addAttribute("paginaActual", movimiento.getPaginaActual());
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
+				if(error.getCode().equals("typeMismatch")) {
+					listaError.add("Los valores de los montos tasa debe ser numerico");
+				}
 			}
 			
 			
-			
+			model.addAttribute("listaError", listaError);
 			return "convenio/solicitudes/formSolicitudVenta";
 		}
 		
@@ -525,6 +534,8 @@ public class SolicitudController {
 		
 		if(!isFechaValida(movimiento.getFecha())) {
 			result.addError(new ObjectError("codMoneda", " La fecha liquidacion es invalida"));
+			listaError.add("La fecha liquidacion es invalida");
+			model.addAttribute("listaError", listaError);
 			return "convenio/solicitudes/formSolicitudVenta";
 		}
 		
@@ -536,7 +547,7 @@ public class SolicitudController {
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
-		aprobarRechazarRequest.setTasa(movimiento.getNuevaTasaCliente());
+		aprobarRechazarRequest.setTasa(movimiento.getTasaOperacion());
 		aprobarRechazarRequest.setFechaLiquidacion(movimiento.getFecha());
 		aprobarRechazarRequest.setEstatus(1);
 		
@@ -547,13 +558,10 @@ public class SolicitudController {
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
-			//redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
 			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			listaError.add(e.getMessage());
+			model.addAttribute("listaError", listaError);
 			return "convenio/solicitudes/formSolicitudVenta";
-			//return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+movimiento.getPaginaActual();
-			
-			//model.addAttribute("mensajeError", e.getMessage());
-			//return "convenio/agencia/formBuscarAgencia";
 		}
 	}
 	
