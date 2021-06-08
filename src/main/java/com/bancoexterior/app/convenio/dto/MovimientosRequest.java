@@ -2,6 +2,7 @@ package com.bancoexterior.app.convenio.dto;
 
 import java.io.Serializable;
 
+import com.bancoexterior.app.convenio.model.Fechas;
 import com.bancoexterior.app.convenio.model.Movimiento;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -34,11 +35,14 @@ public class MovimientosRequest implements Serializable{
 	@JsonProperty("filtros")
 	private Movimiento filtros;
 	
+	@JsonProperty("fechas")
+	private Fechas fechas;
+	
 	
 	public MovimientosRequest() {
 		super();
 		this.filtros = new Movimiento(); 
-				
+		this.fechas = new Fechas();		
 	}
 	
 	

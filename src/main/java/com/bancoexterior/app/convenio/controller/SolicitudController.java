@@ -41,6 +41,7 @@ import com.bancoexterior.app.convenio.model.Moneda;
 import com.bancoexterior.app.convenio.model.Movimiento;
 import com.bancoexterior.app.convenio.model.Solicitud;
 import com.bancoexterior.app.convenio.model.Venta;
+import com.bancoexterior.app.util.ConsultaExcelExporter;
 import com.bancoexterior.app.util.UserExcelExporter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -815,10 +816,11 @@ public class SolicitudController {
     }
 	
 	@GetMapping("/movimientosConsulta/export/excel")
-    public void exportToExcelConsulta(HttpServletResponse response) throws IOException {
+    public void exportToExcelConsulta(Movimiento movimiento, Model model, 
+    		RedirectAttributes redirectAttributes, HttpServletResponse response) throws IOException {
 		log.info("exportToExcelConsulta");
         
-		
+		List<String> listaError = new ArrayList<>();
 		MovimientosRequest movimientosRequest = new MovimientosRequest();
 		movimientosRequest.setIdUsuario("test");
 		movimientosRequest.setIdSesion("20210101121213");
@@ -828,11 +830,50 @@ public class SolicitudController {
 		List<Movimiento> listaMovimientos = new ArrayList<>();
 		
 		try {
+			
+			
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(2147483647);
-			Movimiento filtrosVenta = new Movimiento();
-			//filtrosVenta.setTipoTransaccion("C");
-			movimientosRequest.setFiltros(filtrosVenta);
+			Movimiento filtros = new Movimiento();
+			if(!movimiento.getCodMoneda().equals(""))
+				filtros.setCodMoneda(movimiento.getCodMoneda());
+			if(!movimiento.getTipoTransaccion().equals(""))
+			    filtros.setTipoTransaccion(movimiento.getTipoTransaccion());
+			if(!movimiento.getEstatus().equals(""))
+				filtros.setEstatus(movimiento.getEstatus());
+			if(!movimiento.getTipoCliente().equals(""))
+				filtros.setTipoCliente(movimiento.getTipoCliente());
+			
+			
+			/*
+			 * if(!movimiento.getFechaDesde().equals("") &&
+			 * !movimiento.getFechaHasta().equals("")) {
+			 * if(isFechaValidaDesdeHasta(movimiento.getFechaDesde(),
+			 * movimiento.getFechaHasta())) {
+			 * 
+			 * }else { MonedasRequest monedasRequest = new MonedasRequest();
+			 * monedasRequest.setIdUsuario("test");
+			 * monedasRequest.setIdSesion("20210101121213");
+			 * monedasRequest.setCodUsuario("E66666"); monedasRequest.setCanal("8"); Moneda
+			 * moneda = new Moneda(); moneda.setFlagActivo(true);
+			 * monedasRequest.setMoneda(moneda); List<Moneda> listaMonedas = new
+			 * ArrayList<>();
+			 * 
+			 * try { listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+			 * model.addAttribute("listaMonedas", listaMonedas); return
+			 * "convenio/solicitudes/formSolicitudGenerarReporte"; } catch (CustomException
+			 * e) { log.error("error: "+e);
+			 * redirectAttributes.addFlashAttribute("mensajeError", e.getMessage()); return
+			 * "redirect:/tasas/index"; }
+			 * 
+			 * listaError.add("Los valores de los montos debe ser numerico");
+			 * model.addAttribute("listaError", listaError); return
+			 * "convenio/solicitudes/formSolicitudGenerarReporte"; } }
+			 */
+			
+			
+			
+			movimientosRequest.setFiltros(filtros);
 			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
 			if(responseVenta != null) {
 				listaMovimientos = responseVenta.getMovimientos();
@@ -841,12 +882,12 @@ public class SolicitudController {
 		        String currentDateTime = dateFormatter.format(new Date());
 		         
 		        String headerKey = "Content-Disposition";
-		        String headerValue = "attachment; filename=movimientoscompras_" + currentDateTime + ".xlsx";
+		        String headerValue = "attachment; filename=movimientosconsulta_" + currentDateTime + ".xlsx";
 		        response.setHeader(headerKey, headerValue);
 		         
 		        
-		         
-		        UserExcelExporter excelExporter = new UserExcelExporter(listaMovimientos);
+		        ConsultaExcelExporter excelExporter = new ConsultaExcelExporter(listaMovimientos); 
+		        //UserExcelExporter excelExporter = new UserExcelExporter(listaMovimientos);
 		         
 		        excelExporter.export(response);
 			}else {
@@ -855,7 +896,9 @@ public class SolicitudController {
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			
-		}	    
+		}
+		
+		//return "convenio/solicitudes/formSolicitudGenerarReporte";
     }
 	
 	
@@ -1416,6 +1459,39 @@ public class SolicitudController {
         	
         	Date fechaDate1 = formato.parse(fechaLiquidacion);
         	Date fechaDate2 = formato.parse(fecha(new Date()));
+        	
+        	if ( fechaDate1.before(fechaDate2) ){
+        	    log.info("La fechaLiquidacion es menor que la actual");
+        		return false;
+        	}else{
+        	     if ( fechaDate2.before(fechaDate1) ){
+        	    	 //resultado= "La Fecha 1 es Mayor ";
+        	    	 log.info("La fechaActual es menor que la fechaLiquidacion");
+        	    	 return true;
+        	     }else{
+        	    	 log.info("La fechaActual es igual que la fechaLiquidacion");
+        	    	 return true;
+        	     } 
+        	}
+        } 
+        catch (ParseException ex) 
+        {
+            System.out.println(ex);
+        }
+        
+        return false;
+	}
+	
+	public boolean isFechaValidaDesdeHasta(String fechaDesde, String fechaHasta) {
+		
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+		//SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		
+        try {
+        	
+        	
+        	Date fechaDate1 = formato.parse(fechaDesde);
+        	Date fechaDate2 = formato.parse(fechaHasta);
         	
         	if ( fechaDate1.before(fechaDate2) ){
         	    log.info("La fechaLiquidacion es menor que la actual");

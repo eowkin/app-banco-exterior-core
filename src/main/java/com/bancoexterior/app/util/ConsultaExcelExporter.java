@@ -44,12 +44,21 @@ public class ConsultaExcelExporter {
         style.setFont(font);
          
         createCell(row, 0, "Cod. Operacion", style);      
-        createCell(row, 1, "Fecha Operacion", style);       
-        createCell(row, 2, "Cuenta en divisas", style);    
-        createCell(row, 3, "Cuenta en Bolivares", style);
-        createCell(row, 4, "Monto Divisa", style);
-        createCell(row, 5, "Monto Bs", style);      
-        createCell(row, 6, "Estatus", style);       
+        createCell(row, 1, "Fecha Operacion", style);
+        createCell(row, 2, "Codigo Moneda", style);
+        createCell(row, 3, "Codigo Ibs", style);
+        createCell(row, 4, "Nro IdCliente", style);
+        createCell(row, 5, "Cuenta en divisas", style);    
+        createCell(row, 6, "Cuenta en Bolivares", style);
+        createCell(row, 7, "Monto Divisa", style);
+        createCell(row, 8, "Monto Bs", style); 
+        createCell(row, 9, "Tasa Cliente", style);
+        createCell(row, 10, "Tasa Operacion", style);
+        createCell(row, 11, "Monto Bs Operacion", style);
+        createCell(row, 12, "Referencia Debito", style);
+        createCell(row, 13, "Referencia Credito", style);
+        createCell(row, 14, "Tipo Transaccion", style);
+        createCell(row, 15, "Estatus", style);       
         
          
     }
@@ -81,10 +90,19 @@ public class ConsultaExcelExporter {
              
             createCell(row, columnCount++, movimiento.getCodOperacion(), style);
             createCell(row, columnCount++, movimiento.getFechaOperacion(), style);
+            createCell(row, columnCount++, movimiento.getCodMoneda(), style);
+            createCell(row, columnCount++, movimiento.getCodigoIbs(), style);
+            createCell(row, columnCount++, movimiento.getNroIdCliente(), style);
             createCell(row, columnCount++, movimiento.getCuentaDivisa(), style);
             createCell(row, columnCount++, movimiento.getCuentaNacional(), style);
             createCell(row, columnCount++, movimiento.getMontoDivisa().toString(), style);
             createCell(row, columnCount++, movimiento.getMontoBsCliente().toString(), style);
+            createCell(row, columnCount++, movimiento.getTasaCliente().toString(), style);
+            createCell(row, columnCount++, movimiento.getTasaOperacion().toString(), style);
+            createCell(row, columnCount++, movimiento.getMontoBsOperacion().toString(), style);
+            createCell(row, columnCount++, movimiento.getReferenciaDebito(), style);
+            createCell(row, columnCount++, movimiento.getReferenciaCredito(), style);
+            createCell(row, columnCount++, movimiento.getTipoTransaccion(), style);
             log.info("estatus: "+movimiento.getEstatus());
             if(movimiento.getEstatus() == 0) {
             	createCell(row, columnCount++, "Por Aprobar", style);
