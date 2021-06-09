@@ -61,7 +61,7 @@
 		        <strong>Generar Reporte Solicitudes</strong>
 		      </div>
 		      <div class="card-body">
-		        <form  th:action = "@{/solicitudes/movimientosConsulta/export/excel}"   method="get" th:object="${movimiento}"   class="form-horizontal">
+		        <form  th:action = "@{/solicitudes/precesarConsulta/export/excel}"   method="get" th:object="${movimiento}"   class="form-horizontal">
 		          <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
 		            		Por favor corrija los siguientes errores:
 		            		<!-- 
@@ -96,7 +96,7 @@
 			            <label class="col-sm-5 col-form-label" for="estatus">Estatus:</label>
 			            <div class="col-sm-6">
 			              <select  class="form-control" th:field="*{estatus}"  name="estatus">
-					                <option value = "">----Selecionar Estatus----</option>
+					                <option value = "-1">----Selecionar Estatus----</option>
 					                <option value = "0" >Por Aprobar</option>
 					                <option value = "1" >Aprobada Automática</option>
 					                <option value = "2" >Aprobada Funcional</option>
@@ -118,20 +118,19 @@
 		          <div class="form-group row">
 		            <label class="col-sm-5 col-form-label" for="input-large">Fecha Desde:</label>
 		            <div class="col-sm-6">
-		              <input type="date" class="form-control" th:field="*{fecha}" name="fecha" id="fecha" placeholder="Fecha de publicacion">
+		              <input type="date" class="form-control" th:field="*{fechas.fechaDesde}" name="fechas.fechaDesde" id="fechas.fechaDesde" placeholder="Fecha desde">
 		            </div>
 		          </div>
 		          
 		          <div class="form-group row">
 		            <label class="col-sm-5 col-form-label" for="input-large">Fecha Hasta:</label>
 		            <div class="col-sm-6">
-		              <input type="date" class="form-control" th:field="*{fecha}" name="fecha" id="fecha" placeholder="Fecha de publicacion">
+		              <input type="date" class="form-control" th:field="*{fechas.fechaHasta}" name="fechas.fechaHasta" id="fechas.fechaHasta" placeholder="Fecha hasta">
 		            </div>
 		          </div>
 		          
 		          <div class="card-footer">
-		        	<button type="submit" class="btn btn-sm btn-success"><i class="far fa-circle"></i> Aprobar</button>
-					<a class="btn btn-sm btn-primary" th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/{page} (page=${paginaActual})}" title="Volver a lista limites" role="button">Volver</a>
+		        	<button type="submit" class="btn btn-primary"><i class="far fa-circle"></i> Exportar</button>
 		      	  </div>
 		        </form>
 		      </div>

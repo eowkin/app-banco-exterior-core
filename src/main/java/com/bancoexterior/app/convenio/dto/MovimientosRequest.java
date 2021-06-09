@@ -35,14 +35,14 @@ public class MovimientosRequest implements Serializable{
 	@JsonProperty("filtros")
 	private Movimiento filtros;
 	
-	@JsonProperty("fechas")
-	private Fechas fechas;
+	//@JsonProperty("fechas")
+	//private Fechas fechas;
 	
 	
 	public MovimientosRequest() {
 		super();
 		this.filtros = new Movimiento(); 
-		this.fechas = new Fechas();		
+		//this.fechas = new Fechas();		
 	}
 	
 	

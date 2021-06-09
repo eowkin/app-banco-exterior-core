@@ -37,6 +37,7 @@ import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.Compra;
 import com.bancoexterior.app.convenio.model.DatosConsulta;
 import com.bancoexterior.app.convenio.model.DatosPaginacion;
+import com.bancoexterior.app.convenio.model.Fechas;
 import com.bancoexterior.app.convenio.model.Moneda;
 import com.bancoexterior.app.convenio.model.Movimiento;
 import com.bancoexterior.app.convenio.model.Solicitud;
@@ -82,7 +83,42 @@ public class SolicitudController {
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
 		try {
-		
+			Venta ventaAcumuladoUSD = acumuladosVenta("USD");
+			log.info("ventaAcumuladoUSD: "+ventaAcumuladoUSD);
+			model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
+			Venta ventaAcumuladoEUR = acumuladosVenta("EUR");
+			log.info("ventaAcumuladoEUR: "+ventaAcumuladoEUR);
+			model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
+			BigDecimal montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
+			model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
+			Compra compraAcumuladoUSD = acumuladosCompra("USD");
+			log.info("compraAcumuladoUSD: "+compraAcumuladoUSD);
+			model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
+			Compra compraAcumuladoEUR = acumuladosCompra("EUR");
+			log.info("compraAcumuladoEUR: "+compraAcumuladoEUR);
+			model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
+			BigDecimal montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
+			model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
+			
+			
+			Venta ventaPorAprobarUSD = acumuladosPorAprobarVenta("USD");
+			log.info("ventaPorAprobarUSD: "+ventaPorAprobarUSD);
+			model.addAttribute("ventaPorAprobarUSD", ventaPorAprobarUSD);
+			Venta ventaPorAprobarEUR = acumuladosPorAprobarVenta("EUR");
+			log.info("ventaPorAprobarEUR: "+ventaPorAprobarEUR);
+			model.addAttribute("ventaPorAprobarEUR", ventaPorAprobarEUR);
+			BigDecimal montoBsTotalPorAprobarVenta =  ventaPorAprobarEUR.getMontoBs().add(ventaPorAprobarUSD.getMontoBs());
+			model.addAttribute("montoBsTotalPorAprobarVenta", montoBsTotalPorAprobarVenta);
+			
+			Compra compraPorAprobarUSD = acumuladosPorAprobarCompra("USD");
+			log.info("compraPorAprobarUSD: "+compraPorAprobarUSD);
+			model.addAttribute("compraPorAprobarUSD", compraPorAprobarUSD);
+			Compra compraPorAprobarEUR = acumuladosPorAprobarCompra("EUR");
+			log.info("compraPorAprobarEUR: "+compraPorAprobarEUR);
+			model.addAttribute("compraPorAprobarEUR", compraPorAprobarEUR);
+			BigDecimal montoBsTotalPorAprobarCompra =  compraPorAprobarEUR.getMontoBs().add(compraPorAprobarUSD.getMontoBs());
+			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
+			
 			movimientosRequest.setNumeroPagina(page);
 			movimientosRequest.setTamanoPagina(5);
 			Movimiento filtrosVenta = new Movimiento();
@@ -151,6 +187,43 @@ public class SolicitudController {
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
 		try {
+			Venta ventaAcumuladoUSD = acumuladosVenta("USD");
+			log.info("ventaAcumuladoUSD: "+ventaAcumuladoUSD);
+			model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
+			Venta ventaAcumuladoEUR = acumuladosVenta("EUR");
+			log.info("ventaAcumuladoEUR: "+ventaAcumuladoEUR);
+			model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
+			BigDecimal montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
+			model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
+			Compra compraAcumuladoUSD = acumuladosCompra("USD");
+			log.info("compraAcumuladoUSD: "+compraAcumuladoUSD);
+			model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
+			Compra compraAcumuladoEUR = acumuladosCompra("EUR");
+			log.info("compraAcumuladoEUR: "+compraAcumuladoEUR);
+			model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
+			BigDecimal montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
+			model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
+			
+			
+			Venta ventaPorAprobarUSD = acumuladosPorAprobarVenta("USD");
+			log.info("ventaPorAprobarUSD: "+ventaPorAprobarUSD);
+			model.addAttribute("ventaPorAprobarUSD", ventaPorAprobarUSD);
+			Venta ventaPorAprobarEUR = acumuladosPorAprobarVenta("EUR");
+			log.info("ventaPorAprobarEUR: "+ventaPorAprobarEUR);
+			model.addAttribute("ventaPorAprobarEUR", ventaPorAprobarEUR);
+			BigDecimal montoBsTotalPorAprobarVenta =  ventaPorAprobarEUR.getMontoBs().add(ventaPorAprobarUSD.getMontoBs());
+			model.addAttribute("montoBsTotalPorAprobarVenta", montoBsTotalPorAprobarVenta);
+			
+			Compra compraPorAprobarUSD = acumuladosPorAprobarCompra("USD");
+			log.info("compraPorAprobarUSD: "+compraPorAprobarUSD);
+			model.addAttribute("compraPorAprobarUSD", compraPorAprobarUSD);
+			Compra compraPorAprobarEUR = acumuladosPorAprobarCompra("EUR");
+			log.info("compraPorAprobarEUR: "+compraPorAprobarEUR);
+			model.addAttribute("compraPorAprobarEUR", compraPorAprobarEUR);
+			BigDecimal montoBsTotalPorAprobarCompra =  compraPorAprobarEUR.getMontoBs().add(compraPorAprobarUSD.getMontoBs());
+			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
+			
+			
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(5);
 			Movimiento filtrosVenta = new Movimiento();
@@ -815,9 +888,9 @@ public class SolicitudController {
 		}	    
     }
 	
-	@GetMapping("/movimientosConsulta/export/excel")
-    public void exportToExcelConsulta(Movimiento movimiento, Model model, 
-    		RedirectAttributes redirectAttributes, HttpServletResponse response) throws IOException {
+	@GetMapping("/precesarConsulta/export/excel")
+    public String procesarExportToExcelConsulta(Movimiento movimiento, BindingResult result, Model model, 
+    		RedirectAttributes redirectAttributes, HttpServletResponse response){
 		log.info("exportToExcelConsulta");
         
 		List<String> listaError = new ArrayList<>();
@@ -839,37 +912,49 @@ public class SolicitudController {
 				filtros.setCodMoneda(movimiento.getCodMoneda());
 			if(!movimiento.getTipoTransaccion().equals(""))
 			    filtros.setTipoTransaccion(movimiento.getTipoTransaccion());
-			if(!movimiento.getEstatus().equals(""))
+			if(movimiento.getEstatus() != -1)
 				filtros.setEstatus(movimiento.getEstatus());
 			if(!movimiento.getTipoCliente().equals(""))
 				filtros.setTipoCliente(movimiento.getTipoCliente());
 			
-			
-			/*
-			 * if(!movimiento.getFechaDesde().equals("") &&
-			 * !movimiento.getFechaHasta().equals("")) {
-			 * if(isFechaValidaDesdeHasta(movimiento.getFechaDesde(),
-			 * movimiento.getFechaHasta())) {
-			 * 
-			 * }else { MonedasRequest monedasRequest = new MonedasRequest();
-			 * monedasRequest.setIdUsuario("test");
-			 * monedasRequest.setIdSesion("20210101121213");
-			 * monedasRequest.setCodUsuario("E66666"); monedasRequest.setCanal("8"); Moneda
-			 * moneda = new Moneda(); moneda.setFlagActivo(true);
-			 * monedasRequest.setMoneda(moneda); List<Moneda> listaMonedas = new
-			 * ArrayList<>();
-			 * 
-			 * try { listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-			 * model.addAttribute("listaMonedas", listaMonedas); return
-			 * "convenio/solicitudes/formSolicitudGenerarReporte"; } catch (CustomException
-			 * e) { log.error("error: "+e);
-			 * redirectAttributes.addFlashAttribute("mensajeError", e.getMessage()); return
-			 * "redirect:/tasas/index"; }
-			 * 
-			 * listaError.add("Los valores de los montos debe ser numerico");
-			 * model.addAttribute("listaError", listaError); return
-			 * "convenio/solicitudes/formSolicitudGenerarReporte"; } }
-			 */
+			//movimientosRequest.setFiltros(filtros);
+			log.info("movimiento.getFechaDesde(): "+movimiento.getFechas().getFechaDesde());
+			log.info("movimiento.getFechaHasta(): "+movimiento.getFechas().getFechaHasta());
+			if(!movimiento.getFechas().getFechaDesde().equals("") && !movimiento.getFechas().getFechaHasta().equals("")) {
+				if(isFechaValidaDesdeHasta(movimiento.getFechas().getFechaDesde(), movimiento.getFechas().getFechaHasta())) {
+					Fechas fechas = new Fechas();
+					fechas.setFechaDesde(movimiento.getFechas().getFechaDesde());
+					fechas.setFechaHasta(movimiento.getFechas().getFechaHasta());
+					//movimientosRequest.setFechas(fechas);
+					filtros.setFechas(fechas);
+				}else {
+					MonedasRequest monedasRequest = new MonedasRequest();
+					monedasRequest.setIdUsuario("test");
+					monedasRequest.setIdSesion("20210101121213");
+					monedasRequest.setCodUsuario("E66666");
+					monedasRequest.setCanal("8");
+					Moneda moneda = new Moneda();
+					moneda.setFlagActivo(true);
+					monedasRequest.setMoneda(moneda);
+					List<Moneda> listaMonedas = new ArrayList<>();
+					
+					try {
+						listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+						model.addAttribute("listaMonedas", listaMonedas);
+						result.addError(new ObjectError("codMoneda", " Codigo :" +"Los valores de las fechas son invalidos"));
+						listaError.add("Los valores de las fechas son invalidos");
+						model.addAttribute("listaError", listaError);
+						return "convenio/solicitudes/formSolicitudGenerarReporte";
+					} catch (CustomException e) {
+						log.error("error: "+e);
+						result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+						model.addAttribute("listaError", e.getMessage());
+						return "convenio/solicitudes/formSolicitudGenerarReporte";
+					}
+					
+					
+				}
+			}
 			
 			
 			
@@ -877,31 +962,84 @@ public class SolicitudController {
 			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
 			if(responseVenta != null) {
 				listaMovimientos = responseVenta.getMovimientos();
+				if(!listaMovimientos.isEmpty()) {
+					for (Movimiento movimiento2 : listaMovimientos) {
+						log.info("movimiento2: "+movimiento2);
+					}
+					exportToExcelConsulta(listaMovimientos, response);
+					
+					return "convenio/solicitudes/formSolicitudGenerarReporte";
+				}else {
+					MonedasRequest monedasRequest = new MonedasRequest();
+					monedasRequest.setIdUsuario("test");
+					monedasRequest.setIdSesion("20210101121213");
+					monedasRequest.setCodUsuario("E66666");
+					monedasRequest.setCanal("8");
+					Moneda moneda = new Moneda();
+					moneda.setFlagActivo(true);
+					monedasRequest.setMoneda(moneda);
+					List<Moneda> listaMonedas = new ArrayList<>();
+					
+					try {
+						listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+						model.addAttribute("listaMonedas", listaMonedas);
+						result.addError(new ObjectError("codMoneda", "Los parametros de consulta no trae resultados."));
+						model.addAttribute("listaError", "Los parametros de consulta no trae resultados.");
+						return "convenio/solicitudes/formSolicitudGenerarReporte";
+
+					} catch (CustomException e) {
+						log.error("error: "+e);
+						result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+						model.addAttribute("listaError", e.getMessage());
+						return "convenio/solicitudes/formSolicitudGenerarReporte";
+					}
+					
+					
+									}
+				
+		        
+		        
+			}else {
+				result.addError(new ObjectError("codMoneda", "Los parametros de consulta no trae resultados."));
+				model.addAttribute("listaError", "Los parametros de consulta no trae resultados.");
+				return "convenio/solicitudes/formSolicitudGenerarReporte";
+			}
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			 listaError.add(e.getMessage());
+			 model.addAttribute("listaError", listaError);
+			return "convenio/solicitudes/formSolicitudGenerarReporte";
+			
+		}
+		
+		
+    }
+	
+	
+    public void exportToExcelConsulta(List<Movimiento> listaMovimientos, HttpServletResponse response) {
+		log.info("exportToExcelConsulta");
+        
+		
+		
 				response.setContentType("application/octet-stream");
 		        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 		        String currentDateTime = dateFormatter.format(new Date());
 		         
 		        String headerKey = "Content-Disposition";
-		        String headerValue = "attachment; filename=movimientosconsulta_" + currentDateTime + ".xlsx";
+		        String headerValue = "attachment; filename=movimientoscompras_" + currentDateTime + ".xlsx";
 		        response.setHeader(headerKey, headerValue);
-		         
-		        
 		        ConsultaExcelExporter excelExporter = new ConsultaExcelExporter(listaMovimientos); 
-		        //UserExcelExporter excelExporter = new UserExcelExporter(listaMovimientos);
-		         
-		        excelExporter.export(response);
-			}else {
-				
-			}
-		} catch (CustomException e) {
-			log.error("error: "+e);
-			
-		}
+		        try {
+					excelExporter.export(response);
+					response.getOutputStream().flush();
+					 response.getOutputStream().close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				}
 		
-		//return "convenio/solicitudes/formSolicitudGenerarReporte";
     }
-	
-	
 	
 	
 	
@@ -1090,7 +1228,7 @@ public class SolicitudController {
 		log.info("se ejecuta setGenericos");
 		//acumuladosCompraVenta();
 		//ofertasPorAprobar();
-		
+		/*
 		Venta ventaAcumuladoUSD = acumuladosVenta("USD");
 		log.info("ventaAcumuladoUSD: "+ventaAcumuladoUSD);
 		model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
@@ -1108,7 +1246,7 @@ public class SolicitudController {
 		BigDecimal montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
 		model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
 		
-		//ofertasPorAprobar();
+		
 		Venta ventaPorAprobarUSD = acumuladosPorAprobarVenta("USD");
 		log.info("ventaPorAprobarUSD: "+ventaPorAprobarUSD);
 		model.addAttribute("ventaPorAprobarUSD", ventaPorAprobarUSD);
@@ -1126,8 +1264,8 @@ public class SolicitudController {
 		model.addAttribute("compraPorAprobarEUR", compraPorAprobarEUR);
 		BigDecimal montoBsTotalPorAprobarCompra =  compraPorAprobarEUR.getMontoBs().add(compraPorAprobarUSD.getMontoBs());
 		model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
+		*/
 		
-		//ofertasPorAprobar();
 	}
 	
 	
@@ -1144,22 +1282,70 @@ public class SolicitudController {
 		movimientosRequest.setCanal("8");
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
 		
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(10);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
-			filtrosVenta.setEstatus(movimientoSearch.getEstatus());
+			if(movimientoSearch.getEstatus() != -1)
+				filtrosVenta.setEstatus(movimientoSearch.getEstatus());
+			
+			if(!movimientoSearch.getFechas().getFechaDesde().equals("") && !movimientoSearch.getFechas().getFechaHasta().equals("")) {
+				if(isFechaValidaDesdeHasta(movimientoSearch.getFechas().getFechaDesde(), movimientoSearch.getFechas().getFechaHasta())) {
+					Fechas fechas = new Fechas();
+					fechas.setFechaDesde(movimientoSearch.getFechas().getFechaDesde());
+					fechas.setFechaHasta(movimientoSearch.getFechas().getFechaHasta());
+					filtrosVenta.setFechas(fechas);
+				}else {
+					model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
+					model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+					model.addAttribute("mensajeError", "Los valores de las fechas son invalidos");
+					//return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					
+					movimientosRequest.setNumeroPagina(1);
+					movimientosRequest.setTamanoPagina(10);
+					Movimiento filtrosCompra = new Movimiento();
+					filtrosCompra.setTipoTransaccion("C");
+					movimientosRequest.setFiltros(filtrosCompra);
+					MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
+					
+					if(responseCompra != null) {
+						datosPaginacionCompra = responseCompra.getDatosPaginacion();
+						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+						listaMovimientosCompra = responseCompra.getMovimientos();
+						log.info("listaMovimientosCompra: "+listaMovimientosCompra);
+						log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+						model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+						model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+						model.addAttribute("estatus", movimientoSearch.getEstatus());
+						return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+						
+						
+						
+					}else {
+						datosPaginacionCompra.setTotalPaginas(0);
+						model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+						model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+						return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					}
+				}
+			}
+			
+			
+			
+			
 			movimientosRequest.setFiltros(filtrosVenta);
 			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
 			if(responseVenta != null) {
 				datosPaginacionVenta = responseVenta.getDatosPaginacion();
 				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				listaMovimientosVenta = responseVenta.getMovimientos();
+				if(listaMovimientosVenta.isEmpty())
+					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
 				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
 				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
@@ -1189,7 +1375,7 @@ public class SolicitudController {
 					datosPaginacionCompra.setTotalPaginas(0);
 					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
 					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosVentaVentaSearchEstatus";
+					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
 				}
 				
 			}else {
@@ -1493,16 +1679,16 @@ public class SolicitudController {
         	Date fechaDate1 = formato.parse(fechaDesde);
         	Date fechaDate2 = formato.parse(fechaHasta);
         	
-        	if ( fechaDate1.before(fechaDate2) ){
-        	    log.info("La fechaLiquidacion es menor que la actual");
+        	if ( fechaDate2.before(fechaDate1) ){
+        	    log.info("La fechaHasta es menor que la fechaDesde");
         		return false;
         	}else{
-        	     if ( fechaDate2.before(fechaDate1) ){
+        	     if ( fechaDate1.before(fechaDate2) ){
         	    	 //resultado= "La Fecha 1 es Mayor ";
-        	    	 log.info("La fechaActual es menor que la fechaLiquidacion");
+        	    	 log.info("La fechaDesde es menor que la fechaHasta");
         	    	 return true;
         	     }else{
-        	    	 log.info("La fechaActual es igual que la fechaLiquidacion");
+        	    	 log.info("La fechaDesde es igual que la fechaHasta");
         	    	 return true;
         	     } 
         	}

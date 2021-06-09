@@ -102,7 +102,12 @@ public class ConsultaExcelExporter {
             createCell(row, columnCount++, movimiento.getMontoBsOperacion().toString(), style);
             createCell(row, columnCount++, movimiento.getReferenciaDebito(), style);
             createCell(row, columnCount++, movimiento.getReferenciaCredito(), style);
-            createCell(row, columnCount++, movimiento.getTipoTransaccion(), style);
+            log.info("estatus: "+movimiento.getTipoTransaccion());
+            if(movimiento.getTipoTransaccion().equals("C")) {
+            	createCell(row, columnCount++, "Compra", style);
+            }else {
+            	createCell(row, columnCount++, "Venta", style);
+            }
             log.info("estatus: "+movimiento.getEstatus());
             if(movimiento.getEstatus() == 0) {
             	createCell(row, columnCount++, "Por Aprobar", style);

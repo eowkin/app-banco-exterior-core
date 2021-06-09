@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor @NoArgsConstructor
+@AllArgsConstructor 
 public class Movimiento implements Serializable{
 
 	@JsonProperty("codOperacion")
@@ -76,6 +76,10 @@ public class Movimiento implements Serializable{
 	@JsonProperty("estatus")
 	private Integer estatus;
 	
+	
+	@JsonProperty("fechas")
+	private Fechas fechas;
+	
 	private BigDecimal nuevaTasaCliente;
 	
 	private String fecha;
@@ -88,7 +92,9 @@ public class Movimiento implements Serializable{
 	
 	private String tipoCliente;
 	
-	
+	public Movimiento() {
+		this.fechas = new Fechas();
+	}
 	
 	/**
 	 * 

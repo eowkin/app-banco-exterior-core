@@ -75,22 +75,40 @@
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado Movimientos Venta
 		           <p align="right"></p>
-		            <div class="my-2 text-right">
-         					<form th:action="@{/solicitudes/searchEstatus}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
-        						<div>
-            					<select  class="form-control" th:field="*{estatus}"  name="estatus" required="required">
-					                <option value = "">----Selecionar Estatus----</option>
-					                <option value = "0" >Por Aprobar</option>
-					                <option value = "1" >Aprobada Automática</option>
-					                <option value = "2" >Aprobada Funcional</option>
-					                <option value = "3" >Rechazada Automática</option>
-					                <option value = "4" >Rechazada Funcional</option>
-					              </select>
+		            <div class="my-2">
+         					<form th:action="@{/solicitudes/searchEstatus}"  th:object="${movimientoSearch}"  method="get" class="form-horizontal">
+        						<div class="form-group row">
+						            <label class="col-sm-2 col-form-label" for="estatus">Estatus:</label>
+						            <div class="col-sm-3">
+						              <select  class="form-control" th:field="*{estatus}"  name="estatus">
+								                <option value = "-1">----Selecionar Estatus----</option>
+								                <option value = "0" >Por Aprobar</option>
+								                <option value = "1" >Aprobada Automática</option>
+								                <option value = "2" >Aprobada Funcional</option>
+								                <option value = "3" >Rechazada Automática</option>
+								                <option value = "4" >Rechazada Funcional</option>
+								              </select>
+						            </div>
+						          </div>  
+            						<div class="form-group row">
+							            <label class="col-sm-2 col-form-label" for="input-large">Fecha Desde:</label>
+							            <div class="col-sm-3">
+							              <input type="date" class="form-control" th:field="*{fechas.fechaDesde}" name="fechas.fechaDesde" id="fechas.fechaDesde" placeholder="Fecha desde">
+							            </div>
+							          </div>
+							          
+							          <div class="form-group row">
+							            <label class="col-sm-2 col-form-label" for="input-large">Fecha Hasta:</label>
+							            <div class="col-sm-3">
+							              <input type="date" class="form-control" th:field="*{fechas.fechaHasta}" name="fechas.fechaHasta" id="fechas.fechaHasta" placeholder="Fecha hasta">
+							            </div>
+							          </div>
             					
             					
-            					
-            					<button type="submit" class="btn btn-primary mb-3">Buscar por estatus</button>
-            					</div>            
+            					<div>
+		        					<button type="submit" class="btn btn-primary">Consultar</button>
+		      	 				 </div>
+            					         
           					</form>
         			</div>
 		            
@@ -101,6 +119,12 @@
 		            
 		          </div><!--/.card-header-->
 		          <div class="card-body">
+		          	<div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
+		            		Ocurrio los siguientes errores:
+		            		<ul>
+		            			<li th:text="${mensajeError}"></li>
+		            		</ul>
+		            	</div>
 		            <table class="table">
 		              <thead>
 		                <tr>
