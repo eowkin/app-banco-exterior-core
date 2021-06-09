@@ -67,6 +67,10 @@
 	        <div class="card-header">
 	          <i class="fa fa-align-justify"></i> Listado de Monedas
 	          <p align="right"></p>
+	          	<form th:action="@{/monedas/searchCodigo}"  th:object="${monedaSearch}"  method="get" class="form-inline">
+        						<input type="text"  class="form-control mb-3"  th:field="*{codMoneda}" maxlength="3" placeholder="Escriba una búsqueda" >&nbsp;
+            					<button type="submit" class="btn btn-primary mb-3">Buscar por codigo moneda</button>            
+          		</form>
 	        </div><!--/.card-header-->
 	        <div class="card-body">
 	          <div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">

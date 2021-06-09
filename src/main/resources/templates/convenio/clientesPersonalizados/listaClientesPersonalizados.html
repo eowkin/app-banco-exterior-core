@@ -110,7 +110,7 @@
 		                      <a  class="btn btn-info" th:href="@{/clientesPersonalizados/verLimites/{codigoIbs} (codigoIbs=${cliente.codigoIbs}) }" role="button" title="Ver limites."><i class="fas fa-search" aria-hidden="true"></i></a>
 		                  </td>
 		                  <td th:unless="${cliente.flagActivo}">
-		                      <button type="submit" class="btn btn-info" disabled="disabled">Limites</button>
+		                      <button type="submit" class="btn btn-info" disabled="disabled"><i class="fas fa-search" aria-hidden="true"></i></button>
 		                      
 		                  </td>
 		                  <td th:if="${cliente.flagActivo}">

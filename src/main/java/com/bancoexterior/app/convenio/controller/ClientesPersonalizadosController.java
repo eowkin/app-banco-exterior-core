@@ -654,7 +654,7 @@ public class ClientesPersonalizadosController {
 			clientesPersonalizados.setCodigoIbs(clientesPersonalizadosSearch.getCodigoIbs());
 		clienteRequest.setCliente(clientesPersonalizados);
 		List<ClientesPersonalizados> listaClientesPersonalizados = new ArrayList<>();
-		DatosPaginacion datosPaginacion = new DatosPaginacion();
+		DatosPaginacion datosPaginacion = new DatosPaginacion(0,0,0,0);
 		
 		try {
 			ClienteResponse clienteResponse = clientePersonalizadoServiceApiRest.listaClientesPaginacion(clienteRequest);
@@ -666,7 +666,13 @@ public class ClientesPersonalizadosController {
 				log.info("lista: "+listaClientesPersonalizados.isEmpty());
 				
 				if(!listaClientesPersonalizados.isEmpty()) {
-			
+					for (ClientesPersonalizados clientesPersonalizados2 : listaClientesPersonalizados) {
+						log.info(clientesPersonalizados2.getFechaModificacion());
+						if(clientesPersonalizados2.getFechaModificacion() != null) {
+							String[] arrOfStr = clientesPersonalizados2.getFechaModificacion().split(" ", 2);
+							clientesPersonalizados2.setFechaModificacion(arrOfStr[0]);
+						}
+					}
 					datosPaginacion = clienteResponse.getDatosPaginacion();
 					log.info("datosPaginacion: "+datosPaginacion);
 					model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
@@ -724,7 +730,7 @@ public class ClientesPersonalizadosController {
 		clienteRequest.setCliente(clientesPersonalizados);
 		
 		List<ClientesPersonalizados> listaClientesPersonalizados = new ArrayList<>();
-		DatosPaginacion datosPaginacion = new DatosPaginacion();
+		DatosPaginacion datosPaginacion = new DatosPaginacion(0,0,0,0);
 		
 		try {
 			ClienteResponse clienteResponse = clientePersonalizadoServiceApiRest.listaClientesPaginacion(clienteRequest);
@@ -736,7 +742,13 @@ public class ClientesPersonalizadosController {
 				log.info("lista: "+listaClientesPersonalizados.isEmpty());
 				
 				if(!listaClientesPersonalizados.isEmpty()) {
-			
+					for (ClientesPersonalizados clientesPersonalizados2 : listaClientesPersonalizados) {
+						log.info(clientesPersonalizados2.getFechaModificacion());
+						if(clientesPersonalizados2.getFechaModificacion() != null) {
+							String[] arrOfStr = clientesPersonalizados2.getFechaModificacion().split(" ", 2);
+							clientesPersonalizados2.setFechaModificacion(arrOfStr[0]);
+						}
+					}
 					datosPaginacion = clienteResponse.getDatosPaginacion();
 					log.info("datosPaginacion: "+datosPaginacion);
 					model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);

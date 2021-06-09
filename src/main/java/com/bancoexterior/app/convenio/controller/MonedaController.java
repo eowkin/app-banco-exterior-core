@@ -18,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -255,7 +256,63 @@ public class MonedaController {
 	}	
 	
 	
+	
+	@GetMapping("/searchCodigo")
+	public String searchCodigo(@ModelAttribute("monedaSearch") Moneda monedaSearch,
+			Model model, RedirectAttributes redirectAttributes) {
+		log.info("si me llamo a searchCodigo");
 		
+		
+		
+		MonedasRequest monedasRequest = new MonedasRequest();
+		monedasRequest.setIdUsuario("test");
+		monedasRequest.setIdSesion("20210101121213");
+		monedasRequest.setCodUsuario("E66666");
+		monedasRequest.setCanal("8");
+		Moneda moneda = new Moneda();
+		if(!monedaSearch.getCodMoneda().equals("")) {
+			moneda.setCodMoneda(monedaSearch.getCodMoneda());
+		}
+		monedasRequest.setMoneda(moneda);
+		List<Moneda> listMonedas = new ArrayList<>();
+		try {
+			listMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+			log.info("listMonedas.isEmpty(): "+listMonedas.isEmpty());
+			
+			if(!listMonedas.isEmpty()) {
+				for (Moneda moneda2 : listMonedas) {
+					log.info(moneda2.getFechaModificacion());
+					if(moneda2.getFechaModificacion() != null) {
+						String[] arrOfStr = moneda2.getFechaModificacion().split(" ", 2);
+						moneda2.setFechaModificacion(arrOfStr[0]);
+					}
+				}
+				
+				model.addAttribute("listMonedas", listMonedas);
+		    	return "convenio/moneda/listaMonedas";
+			}else {
+				
+				model.addAttribute("listMonedas", listMonedas);
+				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+		    	return "convenio/moneda/listaMonedas";
+			}
+			
+			
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			model.addAttribute("mensajeError", e.getMessage());
+			model.addAttribute("listMonedas", listMonedas);
+			return "convenio/moneda/listaMonedas";
+			//return "redirect:/";
+		}
+		
+	}
+	
+	@ModelAttribute
+	public void setGenericos(Model model) {
+		Moneda monedaSearch = new Moneda();
+		model.addAttribute("monedaSearch", monedaSearch);
+	}
 	
 	
 	@InitBinder

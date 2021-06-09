@@ -113,10 +113,10 @@
           					
         			</div>
 		            
-		            <!-- 
+		             
 		            <div class="my-2 text-right">
-		              	<a class="btn btn-primary" th:href="@{/solicitudes/movimientos/export/excel}" title="Exportar Excel" role="button">Exportar a Excel</a>
-		            </div> -->
+		              	<a class="btn btn-primary" th:href="@{/solicitudes/formSolicitudGenerarReporte}" title="Generar Reporte" role="button">Generar Reporte</a>
+		            </div>
 		            
 		          </div><!--/.card-header-->
 		          <div class="card-body">
@@ -225,10 +225,9 @@
             					         
           					</form>
         			</div>
-        			<!-- 
-		            <div class="my-2 text-right">
-		              	<a class="btn btn-primary" th:href="@{/solicitudes/movimientosCompras/export/excel}" title="Exportar Excel" role="button">Exportar a Excel</a>
-		            </div> -->
+        			<div class="my-2 text-right">
+		              	<a class="btn btn-primary" th:href="@{/solicitudes/formSolicitudGenerarReporte}" title="Generar Reporte" role="button">Generar Reporte</a>
+		            </div>
 		          </div><!--/.card-header-->
 		          <div class="card-body">
 		          	<div th:if="${mensajeErrorCompra != null}" class="alert alert-danger" role="alert">

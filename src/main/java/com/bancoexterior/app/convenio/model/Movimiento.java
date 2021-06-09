@@ -73,6 +73,9 @@ public class Movimiento implements Serializable{
 	@JsonProperty("descripcion")
 	private String descripcion;
 	
+	@JsonProperty("tipoPacto")
+	private String tipoPacto;
+	
 	@JsonProperty("estatus")
 	private Integer estatus;
 	

@@ -67,6 +67,10 @@
         						<input type="text"  class="form-control mb-3"  th:field="*{codAgencia}" maxlength="3" placeholder="Escriba una búsqueda" >&nbsp;
             					<button type="submit" class="btn btn-primary mb-3">Buscar por codigo agencia</button>            
           					</form>
+          					<form th:action="@{/agencias/searchNombre}"  th:object="${agenciaSearch}"  method="get" class="form-inline">
+        						<input type="text"  class="form-control mb-3"  th:field="*{nombreAgencia}" maxlength="15" placeholder="Escriba una búsqueda" >&nbsp;
+            					<button type="submit" class="btn btn-primary mb-3">Buscar por nombre agencia</button>            
+          					</form>
         			</div>
         			
 		            <div class="my-2 text-right">

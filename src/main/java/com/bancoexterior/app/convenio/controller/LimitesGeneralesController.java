@@ -446,6 +446,13 @@ public class LimitesGeneralesController {
 			listaLimitesGenerales = limitesGeneralesServiceApirest.listaLimitesGenerales(limiteRequest);
 			log.info("lista: "+listaLimitesGenerales.isEmpty());
 			if(!listaLimitesGenerales.isEmpty()) {
+				for (LimitesGenerales limitesGenerales : listaLimitesGenerales) {
+					log.info(limitesGenerales.getFechaModificacion());
+					if(limitesGenerales.getFechaModificacion() != null) {
+						String[] arrOfStr = limitesGenerales.getFechaModificacion().split(" ", 2);
+						limitesGenerales.setFechaModificacion(arrOfStr[0]);
+					}
+				}
 				model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
 	    		return "convenio/limitesGenerales/listaLimitesGenerales";
 			}else {

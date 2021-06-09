@@ -355,6 +355,13 @@ public class AgenciaController {
 			listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
 			log.info("lista: "+listaAgencias.isEmpty());
 			if(!listaAgencias.isEmpty()) {
+				for (Agencia agencia2 : listaAgencias) {
+					log.info(agencia2.getFechaModificacion());
+					if(agencia2.getFechaModificacion() != null) {
+						String[] arrOfStr = agencia2.getFechaModificacion().split(" ", 2);
+						agencia2.setFechaModificacion(arrOfStr[0]);
+					}
+				}
 				model.addAttribute("listaAgencias", listaAgencias);
 				return "convenio/agencia/listaAgencias";
 			}else {
@@ -379,7 +386,58 @@ public class AgenciaController {
 	}	
 	
 	
-	
+	@GetMapping("/searchNombre")
+	public String searchNombre(@ModelAttribute("agenciaSearch") Agencia agenciaSearch,
+			Agencia agencia, Model model, RedirectAttributes redirectAttributes) {
+		log.info("si me llamo a search agenciasWs");
+		log.info(agenciaSearch.getCodAgencia());
+		
+		List<Agencia> listaAgencias = new ArrayList<>();
+		AgenciaRequest agenciaRequest = new AgenciaRequest();
+		agenciaRequest.setIdUsuario("test");
+		agenciaRequest.setIdSesion("20210101121213");
+		agenciaRequest.setCodUsuario("E66666");
+		agenciaRequest.setCanal("8");
+		Agencia agenciaBuscar = new Agencia();
+		agenciaBuscar.setFlagDivisa(true);
+		if(!agenciaSearch.getNombreAgencia().equals("")){
+			agenciaBuscar.setNombreAgencia(agenciaSearch.getNombreAgencia());
+		}	
+		agenciaRequest.setAgencia(agenciaBuscar);
+		
+		try {
+			listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
+			log.info("lista: "+listaAgencias.isEmpty());
+			if(!listaAgencias.isEmpty()) {
+				for (Agencia agencia2 : listaAgencias) {
+					log.info(agencia2.getFechaModificacion());
+					if(agencia2.getFechaModificacion() != null) {
+						String[] arrOfStr = agencia2.getFechaModificacion().split(" ", 2);
+						agencia2.setFechaModificacion(arrOfStr[0]);
+					}
+				}
+				model.addAttribute("listaAgencias", listaAgencias);
+				return "convenio/agencia/listaAgencias";
+			}else {
+				//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				model.addAttribute("listaAgencias", listaAgencias);
+				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+				return "convenio/agencia/listaAgencias";
+			}
+		} catch (CustomException e) {
+			log.error("error: "+e);
+			model.addAttribute("listaAgencias", listaAgencias);
+			model.addAttribute("mensajeError", e.getMessage());
+			return "convenio/agencia/listaAgencias";
+		}
+		
+		
+		
+		
+		
+		
+		
+	}
 		
 	
 	
