@@ -289,10 +289,10 @@ public class SolicitudController {
 		movimientosRequest.setCanal("8");
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
 		
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(page);
 			movimientosRequest.setTamanoPagina(10);
@@ -301,11 +301,16 @@ public class SolicitudController {
 			movimientosRequest.setFiltros(filtrosVenta);
 			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
 			if(responseVenta != null) {
-				datosPaginacionVenta = responseVenta.getDatosPaginacion();
-				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				
 				listaMovimientosVenta = responseVenta.getMovimientos();
 				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
 				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
+				if(!listaMovimientosVenta.isEmpty()) {
+					datosPaginacionVenta = responseVenta.getDatosPaginacion();
+					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				}else {
+					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+				}
 				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
@@ -317,11 +322,16 @@ public class SolicitudController {
 				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
 				
 				if(responseCompra != null) {
-					datosPaginacionCompra = responseCompra.getDatosPaginacion();
-					log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					
 					listaMovimientosCompra = responseCompra.getMovimientos();
 					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
 					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+					if(!listaMovimientosCompra.isEmpty()) {
+						datosPaginacionCompra = responseCompra.getDatosPaginacion();
+						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					}else {
+						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+					}
 					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
 					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
 					
@@ -356,10 +366,10 @@ public class SolicitudController {
 		movimientosRequest.setCanal("8");
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
 		
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(10);
@@ -368,11 +378,16 @@ public class SolicitudController {
 			movimientosRequest.setFiltros(filtrosVenta);
 			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
 			if(responseVenta != null) {
-				datosPaginacionVenta = responseVenta.getDatosPaginacion();
-				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				
 				listaMovimientosVenta = responseVenta.getMovimientos();
 				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
 				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
+				if(!listaMovimientosVenta.isEmpty()) {
+					datosPaginacionVenta = responseVenta.getDatosPaginacion();
+					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				}else {
+					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+				}
 				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
@@ -384,11 +399,16 @@ public class SolicitudController {
 				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
 				
 				if(responseCompra != null) {
-					datosPaginacionCompra = responseCompra.getDatosPaginacion();
-					log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					
 					listaMovimientosCompra = responseCompra.getMovimientos();
 					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
 					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+					if(!listaMovimientosCompra.isEmpty()) {
+						datosPaginacionCompra = responseCompra.getDatosPaginacion();
+						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					}else {
+						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+					}
 					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
 					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
 					
@@ -1291,16 +1311,15 @@ public class SolicitudController {
 			movimientosRequest.setTamanoPagina(10);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
-			if(movimientoSearch.getEstatus() != -1)
-				filtrosVenta.setEstatus(movimientoSearch.getEstatus());
+			filtrosVenta.setEstatus(movimientoSearch.getEstatus());
 			
-			if(!movimientoSearch.getFechas().getFechaDesde().equals("") && !movimientoSearch.getFechas().getFechaHasta().equals("")) {
-				if(isFechaValidaDesdeHasta(movimientoSearch.getFechas().getFechaDesde(), movimientoSearch.getFechas().getFechaHasta())) {
+
+			if(isFechaValidaDesdeHasta(movimientoSearch.getFechas().getFechaDesde(), movimientoSearch.getFechas().getFechaHasta())) {
 					Fechas fechas = new Fechas();
 					fechas.setFechaDesde(movimientoSearch.getFechas().getFechaDesde());
 					fechas.setFechaHasta(movimientoSearch.getFechas().getFechaHasta());
 					filtrosVenta.setFechas(fechas);
-				}else {
+			}else {
 					model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
 					model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 					model.addAttribute("mensajeError", "Los valores de las fechas son invalidos");
@@ -1332,8 +1351,8 @@ public class SolicitudController {
 						model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
 						return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
 					}
-				}
 			}
+			
 			
 			
 			
@@ -1341,15 +1360,22 @@ public class SolicitudController {
 			movimientosRequest.setFiltros(filtrosVenta);
 			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
 			if(responseVenta != null) {
-				datosPaginacionVenta = responseVenta.getDatosPaginacion();
-				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				listaMovimientosVenta = responseVenta.getMovimientos();
-				if(listaMovimientosVenta.isEmpty())
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
 				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
 				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
+				if(!listaMovimientosVenta.isEmpty()) {
+					datosPaginacionVenta = responseVenta.getDatosPaginacion();
+					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				}else {
+					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+				}
+					
+				
 				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				model.addAttribute("estatus", movimientoSearch.getEstatus());
+				model.addAttribute("fechaDesde", movimientoSearch.getFechas().getFechaDesde());
+				model.addAttribute("fechaHasta", movimientoSearch.getFechas().getFechaHasta());
 				
 				movimientosRequest.setNumeroPagina(1);
 				movimientosRequest.setTamanoPagina(10);
@@ -1359,14 +1385,17 @@ public class SolicitudController {
 				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
 				
 				if(responseCompra != null) {
-					datosPaginacionCompra = responseCompra.getDatosPaginacion();
-					log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					listaMovimientosCompra = responseCompra.getMovimientos();
 					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
 					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+					if(!listaMovimientosCompra.isEmpty()) {
+						datosPaginacionCompra = responseCompra.getDatosPaginacion();
+						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					}else {
+						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+					}
 					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
 					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					model.addAttribute("estatus", movimientoSearch.getEstatus());
 					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
 					
 					
@@ -1388,8 +1417,9 @@ public class SolicitudController {
 		
 	}
 	
-	@GetMapping("/listaSolicitudesMovimientosVentas/{page}/{estatus}")
-	public String consultaMovimientoVentaSearchEstatus(@PathVariable("page") int page,@PathVariable("estatus") int estatus, Model model) {
+	@GetMapping("/listaSolicitudesMovimientosVentas/{page}/{estatus}/{fechaDesde}/{fechaHasta}")
+	public String consultaMovimientoVentaSearchEstatus(@PathVariable("page") int page,@PathVariable("estatus") int estatus, 
+			@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta,Model model) {
 		log.info("page: "+page);
 		log.info("estatus: "+estatus);
 		MovimientosRequest movimientosRequest = new MovimientosRequest();
@@ -1399,26 +1429,30 @@ public class SolicitudController {
 		movimientosRequest.setCanal("8");
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
 		
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(page);
 			movimientosRequest.setTamanoPagina(10);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			filtrosVenta.setEstatus(estatus);
-			movimientosRequest.setFiltros(filtrosVenta);
-			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
-			if(responseVenta != null) {
-				datosPaginacionVenta = responseVenta.getDatosPaginacion();
-				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
-				listaMovimientosVenta = responseVenta.getMovimientos();
-				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
-				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
+			
+			
+			
+			
+			if(isFechaValidaDesdeHasta(fechaDesde, fechaHasta)) {
+				Fechas fechas = new Fechas();
+				fechas.setFechaDesde(fechaDesde);
+				fechas.setFechaHasta(fechaHasta);
+				filtrosVenta.setFechas(fechas);
+			}else {
 				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				model.addAttribute("mensajeError", "Los valores de las fechas son invalidos");
+				//return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
 				
 				movimientosRequest.setNumeroPagina(1);
 				movimientosRequest.setTamanoPagina(10);
@@ -1435,7 +1469,57 @@ public class SolicitudController {
 					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
 					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					model.addAttribute("estatus", estatus);
+					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					
+					
+					
+				}else {
+					datosPaginacionCompra.setTotalPaginas(0);
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+				}
+			}
+			
+			
+			
+			movimientosRequest.setFiltros(filtrosVenta);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			if(responseVenta != null) {
+				
+				
+				listaMovimientosVenta = responseVenta.getMovimientos();
+				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
+				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
+				if(!listaMovimientosVenta.isEmpty()) {
+					datosPaginacionVenta = responseVenta.getDatosPaginacion();
+					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
+				}else {
+					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");	
+				}
+					
+				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
+				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				model.addAttribute("estatus", estatus);
+				model.addAttribute("fechaDesde", fechaDesde);
+				model.addAttribute("fechaHasta", fechaHasta);
+				
+				movimientosRequest.setNumeroPagina(1);
+				movimientosRequest.setTamanoPagina(10);
+				Movimiento filtrosCompra = new Movimiento();
+				filtrosCompra.setTipoTransaccion("C");
+				movimientosRequest.setFiltros(filtrosCompra);
+				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
+				
+				if(responseCompra != null) {
+					datosPaginacionCompra = responseCompra.getDatosPaginacion();
+					log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					listaMovimientosCompra = responseCompra.getMovimientos();
+					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
+					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					
 					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
 					
 					
@@ -1469,10 +1553,10 @@ public class SolicitudController {
 		movimientosRequest.setCanal("8");
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
 		
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(10);
@@ -1494,18 +1578,41 @@ public class SolicitudController {
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				filtrosCompra.setEstatus(movimientoSearch.getEstatus());
+				
+				
+				if(isFechaValidaDesdeHasta(movimientoSearch.getFechas().getFechaDesde(), movimientoSearch.getFechas().getFechaHasta())) {
+					Fechas fechas = new Fechas();
+					fechas.setFechaDesde(movimientoSearch.getFechas().getFechaDesde());
+					fechas.setFechaHasta(movimientoSearch.getFechas().getFechaHasta());
+					filtrosCompra.setFechas(fechas);
+				}else {
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute("mensajeErrorCompra", "Los valores de las fechas son invalidos");
+					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+				}
+				
+				
+				
+				
 				movimientosRequest.setFiltros(filtrosCompra);
 				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
 				
 				if(responseCompra != null) {
-					datosPaginacionCompra = responseCompra.getDatosPaginacion();
-					log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					
 					listaMovimientosCompra = responseCompra.getMovimientos();
 					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
 					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
+					if(!listaMovimientosCompra.isEmpty()) {
+						datosPaginacionCompra = responseCompra.getDatosPaginacion();
+						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
+					}else {
+						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+					}
 					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
 					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
 					model.addAttribute("estatus", movimientoSearch.getEstatus());
+					model.addAttribute("fechaDesde", movimientoSearch.getFechas().getFechaDesde());
+					model.addAttribute("fechaHasta", movimientoSearch.getFechas().getFechaHasta());
 					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
 					
 					
@@ -1527,8 +1634,9 @@ public class SolicitudController {
 		
 	}
 	
-	@GetMapping("/listaSolicitudesMovimientosCompras/{page}/{estatus}")
-	public String consultaMovimientoCompraSearchEstatus(@PathVariable("page") int page,@PathVariable("estatus") int estatus, Model model) {
+	@GetMapping("/listaSolicitudesMovimientosCompras/{page}/{estatus}/{fechaDesde}/{fechaHasta}")
+	public String consultaMovimientoCompraSearchEstatus(@PathVariable("page") int page,@PathVariable("estatus") int estatus,
+			@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta,Model model) {
 		log.info("page: "+page);
 		log.info("estatus: "+estatus);
 		MovimientosRequest movimientosRequest = new MovimientosRequest();
@@ -1538,10 +1646,10 @@ public class SolicitudController {
 		movimientosRequest.setCanal("8");
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
 		
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(10);
@@ -1563,6 +1671,26 @@ public class SolicitudController {
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				filtrosCompra.setEstatus(estatus);
+				
+				
+				if(isFechaValidaDesdeHasta(fechaDesde, fechaHasta)) {
+					Fechas fechas = new Fechas();
+					fechas.setFechaDesde(fechaDesde);
+					fechas.setFechaHasta(fechaHasta);
+					filtrosCompra.setFechas(fechas);
+				}else {
+					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute("mensajeErrorCompra", "Los valores de las fechas son invalidos");
+					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+				}
+				
+				
+				
+				
+				
+				
+				
+				
 				movimientosRequest.setFiltros(filtrosCompra);
 				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
 				

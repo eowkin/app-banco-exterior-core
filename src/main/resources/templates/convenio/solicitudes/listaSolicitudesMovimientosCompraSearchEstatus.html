@@ -77,31 +77,55 @@
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado Movimientos Venta
 		             <p align="right"></p>
-		            <div class="my-2 text-right">
-         					<form th:action="@{/solicitudes/searchEstatus}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
-        						<div>
-            					<select  class="form-control" th:field="*{estatus}"  name="estatus" required="required">
-					                <option value = "">----Selecionar Estatus----</option>
-					                <option value = "0" >Por Aprobar</option>
-					                <option value = "1" >Aprobada Automática</option>
-					                <option value = "2" >Aprobada Funcional</option>
-					                <option value = "3" >Rechazada Automática</option>
-					                <option value = "4" >Rechazada Funcional</option>
-					              </select>
+		            <div class="my-2">
+         					<form th:action="@{/solicitudes/searchEstatus}"  th:object="${movimientoSearch}"  method="get" class="form-horizontal">
+        						<div class="form-group row">
+						            <label class="col-sm-2 col-form-label" for="estatus">Estatus:</label>
+						            <div class="col-sm-3">
+						              <select  class="form-control" th:field="*{estatus}"  name="estatus" required="required">
+								                <option value = "">----Selecionar Estatus----</option>
+								                <option value = "0" >Por Aprobar</option>
+								                <option value = "1" >Aprobada Automática</option>
+								                <option value = "2" >Aprobada Funcional</option>
+								                <option value = "3" >Rechazada Automática</option>
+								                <option value = "4" >Rechazada Funcional</option>
+								              </select>
+						            </div>
+						          </div>  
+            						<div class="form-group row">
+							            <label class="col-sm-2 col-form-label" for="input-large">Fecha Desde:</label>
+							            <div class="col-sm-3">
+							              <input type="date" class="form-control" th:field="*{fechas.fechaDesde}" name="fechas.fechaDesde" id="fechas.fechaDesde" placeholder="Fecha desde" required="required">
+							            </div>
+							          </div>
+							          
+							          <div class="form-group row">
+							            <label class="col-sm-2 col-form-label" for="input-large">Fecha Hasta:</label>
+							            <div class="col-sm-3">
+							              <input type="date" class="form-control" th:field="*{fechas.fechaHasta}" name="fechas.fechaHasta" id="fechas.fechaHasta" placeholder="Fecha hasta" required="required">
+							            </div>
+							          </div>
             					
             					
-            					
-            					<button type="submit" class="btn btn-primary mb-3">Buscar por estatus</button>
-            					</div>            
+            					<div>
+		        					<button type="submit" class="btn btn-primary">Consultar</button>
+		      	 				 </div>
+            					         
           					</form>
         			</div>
 		            
-		            
+		            <!-- 
 		            <div class="my-2 text-right">
 		              	<a class="btn btn-primary" th:href="@{/solicitudes/movimientos/export/excel}" title="Exportar Excel" role="button">Exportar a Excel</a>
-		            </div>
+		            </div> -->
 		          </div><!--/.card-header-->
 		          <div class="card-body">
+		          	<div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
+		            		Ocurrio los siguientes errores:
+		            		<ul>
+		            			<li th:text="${mensajeError}"></li>
+		            		</ul>
+		            	</div>
 		            <table class="table">
 		              <thead>
 		                <tr>
@@ -148,26 +172,7 @@
 		            	</ul> 
 		            </nav>
 		            
-		            <!-- vacantes.totalPages = datosPaginacion.totalPaginas -->
-		            <!-- vacantes.number = datosPaginacion.paginaActual -->
-		            <!-- th:href="@{/vacantes/indexPaginate(page=${datosPaginacion.paginaActual - 1})}" -->
-		            <!-- th:href="@{/vacantes/indexPaginate?page={tmpPag} (tmpPag=${i}) }" -->
-		            <!-- th:href="@{/vacantes/indexPaginate(page=${datosPaginacion.paginaActual + 1})}" -->
-		            <!--<nav th:if="${datosPaginacionVenta.totalPaginas > 0}" aria-label="Page navigation example" >
-						<ul class="pagination justify-content-center">
-							<li class="page-item" th:classappend="${datosPaginacionVenta.paginaActual == 1 ? 'disabled' : ''}">
-								<a th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}  (page=${datosPaginacionVenta.paginaActual - 1})}" class="page-link">Anterior</a>
-							</li>
-							
-							<li class="page-item" th:classappend="${i eq datosPaginacionVenta.paginaActual} ? 'active'" th:each="i : ${#numbers.sequence( 1, datosPaginacionVenta.totalPaginas, 1)}">
-								<a class="page-link" th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{tmpPag} (tmpPag=${i}) }" th:text="${i}" th:title="${'Page '+ i}" data-toggle="tooltip"></a>
-							</li>
-							<li class="page-item" th:classappend="${datosPaginacionVenta.paginaActual == (datosPaginacionVenta.totalPaginas) ? 'disabled' : ''}">
-								<a  th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/{page}  (page=${datosPaginacionVenta.paginaActual + 1})}"  class="page-link">Siguiente</a>
-							</li>
-						</ul>
-					</nav>-->
-		            
+		           
 		            
 		             
 		          </div><!--/.card-body-->
@@ -184,29 +189,54 @@
 		        <div class="card">
 		          <div class="card-header">
 		            <i class="fa fa-align-justify"></i> Listado Movimientos Compra
-		            <div class="my-2 text-right">
-         					<form th:action="@{/solicitudes/searchEstatusCompra}"  th:object="${movimientoSearch}"  method="get" class="form-inline">
-        						<div>
-            					<select  class="form-control" th:field="*{estatus}"  name="estatus" required="required">
-					                <option value = "">----Selecionar Estatus----</option>
-					                <option value = "0" >Por Aprobar</option>
-					                <option value = "1" >Aprobada Automática</option>
-					                <option value = "2" >Aprobada Funcional</option>
-					                <option value = "3" >Rechazada Automática</option>
-					                <option value = "4" >Rechazada Funcional</option>
-					              </select>
+		            <div class="my-2">
+         					<form th:action="@{/solicitudes/searchEstatusCompra}"  th:object="${movimientoSearch}"  method="get" class="form-horizontal">
+        						<div class="form-group row">
+						            <label class="col-sm-2 col-form-label" for="estatus">Estatus:</label>
+						            <div class="col-sm-3">
+						              <select  class="form-control" th:field="*{estatus}"  name="estatus" required="required">
+								                <option value = "">----Selecionar Estatus----</option>
+								                <option value = "0" >Por Aprobar</option>
+								                <option value = "1" >Aprobada Automática</option>
+								                <option value = "2" >Aprobada Funcional</option>
+								                <option value = "3" >Rechazada Automática</option>
+								                <option value = "4" >Rechazada Funcional</option>
+								              </select>
+						            </div>
+						          </div>  
+            						<div class="form-group row">
+							            <label class="col-sm-2 col-form-label" for="input-large">Fecha Desde:</label>
+							            <div class="col-sm-3">
+							              <input type="date" class="form-control" th:field="*{fechas.fechaDesde}" name="fechas.fechaDesde" id="fechas.fechaDesde" placeholder="Fecha desde" required="required">
+							            </div>
+							          </div>
+							          
+							          <div class="form-group row">
+							            <label class="col-sm-2 col-form-label" for="input-large">Fecha Hasta:</label>
+							            <div class="col-sm-3">
+							              <input type="date" class="form-control" th:field="*{fechas.fechaHasta}" name="fechas.fechaHasta" id="fechas.fechaHasta" placeholder="Fecha hasta" required="required">
+							            </div>
+							          </div>
             					
             					
-            					
-            					<button type="submit" class="btn btn-primary mb-3">Buscar por estatus</button>
-            					</div>            
+            					<div>
+		        					<button type="submit" class="btn btn-primary">Consultar</button>
+		      	 				 </div>
+            					         
           					</form>
         			</div>
+		            <!--  
 		            <div class="my-2 text-right">
 		              	<a class="btn btn-primary" th:href="@{/solicitudes/movimientosCompras/export/excel}" title="Exportar Excel" role="button">Exportar a Excel</a>
-		            </div>
+		            </div>-->
 		          </div><!--/.card-header-->
 		          <div class="card-body">
+		          	<div th:if="${mensajeErrorCompra != null}" class="alert alert-danger" role="alert">
+		            		Ocurrio los siguientes errores:
+		            		<ul>
+		            			<li th:text="${mensajeErrorCompra}"></li>
+		            		</ul>
+		            	</div>
 		            <table class="table">
 		              <thead>
 		                <tr>
@@ -241,38 +271,18 @@
 		            <nav th:if="${datosPaginacionCompra.totalPaginas > 0}" aria-label="Page navigation example" > 
 		            	<ul class="pagination justify-content-center">         
 		            		<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == 1 ? 'disabled' : ''}">
-		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}/{estatus}  (page=${datosPaginacionCompra.paginaActual - 1}, estatus=${estatus})}" class="page-link">Anterior</a>
+		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}/{estatus}/{fechaDesde}/{fechaHasta}  (page=${datosPaginacionCompra.paginaActual - 1}, estatus=${estatus}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta})}" class="page-link">Anterior</a>
 		            		</li> 
 		            		<li class="page-item">
 								<a class="page-link"  th:text="${'Pagina '+ datosPaginacionCompra.paginaActual + ' - '+ datosPaginacionCompra.totalPaginas}" th:title="${'Page '+ datosPaginacionCompra.paginaActual}" data-toggle="tooltip"></a>
 							</li>
 		            		<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == (datosPaginacionCompra.totalPaginas) ? 'disabled' : ''}">
-		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}/{estatus}  (page=${datosPaginacionCompra.paginaActual + 1}, estatus=${estatus})}" class="page-link">Siguiente</a>
+		            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}/{estatus}/{fechaDesde}/{fechaHasta}  (page=${datosPaginacionCompra.paginaActual + 1}, estatus=${estatus}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta})}" class="page-link">Siguiente</a>
 		            		</li>  
 		            	</ul> 
 		            </nav>
 		            
-		            <!-- vacantes.totalPages = datosPaginacion.totalPaginas -->
-		            <!-- vacantes.number = datosPaginacion.paginaActual -->
-		            <!-- th:href="@{/vacantes/indexPaginate(page=${datosPaginacion.paginaActual - 1})}" -->
-		            <!-- th:href="@{/vacantes/indexPaginate?page={tmpPag} (tmpPag=${i}) }" -->
-		            <!-- th:href="@{/vacantes/indexPaginate(page=${datosPaginacion.paginaActual + 1})}" -->
-		            
-		            <!--
-		            <nav th:if="${datosPaginacionCompra.totalPaginas > 0}" aria-label="Page navigation example" >
-						<ul class="pagination justify-content-center">
-							<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == 1 ? 'disabled' : ''}">
-								<a th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}  (page=${datosPaginacionCompra.paginaActual - 1})}" class="page-link">Anterior</a>
-							</li>
-							
-							<li class="page-item" th:classappend="${i eq datosPaginacionCompra.paginaActual} ? 'active'" th:each="i : ${#numbers.sequence( 1, datosPaginacionCompra.totalPaginas, 1)}">
-								<a class="page-link" th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{tmpPag} (tmpPag=${i}) }" th:text="${i}" th:title="${'Page '+ i}" data-toggle="tooltip"></a>
-							</li>
-							<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == (datosPaginacionCompra.totalPaginas) ? 'disabled' : ''}">
-								<a  th:href="@{/solicitudes/listaSolicitudesMovimientosCompras/{page}  (page=${datosPaginacionCompra.paginaActual + 1})}"  class="page-link">Siguiente</a>
-							</li>
-						</ul>
-					</nav>-->
+		          
 		            
 		            
 		             
