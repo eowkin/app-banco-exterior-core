@@ -12,6 +12,8 @@ public interface IMovimientosApiRest {
 
 	public MovimientosResponse consultarMovimientosPorAprobar(MovimientosRequest movimientosRequest) throws CustomException;
 	
+	public MovimientosResponse consultarMovimientosPorAprobarVenta(MovimientosRequest movimientosRequest) throws CustomException;
+	
 	public MovimientosResponse consultarMovimientos(MovimientosRequest movimientosRequest) throws CustomException;
 	
 	public List<Movimiento> getListaMovimientos(MovimientosRequest movimientosRequest) throws CustomException;

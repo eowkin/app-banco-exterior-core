@@ -441,7 +441,7 @@ public class LimitesGeneralesController {
 		limiteRequest.setCanal("8");
 		LimitesGenerales limite = new LimitesGenerales();
 		if(!limitesGeneralesSearch.getCodMoneda().equals(""))
-			limite.setCodMoneda(limitesGeneralesSearch.getCodMoneda());
+			limite.setCodMoneda(limitesGeneralesSearch.getCodMoneda().toUpperCase());
 		limiteRequest.setLimite(limite);
 		
 		try {

@@ -85,19 +85,41 @@ public class SolicitudController {
 		try {
 			Venta ventaAcumuladoUSD = acumuladosVenta("USD");
 			log.info("ventaAcumuladoUSD: "+ventaAcumuladoUSD);
+			if(ventaAcumuladoUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+				ventaAcumuladoUSD.setMonto(new BigDecimal("0.00"));
+			}
 			model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
 			Venta ventaAcumuladoEUR = acumuladosVenta("EUR");
 			log.info("ventaAcumuladoEUR: "+ventaAcumuladoEUR);
+			if(ventaAcumuladoEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+				ventaAcumuladoEUR.setMonto(new BigDecimal("0.00"));
+			}
 			model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
 			BigDecimal montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
+			if(montoBsTotalVenta.compareTo(BigDecimal.ZERO) == 0) { 			
+				log.info("si es 0");
+				montoBsTotalVenta = new BigDecimal("0.00");
+			}
+			log.info("montoBsTotalVenta: "+montoBsTotalVenta);
 			model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
 			Compra compraAcumuladoUSD = acumuladosCompra("USD");
 			log.info("compraAcumuladoUSD: "+compraAcumuladoUSD);
+			if(compraAcumuladoUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+				compraAcumuladoUSD.setMonto(new BigDecimal("0.00"));
+			}
 			model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
 			Compra compraAcumuladoEUR = acumuladosCompra("EUR");
+			if(compraAcumuladoEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+				compraAcumuladoEUR.setMonto(new BigDecimal("0.00"));
+			}
 			log.info("compraAcumuladoEUR: "+compraAcumuladoEUR);
 			model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
 			BigDecimal montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
+			if(montoBsTotalCompra.compareTo(BigDecimal.ZERO) == 0) { 			
+				log.info("si es 0");
+				montoBsTotalCompra = new BigDecimal("0.00");
+			}
+			log.info("montoBsTotalCompra: "+montoBsTotalCompra);
 			model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
 			
 			
@@ -120,12 +142,12 @@ public class SolicitudController {
 			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
 			
 			movimientosRequest.setNumeroPagina(page);
-			movimientosRequest.setTamanoPagina(5);
+			movimientosRequest.setTamanoPagina(10);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			filtrosVenta.setEstatus(0);
 			movimientosRequest.setFiltros(filtrosVenta);
-			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientosPorAprobar(movimientosRequest);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientosPorAprobarVenta(movimientosRequest);
 			if(responseVenta != null) {
 				datosPaginacionVenta = responseVenta.getDatosPaginacion();
 				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
@@ -136,7 +158,7 @@ public class SolicitudController {
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(1);
-				movimientosRequest.setTamanoPagina(5);
+				movimientosRequest.setTamanoPagina(10);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				filtrosCompra.setEstatus(0);
@@ -189,19 +211,41 @@ public class SolicitudController {
 		try {
 			Venta ventaAcumuladoUSD = acumuladosVenta("USD");
 			log.info("ventaAcumuladoUSD: "+ventaAcumuladoUSD);
+			if(ventaAcumuladoUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+				ventaAcumuladoUSD.setMonto(new BigDecimal("0.00"));
+			}
 			model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
 			Venta ventaAcumuladoEUR = acumuladosVenta("EUR");
 			log.info("ventaAcumuladoEUR: "+ventaAcumuladoEUR);
+			if(ventaAcumuladoEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+				ventaAcumuladoEUR.setMonto(new BigDecimal("0.00"));
+			}
 			model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
 			BigDecimal montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
+			if(montoBsTotalVenta.compareTo(BigDecimal.ZERO) == 0) { 			
+				log.info("si es 0");
+				montoBsTotalVenta = new BigDecimal("0.00");
+			}
+			log.info("montoBsTotalVenta: "+montoBsTotalVenta);
 			model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
 			Compra compraAcumuladoUSD = acumuladosCompra("USD");
 			log.info("compraAcumuladoUSD: "+compraAcumuladoUSD);
+			if(compraAcumuladoUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+				compraAcumuladoUSD.setMonto(new BigDecimal("0.00"));
+			}
 			model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
 			Compra compraAcumuladoEUR = acumuladosCompra("EUR");
+			if(compraAcumuladoEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+				compraAcumuladoEUR.setMonto(new BigDecimal("0.00"));
+			}
 			log.info("compraAcumuladoEUR: "+compraAcumuladoEUR);
 			model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
 			BigDecimal montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
+			if(montoBsTotalCompra.compareTo(BigDecimal.ZERO) == 0) { 			
+				log.info("si es 0");
+				montoBsTotalCompra = new BigDecimal("0.00");
+			}
+			log.info("montoBsTotalCompra: "+montoBsTotalCompra);
 			model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
 			
 			
@@ -223,14 +267,13 @@ public class SolicitudController {
 			BigDecimal montoBsTotalPorAprobarCompra =  compraPorAprobarEUR.getMontoBs().add(compraPorAprobarUSD.getMontoBs());
 			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
 			
-			
 			movimientosRequest.setNumeroPagina(1);
-			movimientosRequest.setTamanoPagina(5);
+			movimientosRequest.setTamanoPagina(10);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			filtrosVenta.setEstatus(0);
 			movimientosRequest.setFiltros(filtrosVenta);
-			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientosPorAprobar(movimientosRequest);
+			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientosPorAprobarVenta(movimientosRequest);
 			if(responseVenta != null) {
 				datosPaginacionVenta = responseVenta.getDatosPaginacion();
 				log.info("datosPaginacionVenta: "+datosPaginacionVenta);
@@ -241,7 +284,7 @@ public class SolicitudController {
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(page);
-				movimientosRequest.setTamanoPagina(5);
+				movimientosRequest.setTamanoPagina(10);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				filtrosCompra.setEstatus(0);
@@ -1095,7 +1138,7 @@ public class SolicitudController {
 		datosConsulta.setFechaHasta(fecha(new Date()));
 		acumuladoRequest.setDatosConsulta(datosConsulta);
 		List<Venta> listaVenta = new ArrayList<>();
-		Venta ventaRes = new Venta("","", new BigDecimal(0), new BigDecimal(0));
+		Venta ventaRes = new Venta("","", new BigDecimal("0.00"), new BigDecimal("0.00"));
 		try {
 			AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = acumuladosServiceApiRest.consultarAcumuladosCompraVenta(acumuladoRequest);
 			if(acumuladoCompraVentaResponse.getResultado().getCodigo().equals("0000")) {
@@ -1130,7 +1173,7 @@ public class SolicitudController {
 		datosConsulta.setFechaHasta(fecha(new Date()));
 		acumuladoRequest.setDatosConsulta(datosConsulta);
 		List<Compra> listaCompra = new ArrayList<>();
-		Compra compraRes = new Compra("","", new BigDecimal(0), new BigDecimal(0));
+		Compra compraRes = new Compra("","", new BigDecimal("0.00"), new BigDecimal("0.00"));
 		try {
 			AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = acumuladosServiceApiRest.consultarAcumuladosCompraVenta(acumuladoRequest);
 			if(acumuladoCompraVentaResponse.getResultado().getCodigo().equals("0000")) {
@@ -1186,7 +1229,7 @@ public class SolicitudController {
 		datosConsulta.setFechaHasta(fecha(new Date()));
 		acumuladoRequest.setDatosConsulta(datosConsulta);
 		List<Venta> listaPorAprobarVenta = new ArrayList<>();
-		Venta ventaPorAprobarRes = new Venta("","", new BigDecimal(0), new BigDecimal(0));
+		Venta ventaPorAprobarRes = new Venta("","", new BigDecimal("0.00"), new BigDecimal("0.00"));
 		try {
 			AcumuladoResponse acumuladoResponse = acumuladosServiceApiRest.consultarAcumuladosDiariosBanco(acumuladoRequest);
 			if(acumuladoResponse.getResultado().getCodigo().equals("0000")) {
@@ -1219,7 +1262,7 @@ public class SolicitudController {
 		datosConsulta.setFechaHasta(fecha(new Date()));
 		acumuladoRequest.setDatosConsulta(datosConsulta);
 		List<Compra> listaPorAprobarCompra = new ArrayList<>();
-		Compra compraPorAprobarRes = new Compra("","", new BigDecimal(0), new BigDecimal(0));
+		Compra compraPorAprobarRes = new Compra("","", new BigDecimal("0.00"), new BigDecimal("0.00"));
 		try {
 			AcumuladoResponse acumuladoResponse = acumuladosServiceApiRest.consultarAcumuladosDiariosBanco(acumuladoRequest);
 			if(acumuladoResponse.getResultado().getCodigo().equals("0000")) {

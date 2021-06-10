@@ -273,7 +273,7 @@ public class MonedaController {
 		monedasRequest.setCanal("8");
 		Moneda moneda = new Moneda();
 		if(!monedaSearch.getCodMoneda().equals("")) {
-			moneda.setCodMoneda(monedaSearch.getCodMoneda());
+			moneda.setCodMoneda(monedaSearch.getCodMoneda().toUpperCase());
 		}
 		monedasRequest.setMoneda(moneda);
 		List<Moneda> listMonedas = new ArrayList<>();
