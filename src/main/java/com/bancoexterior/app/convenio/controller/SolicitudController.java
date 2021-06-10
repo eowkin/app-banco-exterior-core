@@ -1242,49 +1242,19 @@ public class SolicitudController {
 	}
 	
 	@ModelAttribute
-	public void setGenericos(Model model) {
+	public void setGenericos(Model model, HttpServletRequest request) {
 		Movimiento movimientoSearch = new Movimiento();
 		model.addAttribute("movimientoSearch", movimientoSearch);
 		log.info("se ejecuta setGenericos");
-		//acumuladosCompraVenta();
-		//ofertasPorAprobar();
-		/*
-		Venta ventaAcumuladoUSD = acumuladosVenta("USD");
-		log.info("ventaAcumuladoUSD: "+ventaAcumuladoUSD);
-		model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
-		Venta ventaAcumuladoEUR = acumuladosVenta("EUR");
-		log.info("ventaAcumuladoEUR: "+ventaAcumuladoEUR);
-		model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
-		BigDecimal montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
-		model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
-		Compra compraAcumuladoUSD = acumuladosCompra("USD");
-		log.info("compraAcumuladoUSD: "+compraAcumuladoUSD);
-		model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
-		Compra compraAcumuladoEUR = acumuladosCompra("EUR");
-		log.info("compraAcumuladoEUR: "+compraAcumuladoEUR);
-		model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
-		BigDecimal montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
-		model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
-		
-		
-		Venta ventaPorAprobarUSD = acumuladosPorAprobarVenta("USD");
-		log.info("ventaPorAprobarUSD: "+ventaPorAprobarUSD);
-		model.addAttribute("ventaPorAprobarUSD", ventaPorAprobarUSD);
-		Venta ventaPorAprobarEUR = acumuladosPorAprobarVenta("EUR");
-		log.info("ventaPorAprobarEUR: "+ventaPorAprobarEUR);
-		model.addAttribute("ventaPorAprobarEUR", ventaPorAprobarEUR);
-		BigDecimal montoBsTotalPorAprobarVenta =  ventaPorAprobarEUR.getMontoBs().add(ventaPorAprobarUSD.getMontoBs());
-		model.addAttribute("montoBsTotalPorAprobarVenta", montoBsTotalPorAprobarVenta);
-		
-		Compra compraPorAprobarUSD = acumuladosPorAprobarCompra("USD");
-		log.info("compraPorAprobarUSD: "+compraPorAprobarUSD);
-		model.addAttribute("compraPorAprobarUSD", compraPorAprobarUSD);
-		Compra compraPorAprobarEUR = acumuladosPorAprobarCompra("EUR");
-		log.info("compraPorAprobarEUR: "+compraPorAprobarEUR);
-		model.addAttribute("compraPorAprobarEUR", compraPorAprobarEUR);
-		BigDecimal montoBsTotalPorAprobarCompra =  compraPorAprobarEUR.getMontoBs().add(compraPorAprobarUSD.getMontoBs());
-		model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
-		*/
+		String uri = request.getRequestURI();
+		log.info("uri: "+uri);
+		String[] arrUri = uri.split("/");
+
+		arrUri[0] = "Home";
+		for (String string : arrUri) {
+			log.info("string: "+string);
+		}
+		model.addAttribute("arrUri", arrUri);
 		
 	}
 	

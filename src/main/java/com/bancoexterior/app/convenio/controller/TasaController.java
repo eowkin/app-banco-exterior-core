@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -17,6 +17,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -263,6 +264,18 @@ public class TasaController {
 		
 	}	
 	
+	@ModelAttribute
+	public void setGenericos(Model model, HttpServletRequest request) {
+		String uri = request.getRequestURI();
+		log.info("uri: "+uri);
+		String[] arrUri = uri.split("/");
+
+		arrUri[0] = "Home";
+		for (String string : arrUri) {
+			log.info("string: "+string);
+		}
+		model.addAttribute("arrUri", arrUri);
+	}
 	
 	
 	

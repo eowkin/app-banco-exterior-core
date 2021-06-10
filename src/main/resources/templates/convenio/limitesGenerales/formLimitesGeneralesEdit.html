@@ -49,12 +49,13 @@
     </div>
     <main class="main">
       <!-- Breadcrumb-->
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">Home</li>
+     <ol class="breadcrumb">
+      	<li class="breadcrumb-item" th:each="uri : ${arrUri}" th:text="${uri}">Home</li>
+        <!--  
         <li class="breadcrumb-item">
           <a href="#">Admin</a>
         </li>
-        <li class="breadcrumb-item active">Dashboard</li>
+        <li class="breadcrumb-item active">Dashboard</li>-->
       </ol>
       <div class="container-fluid">
         <div class="animated fadeIn">

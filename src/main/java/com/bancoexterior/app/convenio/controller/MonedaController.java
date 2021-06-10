@@ -5,8 +5,10 @@ package com.bancoexterior.app.convenio.controller;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +66,7 @@ public class MonedaController {
 			listMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 			
 			for (Moneda moneda2 : listMonedas) {
-				log.info(moneda2.getFechaModificacion());
+				//log.info(moneda2.getFechaModificacion());
 				if(moneda2.getFechaModificacion() != null) {
 					String[] arrOfStr = moneda2.getFechaModificacion().split(" ", 2);
 					moneda2.setFechaModificacion(arrOfStr[0]);
@@ -309,9 +311,18 @@ public class MonedaController {
 	}
 	
 	@ModelAttribute
-	public void setGenericos(Model model) {
+	public void setGenericos(Model model, HttpServletRequest request) {
 		Moneda monedaSearch = new Moneda();
 		model.addAttribute("monedaSearch", monedaSearch);
+		String uri = request.getRequestURI();
+		log.info("uri: "+uri);
+		String[] arrUri = uri.split("/");
+
+		arrUri[0] = "Home";
+		for (String string : arrUri) {
+			log.info("string: "+string);
+		}
+		model.addAttribute("arrUri", arrUri);
 	}
 	
 	
