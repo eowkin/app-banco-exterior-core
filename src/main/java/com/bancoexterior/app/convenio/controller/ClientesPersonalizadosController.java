@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +35,7 @@ import com.bancoexterior.app.convenio.model.DatosClientes;
 import com.bancoexterior.app.convenio.model.DatosPaginacion;
 import com.bancoexterior.app.convenio.model.LimitesPersonalizados;
 import com.bancoexterior.app.convenio.model.Moneda;
+import com.bancoexterior.app.util.LibreriaUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,6 +53,12 @@ public class ClientesPersonalizadosController {
 	@Autowired
 	private IMonedaServiceApiRest monedaServiceApiRest;
 	
+	@Autowired
+	private LibreriaUtil libreriaUtil; 
+	
+	@Value("${des.canal}")
+    private String canal;	
+	
 	
 	@GetMapping("/index/{page}")
 	public String index(@PathVariable("page") int page,Model model, RedirectAttributes redirectAttributes) {
@@ -57,11 +66,7 @@ public class ClientesPersonalizadosController {
 		log.info("page: "+page);
 		
 
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(page);
 		clienteRequest.setTamanoPagina(5);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
@@ -121,11 +126,7 @@ public class ClientesPersonalizadosController {
 
 		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
 
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
 		clienteRequest.setTamanoPagina(5);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
@@ -156,11 +157,7 @@ public class ClientesPersonalizadosController {
 
 		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
 
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
 		clienteRequest.setTamanoPagina(5);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
@@ -190,11 +187,7 @@ public class ClientesPersonalizadosController {
 
 		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
 
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		ClientesPersonalizados clientesPersonalizadosBuscar = new ClientesPersonalizados();
 		clientesPersonalizadosBuscar.setCodigoIbs(codigoIbs);
 		clienteRequest.setCliente(clientesPersonalizadosBuscar);
@@ -224,22 +217,14 @@ public class ClientesPersonalizadosController {
 		
 		List<LimitesPersonalizados> listaLimitesPersonalizados = new ArrayList<>();
 		
-		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
-		limitesPersonalizadosRequest.setIdUsuario("test");
-		limitesPersonalizadosRequest.setIdSesion("20210101121213");
-		limitesPersonalizadosRequest.setCodUsuario("E66666");
-		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = getLimitesPersonalizadosRequest();
 		LimitesPersonalizados limite = new LimitesPersonalizados();
 		limite.setCodigoIbs(codigoIbs);
 		limitesPersonalizadosRequest.setLimiteCliente(limite);
 		
 		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
 
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
 		clienteRequest.setTamanoPagina(5);
 		ClientesPersonalizados clientesPersonalizadosBuscar = new ClientesPersonalizados();
@@ -295,11 +280,7 @@ public class ClientesPersonalizadosController {
 		
 		
 		
-		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
-		limitesPersonalizadosRequest.setIdUsuario("test");
-		limitesPersonalizadosRequest.setIdSesion("20210101121213");
-		limitesPersonalizadosRequest.setCodUsuario("E66666");
-		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = getLimitesPersonalizadosRequest();
 		LimitesPersonalizados limitesP = new LimitesPersonalizados();
 		limitesP.setCodigoIbs(codigoIbs);
 		limitesP.setCodMoneda(codMoneda);
@@ -368,11 +349,7 @@ public class ClientesPersonalizadosController {
 		  }
 		
 		
-		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
-		limitesPersonalizadosRequest.setIdUsuario("test");
-		limitesPersonalizadosRequest.setIdSesion("20210101121213");
-		limitesPersonalizadosRequest.setCodUsuario("E66666");
-		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = getLimitesPersonalizadosRequest();
 		limitesPersonalizadosRequest.setLimiteCliente(limitesPersonalizados);
 		
 		try {
@@ -402,22 +379,14 @@ public class ClientesPersonalizadosController {
 		List<Moneda> listaMonedas = new ArrayList<>();
 		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
 
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
 		clienteRequest.setTamanoPagina(5);
 		ClientesPersonalizados clientesPersonalizadosBuscar = new ClientesPersonalizados();
 		clientesPersonalizadosBuscar.setCodigoIbs(codigoIbs);
 		clienteRequest.setCliente(clientesPersonalizadosBuscar);
 		
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		moneda.setFlagActivo(true);
 		monedasRequest.setMoneda(moneda);
@@ -449,11 +418,7 @@ public class ClientesPersonalizadosController {
 		
 		List<Moneda> listaMonedas = new ArrayList<>();
 		List<String> listaError = new ArrayList<>();
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		moneda.setFlagActivo(true);
 		monedasRequest.setMoneda(moneda);
@@ -525,11 +490,7 @@ public class ClientesPersonalizadosController {
 				}
 		  }
 		
-		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
-		limitesPersonalizadosRequest.setIdUsuario("test");
-		limitesPersonalizadosRequest.setIdSesion("20210101121213");
-		limitesPersonalizadosRequest.setCodUsuario("E66666");
-		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = getLimitesPersonalizadosRequest();
 		limitesPersonalizados.setFlagActivo(true);
 		limitesPersonalizadosRequest.setLimiteCliente(limitesPersonalizados);
 		
@@ -569,11 +530,7 @@ public class ClientesPersonalizadosController {
 		
 		LimitesPersonalizados limitesPersonalizadosEdit = new LimitesPersonalizados();
 		
-		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
-		limitesPersonalizadosRequest.setIdUsuario("test");
-		limitesPersonalizadosRequest.setIdSesion("20210101121213");
-		limitesPersonalizadosRequest.setCodUsuario("E66666");
-		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = getLimitesPersonalizadosRequest();
 		LimitesPersonalizados limitesP = new LimitesPersonalizados();
 		limitesP.setCodigoIbs(codigoIbs);
 		limitesP.setCodMoneda(codMoneda);
@@ -606,11 +563,7 @@ public class ClientesPersonalizadosController {
 		
 		LimitesPersonalizados limitesPersonalizadosEdit = new LimitesPersonalizados();
 		
-		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
-		limitesPersonalizadosRequest.setIdUsuario("test");
-		limitesPersonalizadosRequest.setIdSesion("20210101121213");
-		limitesPersonalizadosRequest.setCodUsuario("E66666");
-		limitesPersonalizadosRequest.setCanal("8");
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = getLimitesPersonalizadosRequest();
 		LimitesPersonalizados limitesP = new LimitesPersonalizados();
 		limitesP.setCodigoIbs(codigoIbs);
 		limitesP.setCodMoneda(codMoneda);
@@ -642,11 +595,7 @@ public class ClientesPersonalizadosController {
 
 		
 
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
 		clienteRequest.setTamanoPagina(5);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
@@ -717,11 +666,7 @@ public class ClientesPersonalizadosController {
 		log.info(clientesPersonalizadosSearch.getCodigoIbs());
 
 	
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
 		clienteRequest.setTamanoPagina(5);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
@@ -798,11 +743,7 @@ public class ClientesPersonalizadosController {
 
 		 
 		
-		ClienteDatosBasicoRequest clienteDatosBasicoRequest = new ClienteDatosBasicoRequest();
-		clienteDatosBasicoRequest.setIdUsuario("test");
-		clienteDatosBasicoRequest.setIdSesion("20210101121213");
-		clienteDatosBasicoRequest.setCodUsuario("E66666");
-		clienteDatosBasicoRequest.setCanal("8");
+		ClienteDatosBasicoRequest clienteDatosBasicoRequest = getClienteDatosBasicoRequest();
 		clienteDatosBasicoRequest.setIp(request.getRemoteAddr());
 		if(!clientesPersonalizados.getCodigoIbs().equals(""))
 			clienteDatosBasicoRequest.setCodigoIbs(clientesPersonalizados.getCodigoIbs());
@@ -841,11 +782,7 @@ public class ClientesPersonalizadosController {
 		log.info("saveWs");
 		log.info("clientesPersonalizados: "+clientesPersonalizados);
 		
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		clientesPersonalizados.setFlagActivo(true);
 		clienteRequest.setCliente(clientesPersonalizados);
 		
@@ -870,11 +807,7 @@ public class ClientesPersonalizadosController {
 		log.info("saveWs");
 		log.info("clientesPersonalizados: "+clientesPersonalizados);
 		
-		ClienteRequest clienteRequest = new ClienteRequest();
-		clienteRequest.setIdUsuario("test");
-		clienteRequest.setIdSesion("20210101121213");
-		clienteRequest.setCodUsuario("E66666");
-		clienteRequest.setCanal("8");
+		ClienteRequest clienteRequest = getClienteRequest();
 		clientesPersonalizados.setFlagActivo(true);
 		clienteRequest.setCliente(clientesPersonalizados);
 		
@@ -913,8 +846,47 @@ public class ClientesPersonalizadosController {
 		return "convenio/clientesPersonalizados/formClientesPersonalizadosBuscar";
 	}
 	
+	public ClienteRequest getClienteRequest() {
+		ClienteRequest clienteRequest = new ClienteRequest();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		clienteRequest.setIdUsuario(userName);
+		clienteRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		clienteRequest.setCodUsuario(userName);
+		clienteRequest.setCanal(canal);
+		return clienteRequest;
+	}
 	
+	public ClienteDatosBasicoRequest getClienteDatosBasicoRequest() {
+		ClienteDatosBasicoRequest clienteDatosBasicoRequest = new ClienteDatosBasicoRequest();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		clienteDatosBasicoRequest.setIdUsuario(userName);
+		clienteDatosBasicoRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		clienteDatosBasicoRequest.setCodUsuario(userName);
+		clienteDatosBasicoRequest.setCanal(canal);
+		return clienteDatosBasicoRequest;
+	}
+	
+	public LimitesPersonalizadosRequest getLimitesPersonalizadosRequest() {
+		LimitesPersonalizadosRequest limitesPersonalizadosRequest = new LimitesPersonalizadosRequest();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		limitesPersonalizadosRequest.setIdUsuario(userName);
+		limitesPersonalizadosRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		limitesPersonalizadosRequest.setCodUsuario(userName);
+		limitesPersonalizadosRequest.setCanal(canal);
+		return limitesPersonalizadosRequest;
+	}
 
+	public MonedasRequest getMonedasRequest() {
+		MonedasRequest monedasRequest = new MonedasRequest();
+		
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		monedasRequest.setIdUsuario(userName);
+		monedasRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		monedasRequest.setCodUsuario(userName);
+		monedasRequest.setCanal(canal);
+		return monedasRequest;
+	}
+	
 	@ModelAttribute
 	public void setGenericos(Model model, HttpServletRequest request) {
 		ClientesPersonalizados clientesPersonalizadosSearch = new ClientesPersonalizados();

@@ -12,6 +12,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,9 +42,9 @@ import com.bancoexterior.app.convenio.model.DatosPaginacion;
 import com.bancoexterior.app.convenio.model.Fechas;
 import com.bancoexterior.app.convenio.model.Moneda;
 import com.bancoexterior.app.convenio.model.Movimiento;
-import com.bancoexterior.app.convenio.model.Solicitud;
 import com.bancoexterior.app.convenio.model.Venta;
 import com.bancoexterior.app.util.ConsultaExcelExporter;
+import com.bancoexterior.app.util.LibreriaUtil;
 import com.bancoexterior.app.util.UserExcelExporter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +64,11 @@ public class SolicitudController {
 	@Autowired
 	private IMonedaServiceApiRest monedaServiceApiRest;
 	
+	@Autowired
+	private LibreriaUtil libreriaUtil; 
 	
+	@Value("${des.canal}")
+    private String canal;
 	
 	
 	
@@ -71,11 +77,7 @@ public class SolicitudController {
 	@GetMapping("/listaSolicitudesMovimientosPorAprobarVentas/{page}")
 	public String consultaMovimientoPorAprobarVenta(@PathVariable("page") int page,Model model) {
 		log.info("page: "+page);
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
 		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
@@ -197,11 +199,7 @@ public class SolicitudController {
 	@GetMapping("/listaSolicitudesMovimientosPorAprobarCompra/{page}")
 	public String consultaMovimientoPorAprobarCompra(@PathVariable("page") int page,Model model) {
 		log.info("page: "+page);
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
 		DatosPaginacion datosPaginacionVenta = new DatosPaginacion();
@@ -325,11 +323,8 @@ public class SolicitudController {
 	@GetMapping("/listaSolicitudesMovimientosVentas/{page}")
 	public String consultaMovimientoVenta(@PathVariable("page") int page,Model model) {
 		log.info("page: "+page);
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
+		
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
 		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
@@ -402,11 +397,8 @@ public class SolicitudController {
 	@GetMapping("/listaSolicitudesMovimientosCompras/{page}")
 	public String consultaMovimientoCompra(@PathVariable("page") int page,Model model) {
 		log.info("page: "+page);
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
+		
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
 		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
@@ -482,11 +474,8 @@ public class SolicitudController {
 		log.info("codOperacion: "+codOperacion);
 		log.info("page: "+page);
 		
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
+		
 		
 		Movimiento movimientoProcesar = new Movimiento();
 		
@@ -562,11 +551,7 @@ public class SolicitudController {
 			return "convenio/solicitudes/formSolicitud";
 		}
 		
-		AprobarRechazarRequest aprobarRechazarRequest = new AprobarRechazarRequest();
-		aprobarRechazarRequest.setIdUsuario("test");
-		aprobarRechazarRequest.setIdSesion("20210101121213");
-		aprobarRechazarRequest.setCodUsuario("E66666");
-		aprobarRechazarRequest.setCanal("8");
+		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
@@ -596,11 +581,8 @@ public class SolicitudController {
 		log.info("codOperacion: "+codOperacion);
 		log.info("page: "+page);
 		
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
+		
 		
 		Movimiento movimientoProcesar = new Movimiento();
 		
@@ -676,11 +658,7 @@ public class SolicitudController {
 			return "convenio/solicitudes/formSolicitudVenta";
 		}
 		
-		AprobarRechazarRequest aprobarRechazarRequest = new AprobarRechazarRequest();
-		aprobarRechazarRequest.setIdUsuario("test");
-		aprobarRechazarRequest.setIdSesion("20210101121213");
-		aprobarRechazarRequest.setCodUsuario("E66666");
-		aprobarRechazarRequest.setCanal("8");
+		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
@@ -714,11 +692,7 @@ public class SolicitudController {
 		
 		
 		
-		AprobarRechazarRequest aprobarRechazarRequest = new AprobarRechazarRequest();
-		aprobarRechazarRequest.setIdUsuario("test");
-		aprobarRechazarRequest.setIdSesion("20210101121213");
-		aprobarRechazarRequest.setCodUsuario("E66666");
-		aprobarRechazarRequest.setCanal("8");
+		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(codOperacion);
@@ -750,11 +724,7 @@ public class SolicitudController {
 		log.info("tasa: "+tasa);
 		log.info("page: "+page);
 		
-		AprobarRechazarRequest aprobarRechazarRequest = new AprobarRechazarRequest();
-		aprobarRechazarRequest.setIdUsuario("test");
-		aprobarRechazarRequest.setIdSesion("20210101121213");
-		aprobarRechazarRequest.setCodUsuario("E66666");
-		aprobarRechazarRequest.setCanal("8");
+		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(codOperacion);
@@ -787,11 +757,7 @@ public class SolicitudController {
 		log.info("page: "+page);
 		
 		
-		AprobarRechazarRequest aprobarRechazarRequest = new AprobarRechazarRequest();
-		aprobarRechazarRequest.setIdUsuario("test");
-		aprobarRechazarRequest.setIdSesion("20210101121213");
-		aprobarRechazarRequest.setCodUsuario("E66666");
-		aprobarRechazarRequest.setCanal("8");
+		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(codOperacion);
@@ -823,11 +789,7 @@ public class SolicitudController {
 		log.info("tasa: "+tasa);
 		log.info("page: "+page);
 		
-		AprobarRechazarRequest aprobarRechazarRequest = new AprobarRechazarRequest();
-		aprobarRechazarRequest.setIdUsuario("test");
-		aprobarRechazarRequest.setIdSesion("20210101121213");
-		aprobarRechazarRequest.setCodUsuario("E66666");
-		aprobarRechazarRequest.setCanal("8");
+		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(codOperacion);
@@ -857,11 +819,7 @@ public class SolicitudController {
 		log.info("exportToExcel");
         
 		
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		List<Movimiento> listaMovimientos = new ArrayList<>();
 		
@@ -912,11 +870,7 @@ public class SolicitudController {
 		log.info("exportToExcel");
         
 		
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		List<Movimiento> listaMovimientos = new ArrayList<>();
 		
@@ -957,11 +911,8 @@ public class SolicitudController {
 		log.info("exportToExcelConsulta");
         
 		List<String> listaError = new ArrayList<>();
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
+		
 		
 		List<Movimiento> listaMovimientos = new ArrayList<>();
 		
@@ -991,11 +942,7 @@ public class SolicitudController {
 					//movimientosRequest.setFechas(fechas);
 					filtros.setFechas(fechas);
 				}else {
-					MonedasRequest monedasRequest = new MonedasRequest();
-					monedasRequest.setIdUsuario("test");
-					monedasRequest.setIdSesion("20210101121213");
-					monedasRequest.setCodUsuario("E66666");
-					monedasRequest.setCanal("8");
+					MonedasRequest monedasRequest = getMonedasRequest();
 					Moneda moneda = new Moneda();
 					moneda.setFlagActivo(true);
 					monedasRequest.setMoneda(moneda);
@@ -1033,11 +980,7 @@ public class SolicitudController {
 					
 					return "convenio/solicitudes/formSolicitudGenerarReporte";
 				}else {
-					MonedasRequest monedasRequest = new MonedasRequest();
-					monedasRequest.setIdUsuario("test");
-					monedasRequest.setIdSesion("20210101121213");
-					monedasRequest.setCodUsuario("E66666");
-					monedasRequest.setCanal("8");
+					MonedasRequest monedasRequest = getMonedasRequest();
 					Moneda moneda = new Moneda();
 					moneda.setFlagActivo(true);
 					monedasRequest.setMoneda(moneda);
@@ -1107,10 +1050,7 @@ public class SolicitudController {
 	
 	
 	public void acumuladosCompraVenta()  {
-		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
-		acumuladoRequest.setIdUsuario("test");
-		acumuladoRequest.setIdSesion("20210101121213");
-		acumuladoRequest.setCanal("8");
+		AcumuladoRequest acumuladoRequest = getAcumuladoRequest();
 		acumuladoRequest.setTipoAcumulado("2");
 		DatosConsulta datosConsulta = new DatosConsulta();
 		datosConsulta.setFechaDesde("2021-05-01");
@@ -1128,10 +1068,7 @@ public class SolicitudController {
 	}
 	
 	public Venta acumuladosVenta(String codMoneda)  {
-		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
-		acumuladoRequest.setIdUsuario("test");
-		acumuladoRequest.setIdSesion("20210101121213");
-		acumuladoRequest.setCanal("8");
+		AcumuladoRequest acumuladoRequest = getAcumuladoRequest();
 		acumuladoRequest.setTipoAcumulado("2");
 		DatosConsulta datosConsulta = new DatosConsulta();
 		datosConsulta.setFechaDesde(fecha(new Date()));
@@ -1163,10 +1100,7 @@ public class SolicitudController {
 	}
 	
 	public Compra acumuladosCompra(String codMoneda)  {
-		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
-		acumuladoRequest.setIdUsuario("test");
-		acumuladoRequest.setIdSesion("20210101121213");
-		acumuladoRequest.setCanal("8");
+		AcumuladoRequest acumuladoRequest = getAcumuladoRequest();
 		acumuladoRequest.setTipoAcumulado("2");
 		DatosConsulta datosConsulta = new DatosConsulta();
 		datosConsulta.setFechaDesde(fecha(new Date()));
@@ -1198,10 +1132,7 @@ public class SolicitudController {
 	}
 	
 	public void ofertasPorAprobar()  {
-		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
-		acumuladoRequest.setIdUsuario("test");
-		acumuladoRequest.setIdSesion("20210101121213");
-		acumuladoRequest.setCanal("8");
+		AcumuladoRequest acumuladoRequest = getAcumuladoRequest();
 		acumuladoRequest.setTipoAcumulado("3");
 		DatosConsulta datosConsulta = new DatosConsulta();
 		datosConsulta.setFechaDesde("2021-05-01");
@@ -1219,10 +1150,7 @@ public class SolicitudController {
 	}
 	
 	public Venta acumuladosPorAprobarVenta(String codMoneda)  {
-		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
-		acumuladoRequest.setIdUsuario("test");
-		acumuladoRequest.setIdSesion("20210101121213");
-		acumuladoRequest.setCanal("8");
+		AcumuladoRequest acumuladoRequest = getAcumuladoRequest();
 		acumuladoRequest.setTipoAcumulado("3");
 		DatosConsulta datosConsulta = new DatosConsulta();
 		datosConsulta.setFechaDesde("2021-01-01");
@@ -1252,10 +1180,7 @@ public class SolicitudController {
 	}
 	
 	public Compra acumuladosPorAprobarCompra(String codMoneda)  {
-		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
-		acumuladoRequest.setIdUsuario("test");
-		acumuladoRequest.setIdSesion("20210101121213");
-		acumuladoRequest.setCanal("8");
+		AcumuladoRequest acumuladoRequest = getAcumuladoRequest();
 		acumuladoRequest.setTipoAcumulado("3");
 		DatosConsulta datosConsulta = new DatosConsulta();
 		datosConsulta.setFechaDesde("2021-01-01");
@@ -1282,6 +1207,50 @@ public class SolicitudController {
 			e.printStackTrace();
 			return compraPorAprobarRes;
 		}
+	}
+	
+	
+	
+	public MovimientosRequest getMovimientosRequest() {
+		MovimientosRequest movimientosRequest = new MovimientosRequest();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		movimientosRequest.setIdUsuario(userName);
+		movimientosRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		movimientosRequest.setUsuario(userName);
+		movimientosRequest.setCanal(canal);
+		return movimientosRequest;
+	}
+	
+	public AprobarRechazarRequest getAprobarRechazarRequest() {
+		AprobarRechazarRequest aprobarRechazarRequest = new AprobarRechazarRequest();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		aprobarRechazarRequest.setIdUsuario(userName);
+		aprobarRechazarRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		aprobarRechazarRequest.setCodUsuario(userName);
+		aprobarRechazarRequest.setCanal(canal);
+		return aprobarRechazarRequest;
+	}
+	
+	public AcumuladoRequest getAcumuladoRequest() {
+		AcumuladoRequest acumuladoRequest = new AcumuladoRequest();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		acumuladoRequest.setIdUsuario(userName);
+		acumuladoRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		//acumuladoRequest.setCodUsuario(userName);
+		acumuladoRequest.setCanal(canal);
+		return acumuladoRequest;
+		
+	}
+	
+	public MonedasRequest getMonedasRequest() {
+		MonedasRequest monedasRequest = new MonedasRequest();
+		
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		monedasRequest.setIdUsuario(userName);
+		monedasRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		monedasRequest.setCodUsuario(userName);
+		monedasRequest.setCanal(canal);
+		return monedasRequest;
 	}
 	
 	@ModelAttribute

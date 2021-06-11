@@ -2,24 +2,20 @@ package com.bancoexterior.app.convenio.controller;
 
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +28,7 @@ import com.bancoexterior.app.convenio.apiRest.IMonedaServiceApiRest;
 import com.bancoexterior.app.convenio.dto.MonedasRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.Moneda;
-
+import com.bancoexterior.app.util.LibreriaUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +41,13 @@ public class MonedaController {
 	@Autowired
 	private IMonedaServiceApiRest monedaServiceApiRest;
 	
-		
+	
+	@Autowired
+	private LibreriaUtil libreriaUtil; 
+	
+	@Value("${des.canal}")
+    private String canal;	
+
 	
 	@GetMapping("/index")
 	public String indexWs(Model model, RedirectAttributes redirectAttributes) {
@@ -53,11 +55,7 @@ public class MonedaController {
 		
 		
 		
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		//moneda.setCodMoneda("EUR1");
 		monedasRequest.setMoneda(moneda);
@@ -90,16 +88,8 @@ public class MonedaController {
 	public String activarWs(@PathVariable("codMoneda") String codMoneda, Moneda moneda, Model model, RedirectAttributes redirectAttributes) {
 		log.info("activarWs");
 		log.info(codMoneda);
-		
-		
 		Moneda monedaEdit = new Moneda();
-		
-		
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda monedaBuscar = new Moneda();
 		monedaBuscar.setCodMoneda(codMoneda);
 		monedasRequest.setMoneda(monedaBuscar);
@@ -123,16 +113,8 @@ public class MonedaController {
 	public String desactivarWs(@PathVariable("codMoneda") String codMoneda, Moneda moneda, Model model, RedirectAttributes redirectAttributes) {
 		log.info("desactivarWs");
 		log.info(codMoneda);
-		
-		
 		Moneda monedaEdit = new Moneda();
-		
-		
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda monedaBuscar = new Moneda();
 		monedaBuscar.setCodMoneda(codMoneda);
 		monedasRequest.setMoneda(monedaBuscar);
@@ -156,16 +138,8 @@ public class MonedaController {
 	public String editarWs(@PathVariable("codMoneda") String codMoneda, Moneda moneda, Model model, RedirectAttributes redirectAttributes) {
 		log.info("editarWs");
 		log.info(codMoneda);
-		
-		
 		Moneda monedaEdit = new Moneda();
-		
-		
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda monedaBuscar = new Moneda();
 		monedaBuscar.setCodMoneda(codMoneda);
 		monedasRequest.setMoneda(monedaBuscar);
@@ -193,11 +167,7 @@ public class MonedaController {
 		log.info("guardar");
 		log.info("moneda: "+moneda);
 			
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		moneda.setCodUsuario("E66666");
 		monedasRequest.setMoneda(moneda);
 		
@@ -229,11 +199,7 @@ public class MonedaController {
 			return "convenio/moneda/formMoneda";
 		}
 		
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		moneda.setFlagActivo(true);
 		monedasRequest.setMoneda(moneda);
 		
@@ -266,11 +232,7 @@ public class MonedaController {
 		
 		
 		
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		if(!monedaSearch.getCodMoneda().equals("")) {
 			moneda.setCodMoneda(monedaSearch.getCodMoneda().toUpperCase());
@@ -283,7 +245,7 @@ public class MonedaController {
 			
 			if(!listMonedas.isEmpty()) {
 				for (Moneda moneda2 : listMonedas) {
-					log.info(moneda2.getFechaModificacion());
+					//log.info(moneda2.getFechaModificacion());
 					if(moneda2.getFechaModificacion() != null) {
 						String[] arrOfStr = moneda2.getFechaModificacion().split(" ", 2);
 						moneda2.setFechaModificacion(arrOfStr[0]);
@@ -310,6 +272,21 @@ public class MonedaController {
 		
 	}
 	
+	
+	public MonedasRequest getMonedasRequest() {
+		MonedasRequest monedasRequest = new MonedasRequest();
+		
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		monedasRequest.setIdUsuario(userName);
+		monedasRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		monedasRequest.setCodUsuario(userName);
+		monedasRequest.setCanal(canal);
+		return monedasRequest;
+	}
+	
+	
+	
+	
 	@ModelAttribute
 	public void setGenericos(Model model, HttpServletRequest request) {
 		Moneda monedaSearch = new Moneda();
@@ -323,14 +300,18 @@ public class MonedaController {
 			log.info("string: "+string);
 		}
 		model.addAttribute("arrUri", arrUri);
+		
+		
+		
 	}
 	
 	
-	@InitBinder
-	public void initBinder(WebDataBinder webDataBinder) {
-		SimpleDateFormat dataFormat = new SimpleDateFormat("dd-MM-yyyy");
-		webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dataFormat, false));
-	}
+	/*
+	 * @InitBinder public void initBinder(WebDataBinder webDataBinder) {
+	 * SimpleDateFormat dataFormat = new SimpleDateFormat("dd-MM-yyyy");
+	 * webDataBinder.registerCustomEditor(Date.class, new
+	 * CustomDateEditor(dataFormat, false)); }
+	 */
 	
 
 	

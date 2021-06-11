@@ -1,22 +1,20 @@
 package com.bancoexterior.app.convenio.controller;
 
 
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +28,7 @@ import com.bancoexterior.app.convenio.dto.TasaRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.Moneda;
 import com.bancoexterior.app.convenio.model.Tasa;
+import com.bancoexterior.app.util.LibreriaUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,24 +44,25 @@ public class TasaController {
 	@Autowired
 	private IMonedaServiceApiRest monedaServiceApiRest;
 	
+	@Autowired
+	private LibreriaUtil libreriaUtil; 
+	
+	@Value("${des.canal}")
+    private String canal;	
+	
 	@GetMapping("/index")
 	public String index(Model model, RedirectAttributes redirectAttributes) {
 		log.info("si me llamo a index listaTasasWs");
 		
 		List<Tasa> listaTasas = new ArrayList<>();
 		
-		TasaRequest tasaRequest = new TasaRequest();
-		tasaRequest.setIdUsuario("test");
-		tasaRequest.setIdSesion("20210101121213");
-		tasaRequest.setCodUsuario("E66666");
-		tasaRequest.setCanal("8");
+		TasaRequest tasaRequest = getTasaRequest();
 		Tasa tasa = new Tasa();
 		tasaRequest.setTasa(tasa);
 	
 		try {
 			listaTasas = tasaServiceApiRest.listaTasas(tasaRequest);
 			for (Tasa tasa2 : listaTasas) {
-				log.info(tasa2.getFechaModificacion());
 				if(tasa2.getFechaModificacion() != null) {
 					String[] arrOfStr = tasa2.getFechaModificacion().split(" ", 2);
 					tasa2.setFechaModificacion(arrOfStr[0]);
@@ -76,7 +76,7 @@ public class TasaController {
 			model.addAttribute("mensajeError", e.getMessage());
 			model.addAttribute("listaTasas", listaTasas);
 			return "convenio/tasa/listaTasas";
-			//return "redirect:/";
+			
 		}
 		
 		
@@ -97,11 +97,7 @@ public class TasaController {
 		
 		
 		
-		TasaRequest tasaRequest = new TasaRequest();
-		tasaRequest.setIdUsuario("test");
-		tasaRequest.setIdSesion("20210101121213");
-		tasaRequest.setCodUsuario("E66666");
-		tasaRequest.setCanal("8");
+		TasaRequest tasaRequest = getTasaRequest();
 		Tasa tasaBuscar = new Tasa();
 		tasaBuscar.setCodMonedaOrigen(codMonedaOrigen);
 		tasaBuscar.setCodMonedaDestino(codMonedaDestino);
@@ -144,11 +140,7 @@ public class TasaController {
 			return "convenio/tasa/formTasaEdit";
 		}
 		
-		TasaRequest tasaRequest = new TasaRequest();
-		tasaRequest.setIdUsuario("test");
-		tasaRequest.setIdSesion("20210101121213");
-		tasaRequest.setCodUsuario("E66666");
-		tasaRequest.setCanal("8");
+		TasaRequest tasaRequest = getTasaRequest();
 		tasaRequest.setTasa(tasa);
 		
 		try {
@@ -173,11 +165,7 @@ public class TasaController {
 		
 		List<Moneda> listaMonedas = new ArrayList<>();
 		
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		moneda.setFlagActivo(true);
 		monedasRequest.setMoneda(moneda);
@@ -202,11 +190,7 @@ public class TasaController {
 		log.info("tasa: "+tasa);
 		List<String> listaError = new ArrayList<>();
 		List<Moneda> listaMonedas = new ArrayList<>();
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		moneda.setFlagActivo(true);
 		monedasRequest.setMoneda(moneda);
@@ -231,11 +215,7 @@ public class TasaController {
 			}
 		}
 		
-		TasaRequest tasaRequest = new TasaRequest();
-		tasaRequest.setIdUsuario("test");
-		tasaRequest.setIdSesion("20210101121213");
-		tasaRequest.setCodUsuario("E66666");
-		tasaRequest.setCanal("8");
+		TasaRequest tasaRequest = getTasaRequest();
 		tasaRequest.setTasa(tasa);
 		
 		try {
@@ -264,6 +244,27 @@ public class TasaController {
 		
 	}	
 	
+	public TasaRequest getTasaRequest() {
+		TasaRequest tasaRequest = new TasaRequest();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		tasaRequest.setIdUsuario(userName);
+		tasaRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		tasaRequest.setCodUsuario(userName);
+		tasaRequest.setCanal(canal);
+		return tasaRequest;
+	}
+	
+	public MonedasRequest getMonedasRequest() {
+		MonedasRequest monedasRequest = new MonedasRequest();
+		
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		monedasRequest.setIdUsuario(userName);
+		monedasRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		monedasRequest.setCodUsuario(userName);
+		monedasRequest.setCanal(canal);
+		return monedasRequest;
+	}
+	
 	@ModelAttribute
 	public void setGenericos(Model model, HttpServletRequest request) {
 		String uri = request.getRequestURI();
@@ -278,12 +279,6 @@ public class TasaController {
 	}
 	
 	
-	
-	@InitBinder
-	public void initBinder(WebDataBinder webDataBinder) {
-		SimpleDateFormat dataFormat = new SimpleDateFormat("dd-MM-yyyy");
-		webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dataFormat, false));
-	}
 	
 	
 }

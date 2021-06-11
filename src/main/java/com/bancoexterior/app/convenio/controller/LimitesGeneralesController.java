@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +27,7 @@ import com.bancoexterior.app.convenio.dto.MonedasRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.LimitesGenerales;
 import com.bancoexterior.app.convenio.model.Moneda;
+import com.bancoexterior.app.util.LibreriaUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +42,12 @@ public class LimitesGeneralesController {
 	@Autowired
 	private IMonedaServiceApiRest monedaServiceApiRest;
 	
+	@Autowired
+	private LibreriaUtil libreriaUtil; 
+	
+	@Value("${des.canal}")
+    private String canal;	
+	
 	
 	@GetMapping("/index")
 	public String index(Model model, RedirectAttributes redirectAttributes) {
@@ -46,20 +55,14 @@ public class LimitesGeneralesController {
 		
 		
 		
-		LimiteRequest limiteRequest = new LimiteRequest(); 
-		limiteRequest.setIdUsuario("test");
-		limiteRequest.setIdSesion("20210101121213");
-		limiteRequest.setCodUsuario("E66666");
-		limiteRequest.setCanal("8");
+		LimiteRequest limiteRequest = getLimiteRequest(); 
 		LimitesGenerales limite = new LimitesGenerales();
-		//limite.setFlagActivo(false);
 		limiteRequest.setLimite(limite);
 		List<LimitesGenerales> listaLimitesGenerales = new ArrayList<>();
 		
 		try {
 			listaLimitesGenerales = limitesGeneralesServiceApirest.listaLimitesGenerales(limiteRequest);
 			for (LimitesGenerales limitesGenerales : listaLimitesGenerales) {
-				log.info(limitesGenerales.getFechaModificacion());
 				if(limitesGenerales.getFechaModificacion() != null) {
 					String[] arrOfStr = limitesGenerales.getFechaModificacion().split(" ", 2);
 					limitesGenerales.setFechaModificacion(arrOfStr[0]);
@@ -73,7 +76,6 @@ public class LimitesGeneralesController {
 			model.addAttribute("mensajeError", e.getMessage());
 			model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
     		return "convenio/limitesGenerales/listaLimitesGenerales";
-			//return "redirect:/";
 		}
 	}
 	
@@ -87,11 +89,7 @@ public class LimitesGeneralesController {
 		
 		LimitesGenerales limitesGeneralesEdit = new LimitesGenerales();
 				
-		LimiteRequest limiteRequest = new LimiteRequest(); 
-		limiteRequest.setIdUsuario("test");
-		limiteRequest.setIdSesion("20210101121213");
-		limiteRequest.setCodUsuario("E66666");
-		limiteRequest.setCanal("8");
+		LimiteRequest limiteRequest = getLimiteRequest();
 		LimitesGenerales limite = new LimitesGenerales();
 		limite.setCodMoneda(codMoneda);
 		limite.setTipoTransaccion(tipoTransaccion);
@@ -124,11 +122,7 @@ public class LimitesGeneralesController {
 		
 		LimitesGenerales limitesGeneralesEdit = new LimitesGenerales();
 				
-		LimiteRequest limiteRequest = new LimiteRequest(); 
-		limiteRequest.setIdUsuario("test");
-		limiteRequest.setIdSesion("20210101121213");
-		limiteRequest.setCodUsuario("E66666");
-		limiteRequest.setCanal("8");
+		LimiteRequest limiteRequest = getLimiteRequest(); 
 		LimitesGenerales limite = new LimitesGenerales();
 		limite.setCodMoneda(codMoneda);
 		limite.setTipoTransaccion(tipoTransaccion);
@@ -163,11 +157,7 @@ public class LimitesGeneralesController {
 		LimitesGenerales limitesGeneralesEdit = new LimitesGenerales();
 				
 		
-		LimiteRequest limiteRequest = new LimiteRequest(); 
-		limiteRequest.setIdUsuario("test");
-		limiteRequest.setIdSesion("20210101121213");
-		limiteRequest.setCodUsuario("E66666");
-		limiteRequest.setCanal("8");
+		LimiteRequest limiteRequest = getLimiteRequest(); 
 		LimitesGenerales limite = new LimitesGenerales();
 		limite.setCodMoneda(codMoneda);
 		limite.setTipoTransaccion(tipoTransaccion);
@@ -203,11 +193,7 @@ public class LimitesGeneralesController {
 		LimitesGenerales limitesGeneralesEdit = new LimitesGenerales();
 				
 		
-		LimiteRequest limiteRequest = new LimiteRequest(); 
-		limiteRequest.setIdUsuario("test");
-		limiteRequest.setIdSesion("20210101121213");
-		limiteRequest.setCodUsuario("E66666");
-		limiteRequest.setCanal("8");
+		LimiteRequest limiteRequest = getLimiteRequest(); 
 		LimitesGenerales limite = new LimitesGenerales();
 		limite.setCodMoneda(codMoneda);
 		limite.setTipoTransaccion(tipoTransaccion);
@@ -267,11 +253,7 @@ public class LimitesGeneralesController {
 			  return "convenio/limitesGenerales/formLimitesGeneralesEdit"; 
 		  }
 		
-		LimiteRequest limiteRequest = new LimiteRequest(); 
-		limiteRequest.setIdUsuario("test");
-		limiteRequest.setIdSesion("20210101121213");
-		limiteRequest.setCodUsuario("E66666");
-		limiteRequest.setCanal("8");
+		LimiteRequest limiteRequest = getLimiteRequest(); 
 		limiteRequest.setLimite(limitesGenerales);
 		
 		try {
@@ -295,11 +277,7 @@ public class LimitesGeneralesController {
 	public String formLimitesGenerales(LimitesGenerales limitesGenerales,  Model model, RedirectAttributes redirectAttributes) {
 		List<Moneda> listaMonedas = new ArrayList<>();
 		
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		moneda.setFlagActivo(true);
 		monedasRequest.setMoneda(moneda);
@@ -321,11 +299,7 @@ public class LimitesGeneralesController {
 		log.info("limitesGenerales: "+limitesGenerales);
 		List<String> listaError = new ArrayList<>();
 		List<Moneda> listaMonedas = new ArrayList<>();
-		MonedasRequest monedasRequest = new MonedasRequest();
-		monedasRequest.setIdUsuario("test");
-		monedasRequest.setIdSesion("20210101121213");
-		monedasRequest.setCodUsuario("E66666");
-		monedasRequest.setCanal("8");
+		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		moneda.setFlagActivo(true);
 		monedasRequest.setMoneda(moneda);
@@ -394,11 +368,7 @@ public class LimitesGeneralesController {
 				}
 		  }
 		
-		LimiteRequest limiteRequest = new LimiteRequest(); 
-		limiteRequest.setIdUsuario("test");
-		limiteRequest.setIdSesion("20210101121213");
-		limiteRequest.setCodUsuario("E66666");
-		limiteRequest.setCanal("8");
+		LimiteRequest limiteRequest = getLimiteRequest(); 
 		limitesGenerales.setFlagActivo(true);
 		limiteRequest.setLimite(limitesGenerales);
 		
@@ -434,11 +404,7 @@ public class LimitesGeneralesController {
 		
 		List<LimitesGenerales> listaLimitesGenerales = new ArrayList<>();
 		
-		LimiteRequest limiteRequest = new LimiteRequest(); 
-		limiteRequest.setIdUsuario("test");
-		limiteRequest.setIdSesion("20210101121213");
-		limiteRequest.setCodUsuario("E66666");
-		limiteRequest.setCanal("8");
+		LimiteRequest limiteRequest = getLimiteRequest(); 
 		LimitesGenerales limite = new LimitesGenerales();
 		if(!limitesGeneralesSearch.getCodMoneda().equals(""))
 			limite.setCodMoneda(limitesGeneralesSearch.getCodMoneda().toUpperCase());
@@ -449,7 +415,6 @@ public class LimitesGeneralesController {
 			log.info("lista: "+listaLimitesGenerales.isEmpty());
 			if(!listaLimitesGenerales.isEmpty()) {
 				for (LimitesGenerales limitesGenerales : listaLimitesGenerales) {
-					log.info(limitesGenerales.getFechaModificacion());
 					if(limitesGenerales.getFechaModificacion() != null) {
 						String[] arrOfStr = limitesGenerales.getFechaModificacion().split(" ", 2);
 						limitesGenerales.setFechaModificacion(arrOfStr[0]);
@@ -477,6 +442,27 @@ public class LimitesGeneralesController {
 	}
 	
 	
+	public LimiteRequest getLimiteRequest() {
+		LimiteRequest limiteRequest = new LimiteRequest();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		limiteRequest.setIdUsuario(userName);
+		limiteRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		limiteRequest.setCodUsuario(userName);
+		limiteRequest.setCanal(canal);
+		
+		return limiteRequest;
+	}
+	
+	public MonedasRequest getMonedasRequest() {
+		MonedasRequest monedasRequest = new MonedasRequest();
+		
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		monedasRequest.setIdUsuario(userName);
+		monedasRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		monedasRequest.setCodUsuario(userName);
+		monedasRequest.setCanal(canal);
+		return monedasRequest;
+	}
 
 	@ModelAttribute
 	public void setGenericos(Model model, HttpServletRequest request) {

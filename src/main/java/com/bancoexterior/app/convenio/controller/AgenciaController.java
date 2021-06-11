@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +24,7 @@ import com.bancoexterior.app.convenio.apiRest.IAgenciaServiceApiRest;
 import com.bancoexterior.app.convenio.dto.AgenciaRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.Agencia;
+import com.bancoexterior.app.util.LibreriaUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,9 +34,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/agencias")
 public class AgenciaController {
 
-	@Autowired IAgenciaServiceApiRest agenciaServiceApiRest; 
+	@Autowired 
+	private IAgenciaServiceApiRest agenciaServiceApiRest; 
 	
+	@Autowired
+	private LibreriaUtil libreriaUtil; 
 	
+	@Value("${des.canal}")
+    private String canal;	
 	
 	
 	@GetMapping("/index")
@@ -41,11 +49,7 @@ public class AgenciaController {
 		log.info("si me llamo a index agenciasWs");
 		
 		List<Agencia> listaAgencias = new ArrayList<>();
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		Agencia agencia = new Agencia();
 		agencia.setFlagDivisa(true);
 		agenciaRequest.setAgencia(agencia);
@@ -68,7 +72,6 @@ public class AgenciaController {
 			log.error("error: "+e);
 			model.addAttribute("mensajeError", e.getMessage());
 			return "convenio/agencia/listaAgencias";
-			//return "redirect:/";
 		}
 		
 		
@@ -82,11 +85,7 @@ public class AgenciaController {
 		
 	
 		Agencia agenciaEdit = new Agencia(); 
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		Agencia agencia = new Agencia();
 		agencia.setCodAgencia(codAgencia);
 		agencia.setFlagDivisa(true);
@@ -117,11 +116,7 @@ public class AgenciaController {
 		
 		
 		Agencia agenciaEdit = new Agencia(); 
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		Agencia agencia = new Agencia();
 		agencia.setCodAgencia(codAgencia);
 		agencia.setFlagDivisa(true);
@@ -152,11 +147,7 @@ public class AgenciaController {
 		
 		
 		Agencia agenciaEdit = new Agencia(); 
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		Agencia agenciaBuscar = new Agencia();
 		agenciaBuscar.setFlagDivisa(true);
 		agenciaBuscar.setCodAgencia(agencia.getCodAgencia());
@@ -186,11 +177,7 @@ public class AgenciaController {
 		log.info("agencia: "+agencia);
 		
 		
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		agencia.setFlagActivo(true);
 		agencia.setFlagDivisa(true);
 		agenciaRequest.setAgencia(agencia);
@@ -215,11 +202,7 @@ public class AgenciaController {
 		log.info("fromBuscarAgencia");
 		
 		List<Agencia> listaAgencias = new ArrayList<>();
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		Agencia agenciaBuscar = new Agencia();
 		agenciaBuscar.setFlagDivisa(false);
 		agenciaRequest.setAgencia(agenciaBuscar);
@@ -249,11 +232,7 @@ public class AgenciaController {
 		
 		List<Agencia> listaAgencias = new ArrayList<>();
 		Agencia agenciaEdit = new Agencia(); 
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		Agencia agenciaBuscar = new Agencia();
 		agenciaBuscar.setFlagDivisa(false);
 		agenciaBuscar.setCodAgencia(agencia.getCodAgencia());
@@ -305,11 +284,7 @@ public class AgenciaController {
 		log.info("agencia: "+agencia);
 		
 		
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		agencia.setFlagActivo(true);
 		agencia.setFlagDivisa(true);
 		agenciaRequest.setAgencia(agencia);
@@ -341,11 +316,7 @@ public class AgenciaController {
 		log.info(agenciaSearch.getCodAgencia());
 		
 		List<Agencia> listaAgencias = new ArrayList<>();
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		Agencia agenciaBuscar = new Agencia();
 		agenciaBuscar.setFlagDivisa(true);
 		if(!agenciaSearch.getCodAgencia().equals("")){
@@ -358,7 +329,6 @@ public class AgenciaController {
 			log.info("lista: "+listaAgencias.isEmpty());
 			if(!listaAgencias.isEmpty()) {
 				for (Agencia agencia2 : listaAgencias) {
-					log.info(agencia2.getFechaModificacion());
 					if(agencia2.getFechaModificacion() != null) {
 						String[] arrOfStr = agencia2.getFechaModificacion().split(" ", 2);
 						agencia2.setFechaModificacion(arrOfStr[0]);
@@ -395,11 +365,7 @@ public class AgenciaController {
 		log.info(agenciaSearch.getCodAgencia());
 		
 		List<Agencia> listaAgencias = new ArrayList<>();
-		AgenciaRequest agenciaRequest = new AgenciaRequest();
-		agenciaRequest.setIdUsuario("test");
-		agenciaRequest.setIdSesion("20210101121213");
-		agenciaRequest.setCodUsuario("E66666");
-		agenciaRequest.setCanal("8");
+		AgenciaRequest agenciaRequest = getAgenciaRequest();
 		Agencia agenciaBuscar = new Agencia();
 		agenciaBuscar.setFlagDivisa(true);
 		if(!agenciaSearch.getNombreAgencia().equals("")){
@@ -441,7 +407,15 @@ public class AgenciaController {
 		
 	}
 		
-	
+	public AgenciaRequest getAgenciaRequest() {
+		AgenciaRequest agenciaRequest = new AgenciaRequest();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		agenciaRequest.setIdUsuario(userName);
+		agenciaRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
+		agenciaRequest.setCodUsuario(userName);
+		agenciaRequest.setCanal(canal);
+		return agenciaRequest;
+	}
 	
 	@ModelAttribute
 	public void setGenericos(Model model, HttpServletRequest request) {

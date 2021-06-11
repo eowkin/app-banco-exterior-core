@@ -3,22 +3,18 @@
         <ul class="nav">
           
           <li class="nav-item nav-dropdown">
-            <a class="nav-link nav-dropdown-toggle" href="#">Convenio</a>
-	            <ul class="nav-dropdown-items">
+            <a class="nav-link nav-dropdown-toggle" href="#">Gestion de Divisas</a>
+	            <ul class="nav-dropdown-items"> 	  
+	          	  <li class="nav-item">
+			         <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/1}" style="padding-left:30px;">Operacion de Tesoreria</a>
+			      </li>
+			      <li class="nav-item">
+			         <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/1}" style="padding-left:30px;">Consulta de Solicitudes </a>
+			      </li>  	  
+	          	  	  
+	          	  	  
 	              <li class="nav-item nav-dropdown">
-		            	<a class="nav-link nav-dropdown-toggle" href="#" style="padding-left:20px;">Gestion de Divisas</a>
-			            <ul class="nav-dropdown-items">
-			              <li class="nav-item">
-			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/1}" style="padding-left:40px;">Operacion de Tesoreria</a>
-			              </li>
-			              <li class="nav-item">
-			                <a class="nav-link" th:href="@{/solicitudes/listaSolicitudesMovimientosVentas/1}" style="padding-left:40px;">Consulta de Solicitudes </a>
-			              </li>  
-			              
-			            </ul>
-	          	  	  </li>	      	
-	              <li class="nav-item nav-dropdown">
-	            	<a class="nav-link nav-dropdown-toggle" href="#" style="padding-left:20px;">Configuracion</a>
+	            	<a class="nav-link nav-dropdown-toggle" href="#" style="padding-left:30px;">Parametros Generales</a>
 		            <ul class="nav-dropdown-items">
 		              <li class="nav-item">
 		                <a class="nav-link" th:href="@{/monedas/index}" style="padding-left:40px;">Moneda</a>
@@ -32,11 +28,6 @@
 		              <li class="nav-item">
 		                <a class="nav-link" th:href="@{/clientesPersonalizados/index/1}" style="padding-left:40px;">Clientes Personalizados</a>
 		              </li>
-		              
-		              <!--  
-		              <li class="nav-item">
-		                <a class="nav-link" th:href="@{/limitesPersonalizados/index}" style="padding-left:40px;">Limites Personalizados</a>
-		              </li>-->
 		              <li class="nav-item">
 		                <a class="nav-link" th:href="@{/agencias/index}" style="padding-left:40px;">Agencia</a>
 		              </li>
