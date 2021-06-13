@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bancoexterior.app.convenio.dto.AprobarRechazarRequest;
@@ -32,10 +33,41 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
     
     @Autowired 
 	private Mapper mapper;
+    
+    @Value("${des.ConnectTimeout}")
+    private int connectTimeout;
+    
+    @Value("${des.SocketTimeout}")
+    private int socketTimeout;
+    
+    @Value("${des.movimientos.consultarMovimientosPorAprobar}")
+    private String urlConsultarMovimientosPorAprobar;
+    
+    @Value("${des.movimientos.consultarMovimientosPorAprobarVenta}")
+    private String urlConsultarMovimientosPorAprobarVenta;
+    
+    @Value("${des.movimientos.consultarMovimientos}")
+    private String urlConsultarMovimientos;
+    
+    @Value("${des.movimientos.compra.actualizar}")
+    private String urlActualizarMovimientosCompra;
+    
+    @Value("${des.movimientos.venta.actualizar}")
+    private String urlActualizarMovimientosVenta;
+    
+    
+    public WSRequest getWSRequest() {
+    	WSRequest wsrequest = new WSRequest();
+    	wsrequest.setConnectTimeout(connectTimeout);
+		wsrequest.setContenType("application/json");
+		wsrequest.setSocketTimeout(socketTimeout);
+    	return wsrequest;
+    }
+
 	
 	@Override
 	public MovimientosResponse consultarMovimientosPorAprobar(MovimientosRequest movimientosRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String movimientosRequestJSON;
 		MovimientosResponse movimientosResponse = new MovimientosResponse();
@@ -43,16 +75,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
 		
 		wsrequest.setBody(movimientosRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
+		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos?sort=codMoneda,desc&sort=tasaCliente,asc&sort=montoDivisa,asc");
+		wsrequest.setUrl(urlConsultarMovimientosPorAprobar);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas"); montoDivisa desc
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos?sort=codMoneda,desc&sort=tasaCliente,asc&sort=montoDivisa,asc");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
@@ -67,15 +92,6 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 	            log.info("movimientosResponse: "+movimientosResponse);
 	            log.info(movimientosResponse.getResultado().getCodigo());
 	            return movimientosResponse;
-	            /*
-	            if(movimientosResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe la modena");
-	            	return movimientosResponse;
-	            }else {
-	            	return null;
-	            }*/
-				
-				
 			}else {
 				if(retorno.getStatus() == 422) {
 					log.info("entro en error 422");
@@ -98,7 +114,7 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 	@Override
 	public MovimientosResponse consultarMovimientosPorAprobarVenta(MovimientosRequest movimientosRequest)
 			throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String movimientosRequestJSON;
 		MovimientosResponse movimientosResponse = new MovimientosResponse();
@@ -106,16 +122,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
 		
 		wsrequest.setBody(movimientosRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas"); ASC montoDivisa
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos?sort=codMoneda,desc&sort=tasaCliente,desc&sort=montoDivisa,desc");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
+		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos?sort=codMoneda,desc&sort=tasaCliente,desc&sort=montoDivisa,desc");
+		wsrequest.setUrl(urlConsultarMovimientosPorAprobarVenta);
+		
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
@@ -130,15 +139,6 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 	            log.info("movimientosResponse: "+movimientosResponse);
 	            log.info(movimientosResponse.getResultado().getCodigo());
 	            return movimientosResponse;
-	            /*
-	            if(movimientosResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe la modena");
-	            	return movimientosResponse;
-	            }else {
-	            	return null;
-	            }*/
-				
-				
 			}else {
 				if(retorno.getStatus() == 422) {
 					log.info("entro en error 422");
@@ -153,7 +153,7 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
 		}
 		return null;
 	}
@@ -162,7 +162,7 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 	
 	@Override
 	public MovimientosResponse consultarMovimientos(MovimientosRequest movimientosRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String movimientosRequestJSON;
 		MovimientosResponse movimientosResponse = new MovimientosResponse();
@@ -170,16 +170,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
 		
 		wsrequest.setBody(movimientosRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
+		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos");
+		wsrequest.setUrl(urlConsultarMovimientos);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
@@ -195,16 +188,6 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 	            log.info("movimientosResponse: "+movimientosResponse);
 	            log.info(movimientosResponse.getResultado().getCodigo());
 	            return movimientosResponse;
-	            
-	            /*
-	            if(movimientosResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe la modena");
-	            	return movimientosResponse;
-	            }else {
-	            	return null;
-	            }*/
-				
-				
 			}else {
 				if(retorno.getStatus() == 422) {
 					log.info("entro en error 422");
@@ -219,14 +202,14 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
 		}
 		return null;
 	}
 
 	@Override
 	public String rechazarCompra(AprobarRechazarRequest aprobarRechazarRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response();
 		Resultado resultado = new Resultado();
@@ -237,18 +220,10 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
 		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
 		
-		wsrequest.setBody(aprobarRechazarRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-													 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionescompras");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
+		wsrequest.setBody(aprobarRechazarRequestJSON);								 
+		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionescompras");
+		wsrequest.setUrl(urlActualizarMovimientosCompra);
+		
 		log.info("antes de llamarte WS en rechazarCompraSolicitud");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
@@ -307,14 +282,14 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
 		}
 		return null;
 	}
 
 	@Override
 	public String aprobarCompra(AprobarRechazarRequest aprobarRechazarRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response();
 		Resultado resultado = new Resultado();
@@ -326,17 +301,8 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
 		
 		wsrequest.setBody(aprobarRechazarRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-													 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionescompras");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
+		wsrequest.setUrl(urlActualizarMovimientosCompra);
+		
 		log.info("antes de llamarte WS en aprobarCompraSolicitud");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
@@ -395,14 +361,14 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
 		}
 		return null;
 	}
 
 	@Override
 	public String rechazarVenta(AprobarRechazarRequest aprobarRechazarRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response();
 		Resultado resultado = new Resultado();
@@ -414,17 +380,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
 		
 		wsrequest.setBody(aprobarRechazarRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-													 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionesventas");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
+		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionesventas");
+		wsrequest.setUrl(urlActualizarMovimientosVenta);
+		
 		log.info("antes de llamarte WS en rechazarVentaSolicitud");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
@@ -483,14 +441,14 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
 		}
 		return null;
 	}
 
 	@Override
 	public String aprobarVenta(AprobarRechazarRequest aprobarRechazarRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response();
 		Resultado resultado = new Resultado();
@@ -501,18 +459,10 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
 		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
 		
-		wsrequest.setBody(aprobarRechazarRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-													 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionesventas");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
+		wsrequest.setBody(aprobarRechazarRequestJSON);										 
+		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionesventas");
+		wsrequest.setUrl(urlActualizarMovimientosVenta);
+		
 		log.info("antes de llamarte WS en aprobarVentaSolicitud");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
@@ -571,14 +521,14 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
 		}
 		return null;
 	}
 
 	@Override
 	public List<Movimiento> getListaMovimientos(MovimientosRequest movimientosRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String movimientosRequestJSON;
 		MovimientosResponse movimientosResponse = new MovimientosResponse();
@@ -586,16 +536,9 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
 		
 		wsrequest.setBody(movimientosRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
+		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos");
+		wsrequest.setUrl(urlConsultarMovimientos);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
 		log.info("antes de llamarte WS buscarListaMovimientos");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
@@ -611,17 +554,7 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 	            log.info("movimientosResponse: "+movimientosResponse);
 	            log.info(movimientosResponse.getResultado().getCodigo());
 	            return movimientosResponse.getMovimientos();
-	            
-	            /*
-	            if(movimientosResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe la modena");
-	            	return movimientosResponse;
-	            }else {
-	            	return null;
-	            }*/
-				
-				
-			}else {
+	       	}else {
 				if(retorno.getStatus() == 422) {
 					log.info("entro en error 422");
 					try {
@@ -635,7 +568,7 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
 		}
 		return null;
 	}

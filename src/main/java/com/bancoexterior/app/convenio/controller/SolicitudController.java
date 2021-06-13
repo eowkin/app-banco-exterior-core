@@ -1276,9 +1276,6 @@ public class SolicitudController {
 		String[] arrUri = uri.split("/");
 
 		arrUri[0] = "Home";
-		for (String string : arrUri) {
-			log.info("string: "+string);
-		}
 		model.addAttribute("arrUri", arrUri);
 		
 	}

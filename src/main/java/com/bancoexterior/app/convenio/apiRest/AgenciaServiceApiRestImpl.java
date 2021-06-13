@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bancoexterior.app.convenio.dto.AgenciaRequest;
@@ -30,11 +31,31 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 	@Autowired 
 	private Mapper mapper;
 	
+	@Value("${des.ConnectTimeout}")
+    private int connectTimeout;
+    
+    @Value("${des.SocketTimeout}")
+    private int socketTimeout;
+    
+    @Value("${des.agencia.urlConsulta}")
+    private String urlConsulta;
+    
+    @Value("${des.agencia.urlActualizar}")
+    private String urlActualizar;
 	
 
+    public WSRequest getWSRequest() {
+    	WSRequest wsrequest = new WSRequest();
+    	wsrequest.setConnectTimeout(connectTimeout);
+		wsrequest.setContenType("application/json");
+		wsrequest.setSocketTimeout(socketTimeout);
+    	return wsrequest;
+    }
+    
+    
 	@Override
 	public List<Agencia> listaAgencias(AgenciaRequest agenciaRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		AgenciaResponse agenciaResponse = new AgenciaResponse();
 		String agenciaRequestJSON;
@@ -42,17 +63,8 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 		log.info("agenciaRequestJSON: "+agenciaRequestJSON);
 		
 		wsrequest.setBody(agenciaRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		                  //https://172.19.148.51:8443/api/des/V1/parametros/limites/consultas 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/agencias/consultas");								
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
-		log.info("antes de llamarte WS en consultar");
+		wsrequest.setUrl(urlConsulta);								
+		log.info("antes de llamarte WS en consultar listaAgencias");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
@@ -68,11 +80,10 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 	            return agenciaResponse.getListaAgencias();
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422");
+					log.info("entro en error 422 en buscar la lista agencias");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -82,7 +93,7 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio agencias");
 		}
 		
 		return null;
@@ -90,7 +101,7 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 
 	@Override
 	public Agencia buscarAgencia(AgenciaRequest agenciaRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		AgenciaResponse agenciaResponse = new AgenciaResponse();
 		String agenciaRequestJSON;
@@ -98,22 +109,13 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 		log.info("agenciaRequestJSON: "+agenciaRequestJSON);
 		
 		wsrequest.setBody(agenciaRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		                  //https://172.19.148.51:8443/api/des/V1/parametros/limites/consultas 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/agencias/consultas");								
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
-		log.info("antes de llamarte WS en consultar");
+		wsrequest.setUrl(urlConsulta);								
+		log.info("antes de llamarte WS en consultar buscarAgencia");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista agencias");
+				log.info("Respusta codigo 200 en buscarAgencia");
 	            try {
 					agenciaResponse = mapper.jsonToClass(retorno.getBody(), AgenciaResponse.class);
 				} catch (IOException e) {
@@ -129,11 +131,10 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 	            }
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422");
+					log.info("entro en error 422 en buscarAgencia");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -143,14 +144,14 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio agencias");
 		}
 		return null;
 	}
 
 	@Override
 	public String actualizar(AgenciaRequest agenciaRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response();
 		Resultado resultado = new Resultado();
@@ -161,25 +162,14 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 		log.info("agenciaRequestJSON: "+agenciaRequestJSON);
 		
 		wsrequest.setBody(agenciaRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		                  //https://172.19.148.51:8443/api/des/V1/parametros/limites/consultas 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/agencias");								
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
+		wsrequest.setUrl(urlActualizar);								
 		log.info("antes de llamarte WS en actualizar");
 		retorno = wsService.put(wsrequest);
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en Actualizar el limiteGenerales por codigo");
+				log.info("Respusta codigo 200 en Actualizar agencia por codigo");
 				try {
-					//response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					//log.info("response: "+response);
 					resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 					log.info("resultado: "+resultado);
 					
@@ -187,7 +177,6 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 					e.printStackTrace();
 				}
 				
-				//respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 				respuesta = resultado.getDescripcion();
 				return respuesta;
 				
@@ -198,7 +187,6 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -209,14 +197,14 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio agencias");
 		}
 		return null;
 	}
 
 	@Override
 	public String crear(AgenciaRequest agenciaRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response(); 
 		Resultado resultado = new Resultado();
@@ -227,32 +215,19 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 		log.info("agenciaRequestJSON: "+agenciaRequestJSON);
 		
 		wsrequest.setBody(agenciaRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		                  //https://172.19.148.51:8443/api/des/V1/parametros/limites/consultas 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/agencias");								
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
+		wsrequest.setUrl(urlActualizar);								
 		log.info("antes de llamarte WS en creear");
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en crear la agencia por codigo");
 				try {
-					//response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					//log.info("response: "+response);
 					resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 					log.info("resultado: "+resultado);
 					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				//respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 				respuesta = resultado.getDescripcion();
 				return respuesta;
 				
@@ -264,7 +239,6 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 						
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -277,7 +251,6 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 					try {
 						resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						//error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						error = resultado.getDescripcion();
 						throw new CustomException(error);
 						
@@ -289,7 +262,7 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 				
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio agencias");
 		}
 		return null;
 	}

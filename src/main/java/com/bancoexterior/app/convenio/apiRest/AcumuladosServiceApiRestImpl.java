@@ -3,12 +3,12 @@ package com.bancoexterior.app.convenio.apiRest;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bancoexterior.app.convenio.dto.AcumuladoCompraVentaResponse;
 import com.bancoexterior.app.convenio.dto.AcumuladoRequest;
 import com.bancoexterior.app.convenio.dto.AcumuladoResponse;
-import com.bancoexterior.app.convenio.dto.MovimientosResponse;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.response.Response;
 import com.bancoexterior.app.convenio.services.restApi.IWSService;
@@ -30,27 +30,36 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
     @Autowired 
 	private Mapper mapper;
 	
+    @Value("${des.ConnectTimeout}")
+    private int connectTimeout;
+    
+    @Value("${des.SocketTimeout}")
+    private int socketTimeout;
+    
+    @Value("${des.acumulados.urlConsulta}")
+    private String urlConsulta;
+    
+    
+    public WSRequest getWSRequest() {
+    	WSRequest wsrequest = new WSRequest();
+    	wsrequest.setConnectTimeout(connectTimeout);
+		wsrequest.setContenType("application/json");
+		wsrequest.setSocketTimeout(socketTimeout);
+    	return wsrequest;
+    }
+    
 	@Override
 	public String consultarAcumulados(AcumuladoRequest acumuladoRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String acumuladoRequestJSON;
-		AcumuladoResponse acumuladoResponse = new AcumuladoResponse();
 		acumuladoRequestJSON = new Gson().toJson(acumuladoRequest);
 		log.info("acumuladoRequestJSON: "+acumuladoRequestJSON);
 		
 		wsrequest.setBody(acumuladoRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
+		wsrequest.setUrl(urlConsulta);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/montosacumulados");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
-		log.info("antes de llamarte WS en consultar");
+		log.info("antes de llamarte WS en consultarAcumulados");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
 		return null;
@@ -58,7 +67,7 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 
 	@Override
 	public AcumuladoResponse consultarAcumuladosDiariosBanco(AcumuladoRequest acumuladoRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String acumuladoRequestJSON;
 		AcumuladoResponse acumuladoResponse = new AcumuladoResponse();
@@ -66,22 +75,14 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		log.info("acumuladoRequestJSON: "+acumuladoRequestJSON);
 		
 		wsrequest.setBody(acumuladoRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
+		wsrequest.setUrl(urlConsulta);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/montosacumulados");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
-		log.info("antes de llamarte WS en consultar");
+		log.info("antes de llamarte WS en consultarAcumuladosDiariosBanco");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar el movimientosResponse");
+				log.info("Respusta codigo 200 en consultarAcumuladosDiariosBanco");
 	            try {
 	            	acumuladoResponse = mapper.jsonToClass(retorno.getBody(), AcumuladoResponse.class);
 				} catch (IOException e) {
@@ -90,22 +91,12 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 	            log.info("acumuladoResponse: "+acumuladoResponse);
 	            log.info(acumuladoResponse.getResultado().getCodigo());
 	            return acumuladoResponse;
-	            /*
-	            if(movimientosResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe la modena");
-	            	return movimientosResponse;
-	            }else {
-	            	return null;
-	            }*/
-				
-				
 			}else {
 				if(retorno.getStatus() == 422) {
-					log.info("entro en error 422");
+					log.info("entro en error 422 en consultarAcumuladosDiariosBanco");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						//String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
 						String mensaje = response.getResultado() .getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -114,7 +105,7 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio acumulados");
 		}
 		return null;
 	}
@@ -122,7 +113,7 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 	@Override
 	public AcumuladoCompraVentaResponse consultarAcumuladosCompraVenta(AcumuladoRequest acumuladoRequest)
 			throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String acumuladoRequestJSON;
 		AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = new AcumuladoCompraVentaResponse();
@@ -130,22 +121,14 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		log.info("acumuladoRequestJSON: "+acumuladoRequestJSON);
 		
 		wsrequest.setBody(acumuladoRequestJSON);
-		wsrequest.setConnectTimeout(15000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(15000);
+		wsrequest.setUrl(urlConsulta);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/montosacumulados");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
-		log.info("antes de llamarte WS en consultar");
+		log.info("antes de llamarte WS en consultarAcumuladosCompraVenta");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar el movimientosResponse");
+				log.info("Respusta codigo 200 en consultarAcumuladosCompraVenta");
 	            try {
 	            	acumuladoCompraVentaResponse = mapper.jsonToClass(retorno.getBody(), AcumuladoCompraVentaResponse.class);
 				} catch (IOException e) {
@@ -154,18 +137,9 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 	            log.info("acumuladoCompraVentaResponse: "+acumuladoCompraVentaResponse);
 	            log.info(acumuladoCompraVentaResponse.getResultado().getCodigo());
 	            return acumuladoCompraVentaResponse;
-	            /*
-	            if(movimientosResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe la modena");
-	            	return movimientosResponse;
-	            }else {
-	            	return null;
-	            }*/
-				
-				
 			}else {
 				if(retorno.getStatus() == 422) {
-					log.info("entro en error 422");
+					log.info("entro en error 422 en consultarAcumuladosCompraVenta");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
@@ -178,7 +152,7 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio acumulados");
 		}
 		return null;
 	}

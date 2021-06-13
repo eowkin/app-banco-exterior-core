@@ -141,7 +141,13 @@ public class TasaController {
 		}
 		
 		TasaRequest tasaRequest = getTasaRequest();
-		tasaRequest.setTasa(tasa);
+		Tasa tasaEdit = new Tasa();
+		tasaEdit.setCodMonedaOrigen(tasa.getCodMonedaOrigen());
+		tasaEdit.setCodMonedaDestino(tasa.getCodMonedaDestino());
+		tasaEdit.setTipoOperacion(tasa.getTipoOperacion());
+		tasaEdit.setMontoTasaCompra(tasa.getMontoTasaCompra());
+		tasaEdit.setMontoTasaVenta(tasa.getMontoTasaVenta());
+		tasaRequest.setTasa(tasaEdit);
 		
 		try {
 			
@@ -272,9 +278,6 @@ public class TasaController {
 		String[] arrUri = uri.split("/");
 
 		arrUri[0] = "Home";
-		for (String string : arrUri) {
-			log.info("string: "+string);
-		}
 		model.addAttribute("arrUri", arrUri);
 	}
 	

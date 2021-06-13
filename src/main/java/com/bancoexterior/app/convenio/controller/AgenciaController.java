@@ -58,7 +58,6 @@ public class AgenciaController {
 			listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
 			
 			for (Agencia agencia2 : listaAgencias) {
-				log.info(agencia2.getFechaModificacion());
 				if(agencia2.getFechaModificacion() != null) {
 					String[] arrOfStr = agencia2.getFechaModificacion().split(" ", 2);
 					agencia2.setFechaModificacion(arrOfStr[0]);
@@ -378,7 +377,6 @@ public class AgenciaController {
 			log.info("lista: "+listaAgencias.isEmpty());
 			if(!listaAgencias.isEmpty()) {
 				for (Agencia agencia2 : listaAgencias) {
-					log.info(agencia2.getFechaModificacion());
 					if(agencia2.getFechaModificacion() != null) {
 						String[] arrOfStr = agencia2.getFechaModificacion().split(" ", 2);
 						agencia2.setFechaModificacion(arrOfStr[0]);
@@ -426,9 +424,6 @@ public class AgenciaController {
 		String[] arrUri = uri.split("/");
 
 		arrUri[0] = "Home";
-		for (String string : arrUri) {
-			log.info("string: "+string);
-		}
 		model.addAttribute("arrUri", arrUri);
 	}
 }

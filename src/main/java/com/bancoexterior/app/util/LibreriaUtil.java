@@ -15,15 +15,9 @@ public class LibreriaUtil {
 	
 	public String obtenerIdSesion() {
 		LocalDateTime ahora = LocalDateTime.now();
-		log.info("año: "+ahora.getYear());
-		log.info("mes: "+ahora.getMonthValue());
-		log.info("dia: "+ahora.getDayOfMonth());
-		log.info("dia: "+ahora.getHour());
-		log.info("min: "+ahora.getMinute());
-		log.info("seg: "+ahora.getSecond());
 		String valorAno = "";
 		valorAno = ahora.getYear()+"";
-		log.info("valorAno: "+valorAno);
+		//log.info("valorAno: "+valorAno);
 		
 		String valorMes = "";
 		if(ahora.getMonthValue() < 10) {
@@ -31,7 +25,7 @@ public class LibreriaUtil {
 		}else {
 			valorMes = ""+ahora.getMonthValue();
 		}
-		log.info("valorMes: "+valorMes);
+		//log.info("valorMes: "+valorMes);
 		
 		String valorDia = "";
 		if(ahora.getDayOfMonth() < 10) {
@@ -39,7 +33,7 @@ public class LibreriaUtil {
 		}else {
 			valorDia = ""+ahora.getDayOfMonth();
 		}
-		log.info("valorDia: "+valorDia);
+		//log.info("valorDia: "+valorDia);
 		
 		String valorHora = "";
 		if(ahora.getHour() < 10) {
@@ -47,7 +41,7 @@ public class LibreriaUtil {
 		}else {
 			valorHora = ""+ahora.getHour();
 		}
-		log.info("valorHora: "+valorHora);
+		//log.info("valorHora: "+valorHora);
 		
 		String valorMin = "";
 		if(ahora.getMinute() < 10) {
@@ -55,7 +49,7 @@ public class LibreriaUtil {
 		}else {
 			valorMin = ""+ahora.getMinute();
 		}
-		log.info("valorMin: "+valorMin);
+		//log.info("valorMin: "+valorMin);
 		
 		String valorSeg = "";
 		if(ahora.getSecond() < 10) {
@@ -63,7 +57,7 @@ public class LibreriaUtil {
 		}else {
 			valorSeg = ""+ahora.getSecond();
 		}
-		log.info("valorSeg: "+valorSeg);
+		//log.info("valorSeg: "+valorSeg);
 		
 	
 		return valorAno+valorMes+valorDia+valorHora+valorMin+valorSeg;

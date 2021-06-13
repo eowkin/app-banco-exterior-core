@@ -81,7 +81,6 @@ public class ClientesPersonalizadosController {
 			if(clienteResponse != null) {
 				listaClientesPersonalizados = clienteResponse.getListaClientes();
 				for (ClientesPersonalizados clientesPersonalizados2 : listaClientesPersonalizados) {
-					log.info(clientesPersonalizados2.getFechaModificacion());
 					if(clientesPersonalizados2.getFechaModificacion() != null) {
 						String[] arrOfStr = clientesPersonalizados2.getFechaModificacion().split(" ", 2);
 						clientesPersonalizados2.setFechaModificacion(arrOfStr[0]);
@@ -240,7 +239,6 @@ public class ClientesPersonalizadosController {
 				if(!listaLimitesPersonalizados.isEmpty()) {
 					
 					for (LimitesPersonalizados limitesPersonalizados : listaLimitesPersonalizados) {
-						log.info(limitesPersonalizados.getFechaModificacion());
 						if(limitesPersonalizados.getFechaModificacion() != null) {
 							String[] arrOfStr = limitesPersonalizados.getFechaModificacion().split(" ", 2);
 							limitesPersonalizados.setFechaModificacion(arrOfStr[0]);
@@ -616,7 +614,6 @@ public class ClientesPersonalizadosController {
 				
 				if(!listaClientesPersonalizados.isEmpty()) {
 					for (ClientesPersonalizados clientesPersonalizados2 : listaClientesPersonalizados) {
-						log.info(clientesPersonalizados2.getFechaModificacion());
 						if(clientesPersonalizados2.getFechaModificacion() != null) {
 							String[] arrOfStr = clientesPersonalizados2.getFechaModificacion().split(" ", 2);
 							clientesPersonalizados2.setFechaModificacion(arrOfStr[0]);
@@ -688,7 +685,6 @@ public class ClientesPersonalizadosController {
 				
 				if(!listaClientesPersonalizados.isEmpty()) {
 					for (ClientesPersonalizados clientesPersonalizados2 : listaClientesPersonalizados) {
-						log.info(clientesPersonalizados2.getFechaModificacion());
 						if(clientesPersonalizados2.getFechaModificacion() != null) {
 							String[] arrOfStr = clientesPersonalizados2.getFechaModificacion().split(" ", 2);
 							clientesPersonalizados2.setFechaModificacion(arrOfStr[0]);
@@ -896,9 +892,6 @@ public class ClientesPersonalizadosController {
 		String[] arrUri = uri.split("/");
 
 		arrUri[0] = "Home";
-		for (String string : arrUri) {
-			log.info("string: "+string);
-		}
 		model.addAttribute("arrUri", arrUri);
 	}
 }

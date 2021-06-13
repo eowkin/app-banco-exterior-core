@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bancoexterior.app.convenio.dto.TasaRequest;
@@ -30,11 +31,29 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 	@Autowired 
 	private Mapper mapper;
     
+	@Value("${des.ConnectTimeout}")
+    private int connectTimeout;
+    
+    @Value("${des.SocketTimeout}")
+    private int socketTimeout;
+    
+    @Value("${des.tasa.urlConsulta}")
+    private String urlConsulta;
+    
+    @Value("${des.tasa.urlActualizar}")
+    private String urlActualizar;
 	
+	public WSRequest getWSRequest() {
+    	WSRequest wsrequest = new WSRequest();
+    	wsrequest.setConnectTimeout(connectTimeout);
+		wsrequest.setContenType("application/json");
+		wsrequest.setSocketTimeout(socketTimeout);
+    	return wsrequest;
+    }
 	
 	@Override
 	public List<Tasa> listaTasas(TasaRequest tasaRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		TasaResponse tasaResponse = new TasaResponse();
 		String tasaRequestJSON;
@@ -42,17 +61,9 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 		log.info("tasaRequestJSON: "+tasaRequestJSON);
 		
 		wsrequest.setBody(tasaRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/tasas/consultas");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
-		log.info("antes de llamarte WS en consultar");
+		wsrequest.setUrl(urlConsulta);
+
+		log.info("antes de llamarte WS en consultar la lista de tasas");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
@@ -68,11 +79,10 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 	            return tasaResponse.getTasa();
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422");
+					log.info("entro en error 422 en la lista de tasas");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -82,7 +92,7 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio tasa");
 		}
 		return null;
 	}
@@ -90,7 +100,7 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 
 	@Override
 	public Tasa buscarTasa(TasaRequest tasaRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		TasaResponse tasaResponse = new TasaResponse();
 		String tasaRequestJSON;
@@ -98,17 +108,9 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 		log.info("tasaRequestJSON: "+tasaRequestJSON);
 		
 		wsrequest.setBody(tasaRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setUrl(urlConsulta);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/tasas/consultas");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
-		log.info("antes de llamarte WS en consultar");
+		log.info("antes de llamarte WS en buscarTasa");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
@@ -129,11 +131,10 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 	            }
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422");
+					log.info("entro en error 422 en buscarTasa");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -143,7 +144,7 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio tasa");
 		}
 		return null;
 	}
@@ -151,7 +152,7 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 
 	@Override
 	public String actualizar(TasaRequest tasaRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response();
 		Resultado resultado = new Resultado();
@@ -162,16 +163,8 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 		log.info("tasaRequestJSON: "+tasaRequestJSON);
 		
 		wsrequest.setBody(tasaRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/tasas");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
+		wsrequest.setUrl(urlActualizar);
+		
 		log.info("antes de llamarte WS en actualizar");
 		retorno = wsService.put(wsrequest);
 		log.info("retorno: "+retorno);
@@ -179,9 +172,6 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 			if(retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en Actualizar la tasa por codigo");
 				try {
-					//response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					//log.info("response: "+response);
-					
 					resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 					log.info("resultado: "+resultado);
 					
@@ -189,9 +179,6 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 					e.printStackTrace();
 				}
 				
-				//respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
-				//return respuesta;
-				//respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 				respuesta = resultado.getDescripcion();
 				return respuesta;
 				
@@ -201,7 +188,6 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -212,7 +198,7 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio tasa");
 		}	
 		return null;
 	}
@@ -220,7 +206,7 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 
 	@Override
 	public String crear(TasaRequest tasaRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response();
 		Resultado resultado = new Resultado();
@@ -231,26 +217,15 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 		log.info("tasaRequestJSON: "+tasaRequestJSON);
 		
 		wsrequest.setBody(tasaRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/tasas");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
-		log.info("antes de llamarte WS en actualizar");
+		wsrequest.setUrl(urlActualizar);
+		
+		log.info("antes de llamarte WS en crear");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en crear la tasa por codigo");
 				try {
-					//response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					//log.info("response: "+response);
-					
 					resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 					log.info("resultado: "+resultado);
 					
@@ -258,9 +233,6 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 					e.printStackTrace();
 				}
 				
-				//respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
-				//return respuesta;
-				//respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 				respuesta = resultado.getDescripcion();
 				return respuesta;
 				
@@ -270,7 +242,6 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -281,11 +252,7 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 				}if (retorno.getStatus() == 400 || retorno.getStatus() == 600) {
 					log.info("Respusta codigo " +retorno.getStatus()+ "en craer la tasa por codigo");
 					try {
-						//response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						//log.info("response: "+response);
 						resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						//log.info("response: "+response);
-						//error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						error = resultado.getDescripcion();
 						throw new CustomException(error);
 						
@@ -296,7 +263,7 @@ public class TasaServiceApiRestImpl implements ITasaServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio tasa");
 		}
 		return null;
 	}

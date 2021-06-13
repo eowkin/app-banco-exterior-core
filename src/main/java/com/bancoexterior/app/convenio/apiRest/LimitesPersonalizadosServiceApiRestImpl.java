@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
@@ -30,12 +31,31 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 	@Autowired 
 	private Mapper mapper;
 	
-	
+	@Value("${des.ConnectTimeout}")
+    private int connectTimeout;
+    
+    @Value("${des.SocketTimeout}")
+    private int socketTimeout;
+    
+    @Value("${des.limitesPersonalizados.urlConsulta}")
+    private String urlConsulta;
+    
+    @Value("${des.limitesPersonalizados.urlActualizar}")
+    private String urlActualizar;
 
+    public WSRequest getWSRequest() {
+    	WSRequest wsrequest = new WSRequest();
+    	wsrequest.setConnectTimeout(connectTimeout);
+		wsrequest.setContenType("application/json");
+		wsrequest.setSocketTimeout(socketTimeout);
+    	return wsrequest;
+    }
+
+    
 	@Override
 	public List<LimitesPersonalizados> listaLimitesPersonalizados(
 			LimitesPersonalizadosRequest limitesPersonalizadosRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		LimitesPersonalizadosResponse limiteResponse = new LimitesPersonalizadosResponse();
 		String limitesPersonalizadosRequestJSON;
@@ -43,18 +63,9 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		log.info("limitesPersonalizadosRequestJSON: "+limitesPersonalizadosRequestJSON);
 		
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
-			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		                  //https://172.19.148.51:8443/api/des/V1/parametros/limites/consultas 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/limitesdivisasclientes/consultas");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
-		log.info("antes de llamarte WS en consultar");
+		wsrequest.setUrl(urlConsulta);
+		
+		log.info("antes de llamarte WS en listaLimitesPersonalizados");
 		retorno = wsService.post(wsrequest);
 		
 		if(retorno.isExitoso()) {
@@ -70,11 +81,10 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 	            return limiteResponse.getLimitesPersonalizados();
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422");
+					log.info("entro en error 422 en listaLimitesPersonalizados");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -84,7 +94,7 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio limites personalizados");
 		}
 		return null;
 	}
@@ -92,7 +102,7 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 	@Override
 	public LimitesPersonalizados buscarLimitesPersonalizados(LimitesPersonalizadosRequest limitesPersonalizadosRequest)
 			throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		LimitesPersonalizadosResponse limiteResponse = new LimitesPersonalizadosResponse();
 		String limitesPersonalizadosRequestJSON;
@@ -100,23 +110,14 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		log.info("limitesPersonalizadosRequestJSON: "+limitesPersonalizadosRequestJSON);
 		
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setUrl(urlConsulta);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		                  //https://172.19.148.51:8443/api/des/V1/parametros/limites/consultas 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/limitesdivisasclientes/consultas");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
 		
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista limites personalizados");
+				log.info("Respusta codigo 200 en buscarLimitesPersonalizados");
 	            try {
 					limiteResponse = mapper.jsonToClass(retorno.getBody(), LimitesPersonalizadosResponse.class);
 				} catch (IOException e) {
@@ -132,11 +133,10 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 	            }
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422");
+					log.info("entro en error 422 en buscarLimitesPersonalizados");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
 						log.info("resultado: "+resultado);
-						//String mensaje = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -146,14 +146,14 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio limitesPersonalizados");
 		}
 		return null;
 	}
 
 	@Override
 	public String actualizar(LimitesPersonalizadosRequest limitesPersonalizadosRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response();  
 		String respuesta;
@@ -163,17 +163,8 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		log.info("limitesPersonalizadosRequestJSON: "+limitesPersonalizadosRequestJSON);
 		
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setUrl(urlActualizar);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		                  //https://172.19.148.51:8443/api/des/V1/parametros/limites/consultas 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/limitesdivisasclientes");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
 		log.info("antes de llamarte WS en actualizar");
 		retorno = wsService.put(wsrequest);
 		log.info("retorno: "+retorno);
@@ -183,13 +174,9 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
 					log.info("response: "+response);
-					
-					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				//respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 				respuesta = response.getResultado().getDescripcion();
 				return respuesta;
 				
@@ -200,7 +187,6 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -211,14 +197,14 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio limites personalizados");
 		}
 		return null;
 	}
 
 	@Override
 	public String crear(LimitesPersonalizadosRequest limitesPersonalizadosRequest) throws CustomException {
-		WSRequest wsrequest = new WSRequest();
+		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		Response response = new Response();  
 		String respuesta;
@@ -228,17 +214,8 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		log.info("limitesPersonalizadosRequestJSON: "+limitesPersonalizadosRequestJSON);
 		
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
-		wsrequest.setConnectTimeout(10000);
-		wsrequest.setContenType("application/json");
-		wsrequest.setSocketTimeout(10000);
+		wsrequest.setUrl(urlActualizar);
 			
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//https://172.19.148.51:8443/api/des/V1/parametros/monedas/
-		//wsrequest.setUrl("http://172.19.148.48:7108/api/des/V1/parametros/monedas/consultas");
-		                  //https://172.19.148.51:8443/api/des/V1/parametros/limites/consultas 
-		wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/parametros/limitesdivisasclientes");
-			
-		//retorno: WSResponse [statusText=, status=200, body={"resultado":{"codigo":"0000","descripcion":"Operacion Exitosa."},"monedas":[{"codMoneda":"EUR","descripcion":"EURO Europa","codAlterno":"222","flagActivo":true,"codUsuario":"E33333","fechaModificacion":"2021-05-07 21:24:07"}]}, exitoso=true, httpRetorno=kong.unirest.StringResponse@7451891e, httpError=null, error=null, idConstructor=1]
 		log.info("antes de llamarte WS en crear");
 		retorno = wsService.post(wsrequest);
 		log.info("retorno: "+retorno);
@@ -248,24 +225,19 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
 					log.info("response: "+response);
-					
-					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				//respuesta =" Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 				respuesta = response.getResultado().getDescripcion();
 				return respuesta;
 				
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar el limitePersonalizado por codigo");
+					log.info("Respusta codigo " +retorno.getStatus()+ "en Crear el limitePersonalizado por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
 						log.info("response: "+response);
-						//error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -276,7 +248,7 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException("No hubo conexion con el micreoservicio limites personalizados");
 		}
 		return null;
 	}
