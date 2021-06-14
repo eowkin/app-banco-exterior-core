@@ -44,6 +44,9 @@ public class AprobarRechazarRequest implements Serializable{
 	@JsonProperty("fechaLiquidacion")
 	private String fechaLiquidacion;
 	
+	@JsonProperty("tipoPacto")
+	private String tipoPacto;
+	
 	/**
 	 * 
 	 */

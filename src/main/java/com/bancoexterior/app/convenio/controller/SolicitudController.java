@@ -70,7 +70,8 @@ public class SolicitudController {
 	@Value("${des.canal}")
     private String canal;
 	
-	
+	@Value("${des.movimientos.numeroRegistroPage}")
+    private int numeroRegistroPage;
 	
 	
 	
@@ -175,7 +176,7 @@ public class SolicitudController {
 			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
 			
 			movimientosRequest.setNumeroPagina(page);
-			movimientosRequest.setTamanoPagina(10);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			filtrosVenta.setEstatus(0);
@@ -197,7 +198,7 @@ public class SolicitudController {
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(1);
-				movimientosRequest.setTamanoPagina(10);
+				movimientosRequest.setTamanoPagina(numeroRegistroPage);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				filtrosCompra.setEstatus(0);
@@ -368,7 +369,7 @@ public class SolicitudController {
 			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
 			
 			movimientosRequest.setNumeroPagina(1);
-			movimientosRequest.setTamanoPagina(10);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			filtrosVenta.setEstatus(0);
@@ -389,7 +390,7 @@ public class SolicitudController {
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(page);
-				movimientosRequest.setTamanoPagina(10);
+				movimientosRequest.setTamanoPagina(numeroRegistroPage);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				filtrosCompra.setEstatus(0);
@@ -471,7 +472,7 @@ public class SolicitudController {
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(page);
-			movimientosRequest.setTamanoPagina(10);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			movimientosRequest.setFiltros(filtrosVenta);
@@ -491,7 +492,7 @@ public class SolicitudController {
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(1);
-				movimientosRequest.setTamanoPagina(10);
+				movimientosRequest.setTamanoPagina(numeroRegistroPage);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				movimientosRequest.setFiltros(filtrosCompra);
@@ -552,7 +553,7 @@ public class SolicitudController {
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(1);
-			movimientosRequest.setTamanoPagina(10);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			movimientosRequest.setFiltros(filtrosVenta);
@@ -572,7 +573,7 @@ public class SolicitudController {
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(page);
-				movimientosRequest.setTamanoPagina(10);
+				movimientosRequest.setTamanoPagina(numeroRegistroPage);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				movimientosRequest.setFiltros(filtrosCompra);
@@ -626,7 +627,7 @@ public class SolicitudController {
 		
 		try {
 			movimientosRequest.setNumeroPagina(1);
-			movimientosRequest.setTamanoPagina(5);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtros = new Movimiento();
 			//filtrosVenta.setTipoTransaccion("V");
 			//filtrosVenta.setEstatus(0);
@@ -700,6 +701,7 @@ public class SolicitudController {
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
+		aprobarRechazarRequest.setTipoPacto(movimiento.getTipoPacto());
 		aprobarRechazarRequest.setTasa(movimiento.getTasaOperacion());
 		aprobarRechazarRequest.setFechaLiquidacion(movimiento.getFecha());
 		aprobarRechazarRequest.setEstatus(1);
@@ -733,7 +735,7 @@ public class SolicitudController {
 		
 		try {
 			movimientosRequest.setNumeroPagina(1);
-			movimientosRequest.setTamanoPagina(5);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtros = new Movimiento();
 			filtros.setTipoTransaccion("V");
 			//filtrosVenta.setEstatus(0);
@@ -807,6 +809,7 @@ public class SolicitudController {
 		aprobarRechazarRequest.setIp(request.getRemoteAddr());
 		aprobarRechazarRequest.setOrigen("01");
 		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
+		aprobarRechazarRequest.setTipoPacto(movimiento.getTipoPacto());
 		aprobarRechazarRequest.setTasa(movimiento.getTasaOperacion());
 		aprobarRechazarRequest.setFechaLiquidacion(movimiento.getFecha());
 		aprobarRechazarRequest.setEstatus(1);
@@ -826,134 +829,239 @@ public class SolicitudController {
 	}
 	
 	
-	@GetMapping("/rechazarCompra/{codOperacion}/{tasa}/{page}")
-	public String rechazarCompra(@PathVariable("codOperacion") String codOperacion, @PathVariable("tasa") BigDecimal tasa, 
+	@GetMapping("/rechazarCompra/{codOperacion}/{page}")
+	public String rechazarCompra(@PathVariable("codOperacion") String codOperacion, 
 			@PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
 		log.info("rechazarCompra");
 		log.info("codOperacion: "+codOperacion);
-		log.info("tasa: "+tasa);
 		log.info("page: "+page);
 		
 		
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
+		Movimiento movimientoProcesar = new Movimiento();
 		
-		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen("01");
-		aprobarRechazarRequest.setCodSolicitud(codOperacion);
-		aprobarRechazarRequest.setTasa(tasa);
-		aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
-		aprobarRechazarRequest.setEstatus(2);
+		
 		
 		try {
-			String respuesta = movimientosApiRest.rechazarCompra(aprobarRechazarRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			
+			movimientosRequest.setNumeroPagina(1);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
+			Movimiento filtros = new Movimiento();
+			filtros.setCodOperacion(codOperacion);
+			movimientosRequest.setFiltros(filtros);
+			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			
+			
+			if(response.getResultado().getCodigo().equals("0000")) {
+				movimientoProcesar = response.getMovimientos().get(0);
+				movimientoProcesar.setPaginaActual(page);
+				log.info("movimientoProcesar: "+movimientoProcesar);
+				model.addAttribute("paginaActual", page);
+				
+				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
+				aprobarRechazarRequest.setIp(request.getRemoteAddr());
+				aprobarRechazarRequest.setOrigen("01");
+				aprobarRechazarRequest.setCodSolicitud(codOperacion);
+				aprobarRechazarRequest.setTipoPacto(movimientoProcesar.getTipoPacto());
+				aprobarRechazarRequest.setTasa(movimientoProcesar.getTasaCliente());
+				aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
+				aprobarRechazarRequest.setEstatus(2);
+				
+				String respuesta = movimientosApiRest.rechazarCompra(aprobarRechazarRequest);
+				redirectAttributes.addFlashAttribute("mensaje", respuesta);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+				
+				
+			}else {
+				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
+				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			}
+			
+			
+			
+			
+			
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
 			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
-			
-			//model.addAttribute("mensajeError", e.getMessage());
-			//return "convenio/agencia/formBuscarAgencia";
 		}
 	}
 	
-	@GetMapping("/aprobarCompra/{codOperacion}/{tasa}/{page}")
-	public String aprobarCompra(@PathVariable("codOperacion") String codOperacion, @PathVariable("tasa") BigDecimal tasa, 
+	@GetMapping("/aprobarCompra/{codOperacion}/{page}")
+	public String aprobarCompra(@PathVariable("codOperacion") String codOperacion, 
 			@PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
 		log.info("aprobarCompra");
 		log.info("codOperacion: "+codOperacion);
-		log.info("tasa: "+tasa);
 		log.info("page: "+page);
 		
-		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen("01");
-		aprobarRechazarRequest.setCodSolicitud(codOperacion);
-		aprobarRechazarRequest.setTasa(tasa);
-		aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
-		aprobarRechazarRequest.setEstatus(1);
 		
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
+		Movimiento movimientoProcesar = new Movimiento();
 		try {
-			String respuesta = movimientosApiRest.aprobarCompra(aprobarRechazarRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			movimientosRequest.setNumeroPagina(1);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
+			Movimiento filtros = new Movimiento();
+			filtros.setCodOperacion(codOperacion);
+			movimientosRequest.setFiltros(filtros);
+			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			
+			if(response.getResultado().getCodigo().equals("0000")) {
+				movimientoProcesar = response.getMovimientos().get(0);
+				movimientoProcesar.setPaginaActual(page);
+				log.info("movimientoProcesar: "+movimientoProcesar);
+				model.addAttribute("paginaActual", page);
+				
+				
+				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
+				aprobarRechazarRequest.setIp(request.getRemoteAddr());
+				aprobarRechazarRequest.setOrigen("01");
+				aprobarRechazarRequest.setCodSolicitud(codOperacion);
+				aprobarRechazarRequest.setTipoPacto(movimientoProcesar.getTipoPacto());
+				aprobarRechazarRequest.setTasa(movimientoProcesar.getTasaCliente());
+				aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
+				aprobarRechazarRequest.setEstatus(1);
+				
+				String respuesta = movimientosApiRest.aprobarCompra(aprobarRechazarRequest);
+				redirectAttributes.addFlashAttribute("mensaje", respuesta);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+				
+				
+			}else {
+				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
+				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			}
+			
+			
+			
+			
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
 			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
-			
-			//model.addAttribute("mensajeError", e.getMessage());
-			//return "convenio/agencia/formBuscarAgencia";
 		}
 	}
 	
-	@GetMapping("/rechazarVenta/{codOperacion}/{tasa}/{page}")
-	public String rechazarVenta(@PathVariable("codOperacion") String codOperacion, @PathVariable("tasa") BigDecimal tasa, 
+	@GetMapping("/rechazarVenta/{codOperacion}/{page}")
+	public String rechazarVenta(@PathVariable("codOperacion") String codOperacion, 
 			@PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
 		log.info("rechazarVenta");
 		log.info("codOperacion: "+codOperacion);
-		log.info("tasa: "+tasa);
 		log.info("page: "+page);
 		
 		
-		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen("01");
-		aprobarRechazarRequest.setCodSolicitud(codOperacion);
-		aprobarRechazarRequest.setTasa(tasa);
-		aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
-		aprobarRechazarRequest.setEstatus(2);
+		
+		
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
+		Movimiento movimientoProcesar = new Movimiento();
 		
 		try {
-			String respuesta = movimientosApiRest.rechazarVenta(aprobarRechazarRequest);
-			redirectAttributes.addFlashAttribute("mensajeVenta", respuesta);
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+			movimientosRequest.setNumeroPagina(1);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
+			Movimiento filtros = new Movimiento();
+			filtros.setCodOperacion(codOperacion);
+			movimientosRequest.setFiltros(filtros);
+			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			
+			
+			if(response.getResultado().getCodigo().equals("0000")) {
+				movimientoProcesar = response.getMovimientos().get(0);
+				movimientoProcesar.setPaginaActual(page);
+				log.info("movimientoProcesar: "+movimientoProcesar);
+				model.addAttribute("paginaActual", page);
+				
+				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
+				aprobarRechazarRequest.setIp(request.getRemoteAddr());
+				aprobarRechazarRequest.setOrigen("01");
+				aprobarRechazarRequest.setCodSolicitud(codOperacion);
+				aprobarRechazarRequest.setTipoPacto(movimientoProcesar.getTipoPacto());
+				aprobarRechazarRequest.setTasa(movimientoProcesar.getTasaCliente());
+				aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
+				aprobarRechazarRequest.setEstatus(2);
+				
+				
+				String respuesta = movimientosApiRest.rechazarVenta(aprobarRechazarRequest);
+				redirectAttributes.addFlashAttribute("mensajeVenta", respuesta);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+				
+				
+			}else {
+				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
+				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+			}
+			
+			
+			
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			redirectAttributes.addFlashAttribute("mensajeErrorVenta",e.getMessage());
 			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
-			
-			//model.addAttribute("mensajeError", e.getMessage());
-			//return "convenio/agencia/formBuscarAgencia";
 		}
 	}
 	
-	@GetMapping("/aprobarVenta/{codOperacion}/{tasa}/{page}")
-	public String aprobarVenta(@PathVariable("codOperacion") String codOperacion, @PathVariable("tasa") BigDecimal tasa, 
+	@GetMapping("/aprobarVenta/{codOperacion}/{page}")
+	public String aprobarVenta(@PathVariable("codOperacion") String codOperacion, 
 			@PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
 		log.info("aprobarVenta");
 		log.info("codOperacion: "+codOperacion);
-		log.info("tasa: "+tasa);
 		log.info("page: "+page);
 		
-		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen("01");
-		aprobarRechazarRequest.setCodSolicitud(codOperacion);
-		aprobarRechazarRequest.setTasa(tasa);
-		aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
-		aprobarRechazarRequest.setEstatus(1);
 		
+		
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
+		Movimiento movimientoProcesar = new Movimiento();
 		try {
-			String respuesta = movimientosApiRest.aprobarVenta(aprobarRechazarRequest);
-			redirectAttributes.addFlashAttribute("mensajeVenta", respuesta);
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+			movimientosRequest.setNumeroPagina(1);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
+			Movimiento filtros = new Movimiento();
+			filtros.setCodOperacion(codOperacion);
+			movimientosRequest.setFiltros(filtros);
+			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
+			
+			
+			if(response.getResultado().getCodigo().equals("0000")) {
+				movimientoProcesar = response.getMovimientos().get(0);
+				movimientoProcesar.setPaginaActual(page);
+				log.info("movimientoProcesar: "+movimientoProcesar);
+				model.addAttribute("paginaActual", page);
+				
+				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
+				aprobarRechazarRequest.setIp(request.getRemoteAddr());
+				aprobarRechazarRequest.setOrigen("01");
+				aprobarRechazarRequest.setCodSolicitud(codOperacion);
+				aprobarRechazarRequest.setTipoPacto(movimientoProcesar.getTipoPacto());
+				aprobarRechazarRequest.setTasa(movimientoProcesar.getTasaCliente());
+				aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
+				aprobarRechazarRequest.setEstatus(1);
+				
+				
+				String respuesta = movimientosApiRest.aprobarVenta(aprobarRechazarRequest);
+				redirectAttributes.addFlashAttribute("mensajeVenta", respuesta);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+				
+				
+			}else {
+				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
+				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
+				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+			}
+			
+			
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			redirectAttributes.addFlashAttribute("mensajeErrorVenta",e.getMessage());
 			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
-			
-			//model.addAttribute("mensajeError", e.getMessage());
-			//return "convenio/agencia/formBuscarAgencia";
 		}
 	}
 	
@@ -1296,7 +1404,7 @@ public class SolicitudController {
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(1);
-			movimientosRequest.setTamanoPagina(10);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			filtrosVenta.setEstatus(movimientoSearch.getEstatus());
@@ -1314,7 +1422,7 @@ public class SolicitudController {
 					//return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
 					
 					movimientosRequest.setNumeroPagina(1);
-					movimientosRequest.setTamanoPagina(10);
+					movimientosRequest.setTamanoPagina(numeroRegistroPage);
 					Movimiento filtrosCompra = new Movimiento();
 					filtrosCompra.setTipoTransaccion("C");
 					movimientosRequest.setFiltros(filtrosCompra);
@@ -1372,7 +1480,7 @@ public class SolicitudController {
 				model.addAttribute("fechaHasta", movimientoSearch.getFechas().getFechaHasta());
 				
 				movimientosRequest.setNumeroPagina(1);
-				movimientosRequest.setTamanoPagina(10);
+				movimientosRequest.setTamanoPagina(numeroRegistroPage);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				movimientosRequest.setFiltros(filtrosCompra);
@@ -1431,7 +1539,7 @@ public class SolicitudController {
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(page);
-			movimientosRequest.setTamanoPagina(10);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			filtrosVenta.setEstatus(estatus);
@@ -1451,7 +1559,7 @@ public class SolicitudController {
 				//return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
 				
 				movimientosRequest.setNumeroPagina(1);
-				movimientosRequest.setTamanoPagina(10);
+				movimientosRequest.setTamanoPagina(numeroRegistroPage);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				movimientosRequest.setFiltros(filtrosCompra);
@@ -1506,7 +1614,7 @@ public class SolicitudController {
 				model.addAttribute("fechaHasta", fechaHasta);
 				
 				movimientosRequest.setNumeroPagina(1);
-				movimientosRequest.setTamanoPagina(10);
+				movimientosRequest.setTamanoPagina(numeroRegistroPage);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				movimientosRequest.setFiltros(filtrosCompra);
@@ -1567,7 +1675,7 @@ public class SolicitudController {
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(1);
-			movimientosRequest.setTamanoPagina(10);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			movimientosRequest.setFiltros(filtrosVenta);
@@ -1587,7 +1695,7 @@ public class SolicitudController {
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(1);
-				movimientosRequest.setTamanoPagina(10);
+				movimientosRequest.setTamanoPagina(numeroRegistroPage);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				filtrosCompra.setEstatus(movimientoSearch.getEstatus());
@@ -1669,7 +1777,7 @@ public class SolicitudController {
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(1);
-			movimientosRequest.setTamanoPagina(10);
+			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtrosVenta = new Movimiento();
 			filtrosVenta.setTipoTransaccion("V");
 			movimientosRequest.setFiltros(filtrosVenta);
@@ -1689,7 +1797,7 @@ public class SolicitudController {
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(page);
-				movimientosRequest.setTamanoPagina(10);
+				movimientosRequest.setTamanoPagina(numeroRegistroPage);
 				Movimiento filtrosCompra = new Movimiento();
 				filtrosCompra.setTipoTransaccion("C");
 				filtrosCompra.setEstatus(estatus);
@@ -1860,13 +1968,9 @@ public class SolicitudController {
 	
 	@GetMapping("/listaSolicitudesMovimientosVentas")
 	public String consultaMovimientoVenta1(Model model) {
-		MovimientosRequest movimientosRequest = new MovimientosRequest();
-		movimientosRequest.setIdUsuario("test");
-		movimientosRequest.setIdSesion("20210101121213");
-		movimientosRequest.setUsuario("E66666");
-		movimientosRequest.setCanal("8");
+		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		movimientosRequest.setNumeroPagina(1);
-		movimientosRequest.setTamanoPagina(5);
+		movimientosRequest.setTamanoPagina(numeroRegistroPage);
 		Movimiento filtros = new Movimiento();
 		//filtros.setEstatus(0);
 		filtros.setTipoTransaccion("V");

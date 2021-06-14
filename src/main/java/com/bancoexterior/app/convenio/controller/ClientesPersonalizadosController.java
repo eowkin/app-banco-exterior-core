@@ -59,6 +59,10 @@ public class ClientesPersonalizadosController {
 	@Value("${des.canal}")
     private String canal;	
 	
+	@Value("${des.clientesPersonalizados.numeroRegistroPage}")
+    private int numeroRegistroPage;
+	
+	
 	
 	@GetMapping("/index/{page}")
 	public String index(@PathVariable("page") int page,Model model, RedirectAttributes redirectAttributes) {
@@ -68,7 +72,7 @@ public class ClientesPersonalizadosController {
 
 		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(page);
-		clienteRequest.setTamanoPagina(5);
+		clienteRequest.setTamanoPagina(numeroRegistroPage);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
 		clienteRequest.setCliente(clientesPersonalizados);
 		List<ClientesPersonalizados> listaClientesPersonalizados = new ArrayList<>();
@@ -127,7 +131,7 @@ public class ClientesPersonalizadosController {
 
 		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
-		clienteRequest.setTamanoPagina(5);
+		clienteRequest.setTamanoPagina(numeroRegistroPage);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
 		clientesPersonalizados.setCodigoIbs(codigoIbs);
 		clienteRequest.setCliente(clientesPersonalizados);
@@ -158,7 +162,7 @@ public class ClientesPersonalizadosController {
 
 		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
-		clienteRequest.setTamanoPagina(5);
+		clienteRequest.setTamanoPagina(numeroRegistroPage);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
 		clientesPersonalizados.setCodigoIbs(codigoIbs);
 		clienteRequest.setCliente(clientesPersonalizados);
@@ -225,7 +229,7 @@ public class ClientesPersonalizadosController {
 
 		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
-		clienteRequest.setTamanoPagina(5);
+		clienteRequest.setTamanoPagina(numeroRegistroPage);
 		ClientesPersonalizados clientesPersonalizadosBuscar = new ClientesPersonalizados();
 		clientesPersonalizadosBuscar.setCodigoIbs(codigoIbs);
 		clienteRequest.setCliente(clientesPersonalizadosBuscar);
@@ -379,7 +383,7 @@ public class ClientesPersonalizadosController {
 
 		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
-		clienteRequest.setTamanoPagina(5);
+		clienteRequest.setTamanoPagina(numeroRegistroPage);
 		ClientesPersonalizados clientesPersonalizadosBuscar = new ClientesPersonalizados();
 		clientesPersonalizadosBuscar.setCodigoIbs(codigoIbs);
 		clienteRequest.setCliente(clientesPersonalizadosBuscar);
@@ -595,7 +599,7 @@ public class ClientesPersonalizadosController {
 
 		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
-		clienteRequest.setTamanoPagina(5);
+		clienteRequest.setTamanoPagina(numeroRegistroPage);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
 		if (!clientesPersonalizadosSearch.getCodigoIbs().equals(""))
 			clientesPersonalizados.setCodigoIbs(clientesPersonalizadosSearch.getCodigoIbs());
@@ -665,7 +669,7 @@ public class ClientesPersonalizadosController {
 	
 		ClienteRequest clienteRequest = getClienteRequest();
 		clienteRequest.setNumeroPagina(1);
-		clienteRequest.setTamanoPagina(5);
+		clienteRequest.setTamanoPagina(numeroRegistroPage);
 		ClientesPersonalizados clientesPersonalizados = new ClientesPersonalizados();
 		if (!clientesPersonalizadosSearch.getNroIdCliente().equals(""))
 			clientesPersonalizados.setNroIdCliente(clientesPersonalizadosSearch.getNroIdCliente());
