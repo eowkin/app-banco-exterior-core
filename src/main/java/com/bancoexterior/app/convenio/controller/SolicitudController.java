@@ -191,7 +191,7 @@ public class SolicitudController {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
 					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+					model.addAttribute("mensajeErrorVenta", "Operacion Exitosa.La consulta no arrojo resultado.");
 				}
 				
 				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
@@ -384,7 +384,7 @@ public class SolicitudController {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
 					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+					model.addAttribute("mensajeErrorVenta", "Operacion Exitosa.La consulta no arrojo resultado.");
 				}
 				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
