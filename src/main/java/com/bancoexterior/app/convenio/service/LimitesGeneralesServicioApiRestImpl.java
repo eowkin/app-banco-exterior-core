@@ -106,7 +106,6 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 	public LimitesGenerales buscarLimitesGenerales(LimiteRequest limiteRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		LimiteResponse limiteResponse = new LimiteResponse();
 		String limiteRequestJSON;
 		limiteRequestJSON = new Gson().toJson(limiteRequest);
 		wsrequest.setBody(limiteRequestJSON);
@@ -118,22 +117,11 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 			if(retorno.getStatus() == 200) {
 				return respuesta2xxbuscarLimitesGenerales(retorno);
 			}else {
-				if (retorno.getStatus() == 422) {
-					try {
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						String error = response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxbuscarLimitesGenerales(retorno));	
 			}
 		}else {
 			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
 	}
 	
 	public LimitesGenerales respuesta2xxbuscarLimitesGenerales(WSResponse retorno){
@@ -152,13 +140,21 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
         
 	}
 
+	public String respuesta4xxbuscarLimitesGenerales(WSResponse retorno){
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado().getDescripcion();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	@Override
 	public String actualizar(LimiteRequest limiteRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();  
-		String respuesta;
-		String error;
 		String limiteRequestJSON;
 		limiteRequestJSON = new Gson().toJson(limiteRequest);
 		wsrequest.setBody(limiteRequestJSON);
@@ -168,42 +164,31 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 		retorno = wsService.put(wsrequest);
 			if(retorno.isExitoso()) {
 				if(retorno.getStatus() == 200) {
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					respuesta = response.getResultado().getDescripcion();
-					return respuesta;
-					
-					
+					return respuesta2xxActualizarCrear(retorno);
 				}else {
-					if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-						try {
-							response = mapper.jsonToClass(retorno.getBody(), Response.class);
-							error = response.getResultado().getDescripcion();
-							throw new CustomException(error);
-							
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						
-					}
+					throw new CustomException(respuesta4xxbuscarLimitesGenerales(retorno));
 				}
 			}else {
 				throw new CustomException(ERRORMICROCONEXION);
 			}	
-				
-		return null;
 	}
 
+	public String respuesta2xxActualizarCrear(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado().getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	
 	@Override
 	public String crear(LimiteRequest limiteRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();  
-		String respuesta;
-		String error;
 		String limiteRequestJSON;
 		limiteRequestJSON = new Gson().toJson(limiteRequest);
 		wsrequest.setBody(limiteRequestJSON);
@@ -212,33 +197,13 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				respuesta = response.getResultado().getDescripcion();
-				return respuesta;
-				
-				
+				return respuesta2xxActualizarCrear(retorno);
 			}else {
-				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						error = response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxbuscarLimitesGenerales(retorno));
 			}
 		}else {
 			throw new CustomException(ERRORMICROCONEXION);
 		}
-		
-		return null;
 	}
 
 }

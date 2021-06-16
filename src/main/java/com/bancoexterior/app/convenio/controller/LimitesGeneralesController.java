@@ -48,13 +48,31 @@ public class LimitesGeneralesController {
 	@Value("${des.canal}")
     private String canal;	
 	
+	private static final String URLINDEX = "convenio/limitesGenerales/listaLimitesGenerales";
+	
+	private static final String URLFORMLIMITESGENERALES = "convenio/limitesGenerales/formLimitesGenerales";
+	
+	private static final String URLFORMLIMITESGENERALESEDIT = "convenio/limitesGenerales/formLimitesGeneralesEdit";
+	
+	private static final String URLFORMLIMITESGENERALESDETALLE = "convenio/limitesGenerales/formLimitesGeneralesDetalle";
+	
+	private static final String LISTALIMITESGENERALES = "listaLimitesGenerales";
+	
+	private static final String LISTAMONEDAS = "listaMonedas";
+	
+	private static final String LISTAERROR = "listaError";
+	
+	private static final String MENSAJEERROR = "mensajeError";
+	
+	private static final String REDIRECTINDEX = "redirect:/limitesGenerales/index";
+	
+	private static final String MENSAJE = "mensaje";
+	
+	private static final String MENSAJENORESULTADO = "Operacion Exitosa.La consulta no arrojo resultado.";
 	
 	@GetMapping("/index")
 	public String index(Model model, RedirectAttributes redirectAttributes) {
 		log.info("si me llamo a index listaLimitesWs");
-		
-		
-		
 		LimiteRequest limiteRequest = getLimiteRequest(); 
 		LimitesGenerales limite = new LimitesGenerales();
 		limiteRequest.setLimite(limite);
@@ -68,15 +86,13 @@ public class LimitesGeneralesController {
 					limitesGenerales.setFechaModificacion(arrOfStr[0]);
 				}
 			}
-			model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
-    		return "convenio/limitesGenerales/listaLimitesGenerales";
+			model.addAttribute(LISTALIMITESGENERALES, listaLimitesGenerales);
 		} catch (CustomException e) {
-			
-			log.error("error: "+e);
-			model.addAttribute("mensajeError", e.getMessage());
-			model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
-    		return "convenio/limitesGenerales/listaLimitesGenerales";
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			model.addAttribute(LISTALIMITESGENERALES, listaLimitesGenerales);
 		}
+		
+		return URLINDEX;
 	}
 	
 	@GetMapping("/activar/{codMoneda}/{tipoTransaccion}/{tipoCliente}")
@@ -101,15 +117,12 @@ public class LimitesGeneralesController {
 			limitesGeneralesEdit.setFlagActivo(true);
 			limiteRequest.setLimite(limitesGeneralesEdit);
 			String respuesta = limitesGeneralesServiceApirest.actualizar(limiteRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/limitesGenerales/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/limitesGenerales/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
 		}
 		
-		
+		return REDIRECTINDEX;
 	}	
 	
 	@GetMapping("/desactivar/{codMoneda}/{tipoTransaccion}/{tipoCliente}")
@@ -134,15 +147,12 @@ public class LimitesGeneralesController {
 			limitesGeneralesEdit.setFlagActivo(false);
 			limiteRequest.setLimite(limitesGeneralesEdit);
 			String respuesta = limitesGeneralesServiceApirest.actualizar(limiteRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/limitesGenerales/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/limitesGenerales/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
 		}
 		
-		
+		return REDIRECTINDEX;
 	}
 	
 	
@@ -168,15 +178,14 @@ public class LimitesGeneralesController {
 			limitesGeneralesEdit = limitesGeneralesServiceApirest.buscarLimitesGenerales(limiteRequest);
 			if(limitesGeneralesEdit != null) {
 				model.addAttribute("limitesGenerales", limitesGeneralesEdit);
-            	return "convenio/limitesGenerales/formLimitesGeneralesDetalle";
+            	return URLFORMLIMITESGENERALESDETALLE;
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "redirect:/limitesGenerales/index";
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+				return REDIRECTINDEX;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/limitesGenerales/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX;
 		}
 		
 	
@@ -204,15 +213,14 @@ public class LimitesGeneralesController {
 			limitesGeneralesEdit = limitesGeneralesServiceApirest.buscarLimitesGenerales(limiteRequest);
 			if(limitesGeneralesEdit != null) {
 				model.addAttribute("limitesGenerales", limitesGeneralesEdit);
-				return "convenio/limitesGenerales/formLimitesGeneralesEdit";
+				return URLFORMLIMITESGENERALESEDIT;
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "redirect:/limitesGenerales/index";
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+				return REDIRECTINDEX;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/limitesGenerales/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX;
 		}
 	}	
 	
@@ -220,7 +228,6 @@ public class LimitesGeneralesController {
 	public String guardarWs(LimitesGenerales limitesGenerales, BindingResult result,
 			RedirectAttributes redirectAttributes, Model model) {
 		log.info("guardarWs");
-		log.info("limitesGenerales: "+limitesGenerales);
 		List<String> listaError = new ArrayList<>();
 		
 		if (result.hasErrors()) {
@@ -232,25 +239,24 @@ public class LimitesGeneralesController {
 			}
 			
 			
-			model.addAttribute("listaError", listaError);
-			return "convenio/limitesGenerales/formLimitesGeneralesEdit";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMLIMITESGENERALESEDIT;
 		}
-		
-		 log.info("Comparar tamaño:" + limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin())); 
+		 
 		  if(limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin()) < 0) { 
 			  listaError.add("El monto mínimo no debe ser mayor al monto máximo");
-			  model.addAttribute("listaError", listaError);
-			  result.addError(new  ObjectError("codMoneda", " El monto mínimo no debe ser mayor al monto máximo"));
+			  model.addAttribute(LISTAERROR, listaError);
+			  result.addError(new  ObjectError(LISTAERROR, " El monto mínimo no debe ser mayor al monto máximo"));
 			  
-			  return "convenio/limitesGenerales/formLimitesGeneralesEdit"; 
+			  return URLFORMLIMITESGENERALESEDIT; 
 		  }
 		 
-		  log.info("Comparar tamaño:" + limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario())); 
+ 
 		  if(limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario()) < 0) { 
-			  result.addError(new  ObjectError("codMoneda", " El monto diario no debe ser mayor al mensual"));
+			  result.addError(new  ObjectError(LISTAERROR, " El monto diario no debe ser mayor al mensual"));
 			  listaError.add("El monto diario no debe ser mayor al mensual");
-			  model.addAttribute("listaError", listaError);
-			  return "convenio/limitesGenerales/formLimitesGeneralesEdit"; 
+			  model.addAttribute(LISTAERROR, listaError);
+			  return URLFORMLIMITESGENERALESEDIT; 
 		  }
 		
 		LimiteRequest limiteRequest = getLimiteRequest(); 
@@ -259,14 +265,13 @@ public class LimitesGeneralesController {
 		try {
 			
 			String respuesta = limitesGeneralesServiceApirest.actualizar(limiteRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/limitesGenerales/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEX;
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			result.addError(new ObjectError(LISTAERROR, e.getMessage()));
 			listaError.add(e.getMessage());
-			model.addAttribute("listaError", listaError);
-			return "convenio/limitesGenerales/formLimitesGeneralesEdit";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMLIMITESGENERALESEDIT;
 		}
 		
 	
@@ -284,12 +289,11 @@ public class LimitesGeneralesController {
 		
 		try {
 			listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-			model.addAttribute("listaMonedas", listaMonedas);
-    		return "convenio/limitesGenerales/formLimitesGenerales";
+			model.addAttribute(LISTAMONEDAS, listaMonedas);
+    		return URLFORMLIMITESGENERALES;
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/limitesGenerales/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX;
 		}
 	}
 	
@@ -298,7 +302,7 @@ public class LimitesGeneralesController {
 		log.info("saveWs");
 		log.info("limitesGenerales: "+limitesGenerales);
 		List<String> listaError = new ArrayList<>();
-		List<Moneda> listaMonedas = new ArrayList<>();
+		List<Moneda> listaMonedas;
 		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		moneda.setFlagActivo(true);
@@ -314,57 +318,48 @@ public class LimitesGeneralesController {
 			
 			try {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-				model.addAttribute("listaMonedas", listaMonedas);
-				model.addAttribute("listaError", listaError);
-				return "convenio/limitesGenerales/formLimitesGenerales";
+				model.addAttribute(LISTAMONEDAS, listaMonedas);
+				model.addAttribute(LISTAERROR, listaError);
+				return URLFORMLIMITESGENERALES;
 			} catch (CustomException e) {
-				log.error("error: "+e);
-				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
-				model.addAttribute("listaError", e.getMessage());
-				return "convenio/limitesGenerales/formLimitesGenerales";
+				result.addError(new ObjectError(LISTAERROR, e.getMessage()));
+				model.addAttribute(LISTAERROR, e.getMessage());
+				return URLFORMLIMITESGENERALES;
 			}
 			
 		}
 		
-		log.info("Comparar tamaño:" + limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin())); 
+ 
 		  if(limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin()) < 0) { 
-			  log.info("Se metio por aqui compa:");
 			  try {
-				  	log.info("Se metio por aqui compa 1.1");
 				  	listaError.add("El monto mínimo no debe ser mayor al monto máximo");
-					log.info("listaError: "+listaError);
 					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-					model.addAttribute("listaMonedas", listaMonedas);
-					model.addAttribute("listaError", listaError);
-					result.addError(new  ObjectError("codMoneda", " El monto mínimo no debe ser mayor al monto máximo"));
-					return "convenio/limitesGenerales/formLimitesGenerales";
-		    		//clientesPersonalizados/formLimiteClientePersonalizado/{codigoIbs}
+					model.addAttribute(LISTAMONEDAS, listaMonedas);
+					model.addAttribute(LISTAERROR, listaError);
+					result.addError(new  ObjectError(LISTAERROR, " El monto mínimo no debe ser mayor al monto máximo"));
+					return URLFORMLIMITESGENERALES;
 				} catch (CustomException e) {
-					log.error("error: "+e);
-					result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+					result.addError(new ObjectError(LISTAERROR, e.getMessage()));
 					 listaError.add(e.getMessage());
-					 model.addAttribute("listaError", listaError);
-					 return "convenio/limitesGenerales/formLimitesGenerales";
+					 model.addAttribute(LISTAERROR, listaError);
+					 return URLFORMLIMITESGENERALES;
 				}
 		  }
 		  
-		  log.info("Comparar tamaño:" + limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario())); 
+		   
 		  if(limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario()) < 0) { 
-			  log.info("Se metio por aqui compa 2:");
 			  try {
 					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-					model.addAttribute("listaMonedas", listaMonedas);
+					model.addAttribute(LISTAMONEDAS, listaMonedas);
 					listaError.add("El monto diario no debe ser mayor al mensual");
-			        model.addAttribute("listaError", listaError);
-			        result.addError(new  ObjectError("codMoneda", " El monto diario no debe ser mayor al mensual"));
-			        return "convenio/limitesGenerales/formLimitesGenerales";
-		    		//clientesPersonalizados/formLimiteClientePersonalizado/{codigoIbs}
+			        model.addAttribute(LISTAERROR, listaError);
+			        result.addError(new  ObjectError(LISTAERROR, " El monto diario no debe ser mayor al mensual"));
+			        return URLFORMLIMITESGENERALES;
 				} catch (CustomException e) {
-					log.error("error: "+e);
-					result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+					result.addError(new ObjectError(LISTAERROR, e.getMessage()));
 					 listaError.add(e.getMessage());
-					 model.addAttribute("listaError", listaError);
-					 return "convenio/limitesGenerales/formLimitesGenerales";
+					 model.addAttribute(LISTAERROR, listaError);
+					 return URLFORMLIMITESGENERALES;
 				}
 		  }
 		
@@ -374,23 +369,23 @@ public class LimitesGeneralesController {
 		
 		try {
 			String respuesta = limitesGeneralesServiceApirest.crear(limiteRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/limitesGenerales/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEX;
 		} catch (CustomException e) {
 			log.error("error: "+e);
 			try {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-				model.addAttribute("listaMonedas", listaMonedas);
-				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				model.addAttribute(LISTAMONEDAS, listaMonedas);
+				result.addError(new ObjectError(LISTAERROR, " Codigo :" +e.getMessage()));
 				listaError.add(e.getMessage());
-				model.addAttribute("listaError", listaError);
-				return "convenio/limitesGenerales/formLimitesGenerales";
+				model.addAttribute(LISTAERROR, listaError);
+				return URLFORMLIMITESGENERALES;
 			} catch (CustomException e1) {
 				log.error("error: "+e1);
-				result.addError(new ObjectError("codMoneda", " Codigo :" +e1.getMessage()));
+				result.addError(new ObjectError(LISTAERROR, " Codigo :" +e1.getMessage()));
 				listaError.add(e1.getMessage());
-				model.addAttribute("listaError", listaError);
-				return "convenio/limitesGenerales/formLimitesGenerales";
+				model.addAttribute(LISTAERROR, listaError);
+				return URLFORMLIMITESGENERALES;
 			}
 			
 		}
@@ -412,7 +407,6 @@ public class LimitesGeneralesController {
 		
 		try {
 			listaLimitesGenerales = limitesGeneralesServiceApirest.listaLimitesGenerales(limiteRequest);
-			log.info("lista: "+listaLimitesGenerales.isEmpty());
 			if(!listaLimitesGenerales.isEmpty()) {
 				for (LimitesGenerales limitesGenerales : listaLimitesGenerales) {
 					if(limitesGenerales.getFechaModificacion() != null) {
@@ -420,25 +414,22 @@ public class LimitesGeneralesController {
 						limitesGenerales.setFechaModificacion(arrOfStr[0]);
 					}
 				}
-				model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
-	    		return "convenio/limitesGenerales/listaLimitesGenerales";
+				model.addAttribute(LISTALIMITESGENERALES, listaLimitesGenerales);
+	    		
 			}else {
-				//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
-				model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
-				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "convenio/limitesGenerales/listaLimitesGenerales";
+				model.addAttribute(LISTALIMITESGENERALES, listaLimitesGenerales);
+				model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+				
 			}
 			
 		} catch (CustomException e) {
+			model.addAttribute(LISTALIMITESGENERALES, listaLimitesGenerales);
+			model.addAttribute(MENSAJEERROR, e.getMessage());
 			
-			log.error("error: "+e);
-			model.addAttribute("listaLimitesGenerales", listaLimitesGenerales);
-			model.addAttribute("mensajeError", e.getMessage());
-			return "convenio/limitesGenerales/listaLimitesGenerales";
 		}
 		
 		
-		
+		return URLINDEX;
 	}
 	
 	

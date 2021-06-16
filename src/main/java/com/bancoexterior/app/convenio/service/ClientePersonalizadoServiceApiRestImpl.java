@@ -1,6 +1,7 @@
 package com.bancoexterior.app.convenio.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,8 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
     @Value("${des.datosbasicos.urlConsultaDatosBasicos}")
     private String urlConsultaDatosBasicos;
     
+    
+    private static final String ERRORMICROCONEXION = "No hubo conexion con el micreoservicio clientesPersonalizados";
 	
     public WSRequest getWSRequest() {
     	WSRequest wsrequest = new WSRequest();
@@ -64,7 +67,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 			throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		ClienteResponse clienteResponse = new ClienteResponse();
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
 		wsrequest.setBody(clienteRequestJSON);
@@ -74,38 +76,42 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		retorno = wsService.post(wsrequest);
 		if (retorno.isExitoso()) {
 			if (retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista clientes personalizados");
-				try {
-					clienteResponse = mapper.jsonToClass(retorno.getBody(), ClienteResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				log.info(clienteResponse.getResultado().getCodigo());
-				return clienteResponse.getListaClientes();
+				return respuesta2xxListaClientesPersonalizados(retorno);
 			} else {
-				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en listaClientesPersonalizados");
-					try {
-						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						String mensaje = resultado.getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				throw new CustomException(respuesta4xxListaClientesPersonalizados(retorno));
 			}
 		} else {
-			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
+			throw new CustomException(ERRORMICROCONEXION);
 			
 		}
-		return null;
 	}
 
+	public List<ClientesPersonalizados> respuesta2xxListaClientesPersonalizados(WSResponse retorno){
+		try {
+			ClienteResponse clienteResponse = mapper.jsonToClass(retorno.getBody(), ClienteResponse.class);
+			return clienteResponse.getListaClientes();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+		
+	}
+	
+	public String respuesta4xxListaClientesPersonalizados(WSResponse retorno){
+		try {
+			Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
+			return resultado.getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	@Override
 	public ClientesPersonalizados buscarClientesPersonalizados(ClienteRequest clienteRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		ClienteResponse clienteResponse = new ClienteResponse();
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
 		wsrequest.setBody(clienteRequestJSON);
@@ -115,46 +121,39 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		retorno = wsService.post(wsrequest);
 		if (retorno.isExitoso()) {
 			if (retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscarClientesPersonalizados");
-				try {
-					clienteResponse = mapper.jsonToClass(retorno.getBody(), ClienteResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				log.info(clienteResponse.getResultado().getCodigo());
-				if(clienteResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe el limite");
-	            	return clienteResponse.getListaClientes().get(0);
-	            }else {
-	            	return null;
-	            }
+				return respuesta2xxbuscarClientesPersonalizados(retorno);
 			} else {
-				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en buscarClientesPersonalizados");
-					try {
-						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						String error = resultado.getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				throw new CustomException(respuesta4xxListaClientesPersonalizados(retorno));
 			}
 		} else {
-			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
+			throw new CustomException(ERRORMICROCONEXION);
 			
 		}
-		return null;
 	}
 
+	public ClientesPersonalizados respuesta2xxbuscarClientesPersonalizados(WSResponse retorno){
+		try {
+			ClienteResponse clienteResponse = mapper.jsonToClass(retorno.getBody(), ClienteResponse.class);
+			log.info(clienteResponse.getResultado().getCodigo());
+			if(clienteResponse.getResultado().getCodigo().equals("0000")){
+	        	log.info("Respusta codigo 0000 si existe el limite");
+	        	return clienteResponse.getListaClientes().get(0);
+	        }else {
+	        	return null;
+	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
+	
+	
 	@Override
 	public String actualizar(ClienteRequest clienteRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();  
-		String respuesta;
-		String error;
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
 		wsrequest.setBody(clienteRequestJSON);
@@ -164,44 +163,41 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		retorno = wsService.put(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en Actualizar el cliente por codigo");
-				try {
-					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				respuesta = response.getResultado().getDescripcion();
-				return respuesta;
-				
-				
+				return respuesta2xxActualizarCrear(retorno);
 			}else {
-				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar el cliente por codigo");
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
-						error = response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxActualizarCrear(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
+	}
+	
+	
+	public String respuesta2xxActualizarCrear(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado().getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	public String respuesta4xxActualizarCrear(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado().getDescripcion();		
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
 	public String crear(ClienteRequest clienteRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();  
-		String respuesta;
-		String error;
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
 		wsrequest.setBody(clienteRequestJSON);
@@ -210,35 +206,13 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en crear el clientePersonalizado por codigo");
-				try {
-					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				respuesta = response.getResultado().getDescripcion();
-				return respuesta;
-				
-				
+				return respuesta2xxActualizarCrear(retorno);
 			}else {
-				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						error = response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxActualizarCrear(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		
-		
-		return null;
 	}
 
 	public WSResponse consultarWs(ClienteRequest clienteRequest) {
@@ -258,8 +232,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 			throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		
-		ClienteDatosBasicosResponse clienteDatosBasicosResponse = new ClienteDatosBasicosResponse();
 		String clienteDatosBasicoRequestJSON;
 		clienteDatosBasicoRequestJSON = new Gson().toJson(clienteDatosBasicoRequest);
 		wsrequest.setBody(clienteDatosBasicoRequestJSON);
@@ -268,44 +240,39 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		retorno = wsService.post(wsrequest);
 		if (retorno.isExitoso()) {
 			if (retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscarDatosBasicos");
-				try {
-					clienteDatosBasicosResponse  = mapper.jsonToClass(retorno.getBody(), ClienteDatosBasicosResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				log.info(clienteDatosBasicosResponse.getResultado().getCodigo());
-				if(clienteDatosBasicosResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe el limite");
-	            	return clienteDatosBasicosResponse.getDatosCliente();
-	            }else {
-	            	return null;
-	            }
-				
+				return respuesta2xxBuscarDatosBasicos(retorno);	
 			} else {
-				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en buscarDatosBasicos");
-					try {
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						String error = response.getResultado().getDescripcion();
-						throw new CustomException(error);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				throw new CustomException(respuesta4xxActualizarCrear(retorno));
 			}
 		} else {
-			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
+			throw new CustomException(ERRORMICROCONEXION);
 			
 		}
-		return null;
 	}
 
+	
+	public DatosClientes respuesta2xxBuscarDatosBasicos(WSResponse retorno) {
+		try {
+			ClienteDatosBasicosResponse clienteDatosBasicosResponse  = mapper.jsonToClass(retorno.getBody(), ClienteDatosBasicosResponse.class);
+			log.info(clienteDatosBasicosResponse.getResultado().getCodigo());
+			if(clienteDatosBasicosResponse.getResultado().getCodigo().equals("0000")){
+	        	log.info("Respusta codigo 0000 si existe el limite");
+	        	return clienteDatosBasicosResponse.getDatosCliente();
+	        }else {
+	        	return null;
+	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new DatosClientes();
+		}
+		
+	}
+	
+	
 	@Override
 	public ClienteResponse listaClientesPaginacion(ClienteRequest clienteRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		ClienteResponse clienteResponse = new ClienteResponse();
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
 		wsrequest.setBody(clienteRequestJSON);
@@ -315,38 +282,42 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		retorno = wsService.post(wsrequest);
 		if (retorno.isExitoso()) {
 			if (retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en listaClientesPaginacion");
-				try {
-					clienteResponse = mapper.jsonToClass(retorno.getBody(), ClienteResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				log.info(clienteResponse.getResultado().getCodigo());
-				if(clienteResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si de clienteResponse");
-	            	return clienteResponse;
-	            }else {
-	            	return null;
-	            }
+				return respuesta2xxListaClientesPaginacion(retorno);
 			} else {
-				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en listaClientesPaginacion");
-					try {
-						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						String mensaje = resultado.getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				throw new CustomException(respuesta4xxListaClientesPaginacion(retorno));
 			}
 		} else {
-			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
+			throw new CustomException(ERRORMICROCONEXION);
 			
 		}
-		return null;
 	}
 
-
+	public ClienteResponse respuesta2xxListaClientesPaginacion(WSResponse retorno) {
+		try {
+			ClienteResponse clienteResponse = mapper.jsonToClass(retorno.getBody(), ClienteResponse.class);
+			log.info(clienteResponse.getResultado().getCodigo());
+			if(clienteResponse.getResultado().getCodigo().equals("0000")){
+	        	log.info("Respusta codigo 0000 si de clienteResponse");
+	        	return clienteResponse;
+	        }else {
+	        	return null;
+	        }
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	public String respuesta4xxListaClientesPaginacion(WSResponse retorno) {
+		try {
+			Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
+			return  resultado.getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }
