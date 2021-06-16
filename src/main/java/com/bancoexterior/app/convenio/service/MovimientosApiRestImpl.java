@@ -1,4 +1,4 @@
-package com.bancoexterior.app.convenio.apiRest;
+package com.bancoexterior.app.convenio.service;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.bancoexterior.app.convenio.dto.AprobarRechazarRequest;
 import com.bancoexterior.app.convenio.dto.AprobarRechazarResponse;
-import com.bancoexterior.app.convenio.dto.MonedaResponse;
 import com.bancoexterior.app.convenio.dto.MovimientosRequest;
 import com.bancoexterior.app.convenio.dto.MovimientosResponse;
 import com.bancoexterior.app.convenio.exception.CustomException;
@@ -72,32 +71,24 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		String movimientosRequestJSON;
 		MovimientosResponse movimientosResponse = new MovimientosResponse();
 		movimientosRequestJSON = new Gson().toJson(movimientosRequest);
-		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
-		
 		wsrequest.setBody(movimientosRequestJSON);
 		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos?sort=codMoneda,desc&sort=tasaCliente,asc&sort=montoDivisa,asc");
 		wsrequest.setUrl(urlConsultarMovimientosPorAprobar);
 			
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar el movimientosResponse");
-	            try {
+				try {
 	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-	            log.info("movimientosResponse: "+movimientosResponse);
-	            log.info(movimientosResponse.getResultado().getCodigo());
 	            return movimientosResponse;
 			}else {
 				if(retorno.getStatus() == 422) {
-					log.info("entro en error 422");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -119,32 +110,23 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		String movimientosRequestJSON;
 		MovimientosResponse movimientosResponse = new MovimientosResponse();
 		movimientosRequestJSON = new Gson().toJson(movimientosRequest);
-		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
-		
 		wsrequest.setBody(movimientosRequestJSON);
 		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos?sort=codMoneda,desc&sort=tasaCliente,desc&sort=montoDivisa,desc");
 		wsrequest.setUrl(urlConsultarMovimientosPorAprobarVenta);
-		
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar el movimientosResponse");
-	            try {
+				try {
 	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-	            log.info("movimientosResponse: "+movimientosResponse);
-	            log.info(movimientosResponse.getResultado().getCodigo());
 	            return movimientosResponse;
 			}else {
 				if(retorno.getStatus() == 422) {
-					log.info("entro en error 422");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -167,33 +149,24 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		String movimientosRequestJSON;
 		MovimientosResponse movimientosResponse = new MovimientosResponse();
 		movimientosRequestJSON = new Gson().toJson(movimientosRequest);
-		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
-		
 		wsrequest.setBody(movimientosRequestJSON);
 		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos");
 		wsrequest.setUrl(urlConsultarMovimientos);
-			
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista moneda");
-	            try {
+				try {
 	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
 	            	
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-	            log.info("movimientosResponse: "+movimientosResponse);
-	            log.info(movimientosResponse.getResultado().getCodigo());
 	            return movimientosResponse;
 			}else {
 				if(retorno.getStatus() == 422) {
-					log.info("entro en error 422");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -218,27 +191,16 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		AprobarRechazarResponse aprobarRechazarResponse = new AprobarRechazarResponse();
 		String aprobarRechazarRequestJSON;
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
-		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
-		
 		wsrequest.setBody(aprobarRechazarRequestJSON);								 
 		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionescompras");
 		wsrequest.setUrl(urlActualizarMovimientosCompra);
-		
 		log.info("antes de llamarte WS en rechazarCompraSolicitud");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en rechazar compra solicitud por codigo");
 				try {
 					aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				 log.info("aprobarRechazarResponse: "+aprobarRechazarResponse);
-		            log.info(aprobarRechazarResponse.getResultado().getCodigo());
-		            if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
-		            	
+					if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
 		            	resultado = aprobarRechazarResponse.getResultado();
 		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						return respuesta;
@@ -247,15 +209,17 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						return respuesta;
 		            }
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				    
 				
 				
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en en rechazar compra solicitud por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -265,14 +229,12 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 					
 				}else {
 					if (retorno.getStatus() == 500) {
-						log.info("Respusta codigo " +retorno.getStatus()+ "en en rechazar compra solicitud por codigo");
 						try {
 							aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
 						resultado = aprobarRechazarResponse.getResultado();
-						log.info("resultado: "+resultado);
 						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						throw new CustomException(error);
 							
@@ -298,25 +260,15 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		AprobarRechazarResponse aprobarRechazarResponse = new AprobarRechazarResponse();
 		String aprobarRechazarRequestJSON;
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
-		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
-		
 		wsrequest.setBody(aprobarRechazarRequestJSON);
 		wsrequest.setUrl(urlActualizarMovimientosCompra);
-		
 		log.info("antes de llamarte WS en aprobarCompraSolicitud");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en aprobar compra solicitud por codigo");
 				try {
 					aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				 log.info("aprobarRechazarResponse: "+aprobarRechazarResponse);
-		            log.info(aprobarRechazarResponse.getResultado().getCodigo());
-		            if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
+					if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
 		            	
 		            	resultado = aprobarRechazarResponse.getResultado();
 		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
@@ -326,15 +278,17 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						return respuesta;
 		            }
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				    
 				
 				
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en en aprobar compra solicitud por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -344,14 +298,12 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 					
 				}else {
 					if (retorno.getStatus() == 500) {
-						log.info("Respusta codigo " +retorno.getStatus()+ "en en aprobar compra solicitud por codigo");
 						try {
 							aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
 						resultado = aprobarRechazarResponse.getResultado();
-						log.info("resultado: "+resultado);
 						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						throw new CustomException(error);
 							
@@ -377,26 +329,17 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		AprobarRechazarResponse aprobarRechazarResponse = new AprobarRechazarResponse();
 		String aprobarRechazarRequestJSON;
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
-		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
-		
 		wsrequest.setBody(aprobarRechazarRequestJSON);
 		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionesventas");
 		wsrequest.setUrl(urlActualizarMovimientosVenta);
 		
 		log.info("antes de llamarte WS en rechazarVentaSolicitud");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en rechazar venta solicitud por codigo");
 				try {
 					aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				 log.info("aprobarRechazarResponse: "+aprobarRechazarResponse);
-		            log.info(aprobarRechazarResponse.getResultado().getCodigo());
-		            if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
+					if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
 		            	
 		            	resultado = aprobarRechazarResponse.getResultado();
 		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
@@ -406,15 +349,17 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						return respuesta;
 		            }
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				    
 				
 				
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en en rechazar venta solicitud por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -424,14 +369,12 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 					
 				}else {
 					if (retorno.getStatus() == 500) {
-						log.info("Respusta codigo " +retorno.getStatus()+ "en en rechazar venta solicitud por codigo");
 						try {
 							aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
 						resultado = aprobarRechazarResponse.getResultado();
-						log.info("resultado: "+resultado);
 						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						throw new CustomException(error);
 							
@@ -457,26 +400,16 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		AprobarRechazarResponse aprobarRechazarResponse = new AprobarRechazarResponse();
 		String aprobarRechazarRequestJSON;
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
-		log.info("aprobarRechazarRequestJSON: "+aprobarRechazarRequestJSON);
-		
 		wsrequest.setBody(aprobarRechazarRequestJSON);										 
 		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionesventas");
 		wsrequest.setUrl(urlActualizarMovimientosVenta);
-		
 		log.info("antes de llamarte WS en aprobarVentaSolicitud");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en aprobar venta solicitud por codigo");
 				try {
 					aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				 log.info("aprobarRechazarResponse: "+aprobarRechazarResponse);
-		            log.info(aprobarRechazarResponse.getResultado().getCodigo());
-		            if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
+					if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
 		            	
 		            	resultado = aprobarRechazarResponse.getResultado();
 		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
@@ -486,15 +419,14 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						return respuesta;
 		            }
-				
-				
-				
-			}else {
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				 
+		     }else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en en aprobar venta solicitud por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -504,14 +436,12 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 					
 				}else {
 					if (retorno.getStatus() == 500) {
-						log.info("Respusta codigo " +retorno.getStatus()+ "en en aprobar venta solicitud por codigo");
 						try {
 							aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
 						resultado = aprobarRechazarResponse.getResultado();
-						log.info("resultado: "+resultado);
 						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
 						throw new CustomException(error);
 							
@@ -533,33 +463,24 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		String movimientosRequestJSON;
 		MovimientosResponse movimientosResponse = new MovimientosResponse();
 		movimientosRequestJSON = new Gson().toJson(movimientosRequest);
-		log.info("movimientosRequestJSON: "+movimientosRequestJSON);
-		
 		wsrequest.setBody(movimientosRequestJSON);
 		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos");
 		wsrequest.setUrl(urlConsultarMovimientos);
-			
 		log.info("antes de llamarte WS buscarListaMovimientos");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista moneda");
-	            try {
+				try {
 	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
 	            	
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-	            log.info("movimientosResponse: "+movimientosResponse);
-	            log.info(movimientosResponse.getResultado().getCodigo());
 	            return movimientosResponse.getMovimientos();
 	       	}else {
 				if(retorno.getStatus() == 422) {
-					log.info("entro en error 422");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {

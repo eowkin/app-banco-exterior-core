@@ -21,9 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bancoexterior.app.convenio.apiRest.IClientePersonalizadoServiceApiRest;
-import com.bancoexterior.app.convenio.apiRest.ILimitesPersonalizadosServiceApiRest;
-import com.bancoexterior.app.convenio.apiRest.IMonedaServiceApiRest;
 import com.bancoexterior.app.convenio.dto.ClienteDatosBasicoRequest;
 import com.bancoexterior.app.convenio.dto.ClienteRequest;
 import com.bancoexterior.app.convenio.dto.ClienteResponse;
@@ -35,6 +32,9 @@ import com.bancoexterior.app.convenio.model.DatosClientes;
 import com.bancoexterior.app.convenio.model.DatosPaginacion;
 import com.bancoexterior.app.convenio.model.LimitesPersonalizados;
 import com.bancoexterior.app.convenio.model.Moneda;
+import com.bancoexterior.app.convenio.service.IClientePersonalizadoServiceApiRest;
+import com.bancoexterior.app.convenio.service.ILimitesPersonalizadosServiceApiRest;
+import com.bancoexterior.app.convenio.service.IMonedaServiceApiRest;
 import com.bancoexterior.app.util.LibreriaUtil;
 
 import lombok.extern.slf4j.Slf4j;

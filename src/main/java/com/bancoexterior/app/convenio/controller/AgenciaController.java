@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bancoexterior.app.convenio.apiRest.IAgenciaServiceApiRest;
 import com.bancoexterior.app.convenio.dto.AgenciaRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.Agencia;
+import com.bancoexterior.app.convenio.service.IAgenciaServiceApiRest;
 import com.bancoexterior.app.util.LibreriaUtil;
 
 import lombok.extern.slf4j.Slf4j;

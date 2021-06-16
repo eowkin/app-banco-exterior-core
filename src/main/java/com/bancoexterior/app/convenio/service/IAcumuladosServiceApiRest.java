@@ -1,4 +1,4 @@
-package com.bancoexterior.app.convenio.apiRest;
+package com.bancoexterior.app.convenio.service;
 
 import com.bancoexterior.app.convenio.dto.AcumuladoCompraVentaResponse;
 import com.bancoexterior.app.convenio.dto.AcumuladoRequest;

@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bancoexterior.app.convenio.apiRest.ILimitesGeneralesServiceApirest;
-import com.bancoexterior.app.convenio.apiRest.IMonedaServiceApiRest;
 import com.bancoexterior.app.convenio.dto.LimiteRequest;
 import com.bancoexterior.app.convenio.dto.MonedasRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.LimitesGenerales;
 import com.bancoexterior.app.convenio.model.Moneda;
+import com.bancoexterior.app.convenio.service.ILimitesGeneralesServiceApirest;
+import com.bancoexterior.app.convenio.service.IMonedaServiceApiRest;
 import com.bancoexterior.app.util.LibreriaUtil;
 
 import lombok.extern.slf4j.Slf4j;

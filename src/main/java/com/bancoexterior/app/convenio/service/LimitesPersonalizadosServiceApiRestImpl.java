@@ -1,4 +1,4 @@
-package com.bancoexterior.app.convenio.apiRest;
+package com.bancoexterior.app.convenio.service;
 
 import java.io.IOException;
 import java.util.List;
@@ -60,31 +60,23 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		LimitesPersonalizadosResponse limiteResponse = new LimitesPersonalizadosResponse();
 		String limitesPersonalizadosRequestJSON;
 		limitesPersonalizadosRequestJSON = new Gson().toJson(limitesPersonalizadosRequest);
-		log.info("limitesPersonalizadosRequestJSON: "+limitesPersonalizadosRequestJSON);
-		
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
 		wsrequest.setUrl(urlConsulta);
-		
 		log.info("antes de llamarte WS en listaLimitesPersonalizados");
 		retorno = wsService.post(wsrequest);
 		
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista limites personalizados");
-	            try {
+				try {
 					limiteResponse = mapper.jsonToClass(retorno.getBody(), LimitesPersonalizadosResponse.class);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-	            log.info("limiteResponse: "+limiteResponse);
-	            log.info(limiteResponse.getResultado().getCodigo());
 	            return limiteResponse.getLimitesPersonalizados();
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en listaLimitesPersonalizados");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						log.info("resultado: "+resultado);
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -107,36 +99,27 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		LimitesPersonalizadosResponse limiteResponse = new LimitesPersonalizadosResponse();
 		String limitesPersonalizadosRequestJSON;
 		limitesPersonalizadosRequestJSON = new Gson().toJson(limitesPersonalizadosRequest);
-		log.info("limitesPersonalizadosRequestJSON: "+limitesPersonalizadosRequestJSON);
-		
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
 		wsrequest.setUrl(urlConsulta);
 			
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
-		
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscarLimitesPersonalizados");
-	            try {
+				try {
 					limiteResponse = mapper.jsonToClass(retorno.getBody(), LimitesPersonalizadosResponse.class);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-	            log.info("limiteResponse: "+limiteResponse);
-	            log.info(limiteResponse.getResultado().getCodigo());
 	            if(limiteResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe el limite");
 	            	return limiteResponse.getLimitesPersonalizados().get(0);
 	            }else {
 	            	return null;
 	            }
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en buscarLimitesPersonalizados");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						log.info("resultado: "+resultado);
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -160,20 +143,14 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		String error;
 		String limitesPersonalizadosRequestJSON;
 		limitesPersonalizadosRequestJSON = new Gson().toJson(limitesPersonalizadosRequest);
-		log.info("limitesPersonalizadosRequestJSON: "+limitesPersonalizadosRequestJSON);
-		
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
 		wsrequest.setUrl(urlActualizar);
-			
 		log.info("antes de llamarte WS en actualizar");
 		retorno = wsService.put(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en Actualizar el limitePersonalizado por codigo");
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					log.info("response: "+response);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -183,10 +160,8 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar el limite personalizado por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -211,20 +186,15 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		String error;
 		String limitesPersonalizadosRequestJSON;
 		limitesPersonalizadosRequestJSON = new Gson().toJson(limitesPersonalizadosRequest);
-		log.info("limitesPersonalizadosRequestJSON: "+limitesPersonalizadosRequestJSON);
-		
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
 		wsrequest.setUrl(urlActualizar);
 			
 		log.info("antes de llamarte WS en crear");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en crear el limitepersonalizado por codigo");
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					log.info("response: "+response);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -234,10 +204,8 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en Crear el limitePersonalizado por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						

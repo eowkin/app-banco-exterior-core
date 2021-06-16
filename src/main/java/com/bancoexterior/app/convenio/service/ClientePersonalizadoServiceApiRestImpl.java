@@ -1,4 +1,4 @@
-package com.bancoexterior.app.convenio.apiRest;
+package com.bancoexterior.app.convenio.service;
 
 import java.io.IOException;
 import java.util.List;
@@ -67,14 +67,11 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		ClienteResponse clienteResponse = new ClienteResponse();
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
-		log.info("clienteRequestJSON: "+clienteRequestJSON);
-		
 		wsrequest.setBody(clienteRequestJSON);
 		wsrequest.setUrl(urlConsulta);
 	
 		log.info("antes de llamarte WS en consultar listaClientesPersonalizados");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if (retorno.isExitoso()) {
 			if (retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en buscar la lista clientes personalizados");
@@ -83,16 +80,13 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				log.info("clienteResponse: " + clienteResponse);
 				log.info(clienteResponse.getResultado().getCodigo());
-				
 				return clienteResponse.getListaClientes();
 			} else {
 				if (retorno.getStatus() == 422) {
 					log.info("entro en error 422 en listaClientesPersonalizados");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						log.info("resultado: "+resultado);
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -114,14 +108,11 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		ClienteResponse clienteResponse = new ClienteResponse();
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
-		log.info("clienteRequestJSON: "+clienteRequestJSON);
-		
 		wsrequest.setBody(clienteRequestJSON);
 		wsrequest.setUrl(urlConsulta);
 		
 		log.info("antes de llamarte WS en consultar buscarClientesPersonalizados");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if (retorno.isExitoso()) {
 			if (retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en buscarClientesPersonalizados");
@@ -130,7 +121,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				log.info("clienteResponse: " + clienteResponse);
 				log.info(clienteResponse.getResultado().getCodigo());
 				if(clienteResponse.getResultado().getCodigo().equals("0000")){
 	            	log.info("Respusta codigo 0000 si existe el limite");
@@ -143,7 +133,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 					log.info("entro en error 422 en buscarClientesPersonalizados");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						log.info("resultado: "+resultado);
 						String error = resultado.getDescripcion();
 						throw new CustomException(error);
 						
@@ -168,20 +157,16 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		String error;
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
-		log.info("clienteRequestJSON: "+clienteRequestJSON);
-		
 		wsrequest.setBody(clienteRequestJSON);
 		wsrequest.setUrl(urlActualizar);
 			
 		log.info("antes de llamarte WS en actualizar");
 		retorno = wsService.put(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en Actualizar el cliente por codigo");
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					log.info("response: "+response);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -219,20 +204,15 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		String error;
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
-		log.info("clienteRequestJSON: "+clienteRequestJSON);
-		
 		wsrequest.setBody(clienteRequestJSON);
 		wsrequest.setUrl(urlActualizar);
-		
 		log.info("antes de llamarte WS en crear");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en crear el clientePersonalizado por codigo");
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					log.info("response: "+response);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -242,10 +222,8 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar el clientePersonalizado por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -268,11 +246,8 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		WSResponse retorno;
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
-		log.info("clienteRequestJSON: "+clienteRequestJSON);
-		
 		wsrequest.setBody(clienteRequestJSON);
 		wsrequest.setUrl(urlConsulta);
-			
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
 		return retorno;
@@ -287,14 +262,10 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		ClienteDatosBasicosResponse clienteDatosBasicosResponse = new ClienteDatosBasicosResponse();
 		String clienteDatosBasicoRequestJSON;
 		clienteDatosBasicoRequestJSON = new Gson().toJson(clienteDatosBasicoRequest);
-		log.info("clienteDatosBasicoRequestJSON: "+clienteDatosBasicoRequestJSON);
-		
 		wsrequest.setBody(clienteDatosBasicoRequestJSON);
 		wsrequest.setUrl(urlConsultaDatosBasicos);
-			
 		log.info("antes de llamarte WS en buscarDatosBasicos ");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if (retorno.isExitoso()) {
 			if (retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en buscarDatosBasicos");
@@ -303,7 +274,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				log.info("clienteDatosBasicosResponse: " + clienteDatosBasicosResponse);
 				log.info(clienteDatosBasicosResponse.getResultado().getCodigo());
 				if(clienteDatosBasicosResponse.getResultado().getCodigo().equals("0000")){
 	            	log.info("Respusta codigo 0000 si existe el limite");
@@ -317,7 +287,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 					log.info("entro en error 422 en buscarDatosBasicos");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						String error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 					} catch (IOException e) {
@@ -326,7 +295,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 				}
 			}
 		} else {
-			log.info("error conectar microservicio consultarWs clientesPersonalizados");
 			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
 			
 		}
@@ -340,14 +308,11 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 		ClienteResponse clienteResponse = new ClienteResponse();
 		String clienteRequestJSON;
 		clienteRequestJSON = new Gson().toJson(clienteRequest);
-		log.info("clienteRequestJSON: "+clienteRequestJSON);
-		
 		wsrequest.setBody(clienteRequestJSON);
 		wsrequest.setUrl(urlConsulta);
 			
 		log.info("antes de llamarte WS en listaClientesPaginacion");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if (retorno.isExitoso()) {
 			if (retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en listaClientesPaginacion");
@@ -356,7 +321,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				log.info("clienteResponse: " + clienteResponse);
 				log.info(clienteResponse.getResultado().getCodigo());
 				if(clienteResponse.getResultado().getCodigo().equals("0000")){
 	            	log.info("Respusta codigo 0000 si de clienteResponse");
@@ -369,7 +333,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 					log.info("entro en error 422 en listaClientesPaginacion");
 					try {
 						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						log.info("resultado: "+resultado);
 						String mensaje = resultado.getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -378,7 +341,6 @@ public class ClientePersonalizadoServiceApiRestImpl implements IClientePersonali
 				}
 			}
 		} else {
-			log.info("error conectar microservicio consultarWs clientesPersonalizados");
 			throw new CustomException("No hubo conexion con el micreoservicio clientesPersonalizados");
 			
 		}

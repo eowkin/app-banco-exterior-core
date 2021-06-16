@@ -23,11 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bancoexterior.app.convenio.apiRest.IMonedaServiceApiRest;
-
 import com.bancoexterior.app.convenio.dto.MonedasRequest;
 import com.bancoexterior.app.convenio.exception.CustomException;
 import com.bancoexterior.app.convenio.model.Moneda;
+import com.bancoexterior.app.convenio.service.IMonedaServiceApiRest;
 import com.bancoexterior.app.util.LibreriaUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,40 +47,45 @@ public class MonedaController {
 	@Value("${des.canal}")
     private String canal;	
 
+	private static final String URLINDEX = "convenio/moneda/listaMonedas";
+	
+	private static final String URLFORMMONEDA = "convenio/moneda/formMoneda";
+	
+	private static final String URLFORMMONEDAEDIT = "convenio/moneda/formMonedaEdit";
+	
+	private static final String LISTAMONEDAS = "listMonedas";
+	
+	private static final String MENSAJEERROR = "mensajeError";
+	
+	private static final String REDIRECTINDEX = "redirect:/monedas/index";
+	
+	private static final String MENSAJE = "mensaje";
 	
 	@GetMapping("/index")
 	public String indexWs(Model model, RedirectAttributes redirectAttributes) {
 		log.info("si me llamo a index listaMonedasWs");
-		
-		
-		
 		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
-		//moneda.setCodMoneda("EUR1");
 		monedasRequest.setMoneda(moneda);
 		List<Moneda> listMonedas = new ArrayList<>();
 		try {
 			listMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-			
 			for (Moneda moneda2 : listMonedas) {
-				//log.info(moneda2.getFechaModificacion());
 				if(moneda2.getFechaModificacion() != null) {
 					String[] arrOfStr = moneda2.getFechaModificacion().split(" ", 2);
 					moneda2.setFechaModificacion(arrOfStr[0]);
 				}
 			}
 			
-			model.addAttribute("listMonedas", listMonedas);
-	    	return "convenio/moneda/listaMonedas";
+			model.addAttribute(LISTAMONEDAS, listMonedas);
+	    	
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			model.addAttribute("mensajeError", e.getMessage());
-			model.addAttribute("listMonedas", listMonedas);
-			return "convenio/moneda/listaMonedas";
-			//return "redirect:/";
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			model.addAttribute(LISTAMONEDAS, listMonedas);
+			
 		}
 		
-		 
+		return URLINDEX; 
 	}
 	
 	@GetMapping("/activar/{codMoneda}")
@@ -100,13 +104,12 @@ public class MonedaController {
 			monedaEdit.setFlagActivo(true);
 			monedasRequest.setMoneda(monedaEdit);
 			String respuesta = monedaServiceApiRest.actualizar(monedasRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/monedas/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/monedas/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
 		}
+		return REDIRECTINDEX;
 	}	
 	
 	@GetMapping("/desactivar/{codMoneda}")
@@ -125,13 +128,11 @@ public class MonedaController {
 			monedaEdit.setFlagActivo(false);
 			monedasRequest.setMoneda(monedaEdit);
 			String respuesta = monedaServiceApiRest.actualizar(monedasRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/monedas/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/monedas/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
 		}
+		return REDIRECTINDEX;
 	}
 	
 	@GetMapping("/edit/{codMoneda}")
@@ -146,17 +147,15 @@ public class MonedaController {
 		try {
 			monedaEdit = monedaServiceApiRest.buscarMoneda(monedasRequest);
 			if(monedaEdit != null) {
-				log.info("monedaEdit: "+monedaEdit);
 				model.addAttribute("moneda", monedaEdit);
-        		return "convenio/moneda/formMonedaEdit";
+        		return URLFORMMONEDAEDIT;
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-        		return "redirect:/monedas/index";
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, "Operacion Exitosa.La consulta no arrojo resultado.");
+				return REDIRECTINDEX;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/monedas/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX;
 		}
 	
 	}	
@@ -168,18 +167,16 @@ public class MonedaController {
 		log.info("moneda: "+moneda);
 			
 		MonedasRequest monedasRequest = getMonedasRequest();
-		moneda.setCodUsuario("E66666");
 		monedasRequest.setMoneda(moneda);
 		
 		
 		try {
 			String respuesta = monedaServiceApiRest.actualizar(monedasRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/monedas/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEX;
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "convenio/moneda/formMonedaEdit";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return URLFORMMONEDAEDIT;
 		}
 		
 		
@@ -196,7 +193,7 @@ public class MonedaController {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
 			}
 		
-			return "convenio/moneda/formMoneda";
+			return URLFORMMONEDA;
 		}
 		
 		MonedasRequest monedasRequest = getMonedasRequest();
@@ -206,13 +203,11 @@ public class MonedaController {
 		
 		try {
 			String respuesta = monedaServiceApiRest.crear(monedasRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/monedas/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEX;
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			//redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
 			result.addError(new ObjectError("codMoneda", e.getMessage()));
-			return "convenio/moneda/formMoneda";
+			return URLFORMMONEDA;
 		}
 		
 	}
@@ -220,7 +215,7 @@ public class MonedaController {
 	@GetMapping("/formMoneda")
 	public String formMoneda(Moneda moneda, Model model) {
 		
-		return "convenio/moneda/formMoneda";
+		return URLFORMMONEDA;
 	}	
 	
 	
@@ -241,35 +236,29 @@ public class MonedaController {
 		List<Moneda> listMonedas = new ArrayList<>();
 		try {
 			listMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-			log.info("listMonedas.isEmpty(): "+listMonedas.isEmpty());
-			
 			if(!listMonedas.isEmpty()) {
 				for (Moneda moneda2 : listMonedas) {
-					//log.info(moneda2.getFechaModificacion());
 					if(moneda2.getFechaModificacion() != null) {
 						String[] arrOfStr = moneda2.getFechaModificacion().split(" ", 2);
 						moneda2.setFechaModificacion(arrOfStr[0]);
 					}
 				}
 				
-				model.addAttribute("listMonedas", listMonedas);
-		    	return "convenio/moneda/listaMonedas";
+				model.addAttribute(LISTAMONEDAS, listMonedas);
 			}else {
 				
-				model.addAttribute("listMonedas", listMonedas);
-				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-		    	return "convenio/moneda/listaMonedas";
+				model.addAttribute(LISTAMONEDAS, listMonedas);
+				model.addAttribute(MENSAJEERROR, "Operacion Exitosa.La consulta no arrojo resultado.");
 			}
 			
 			
 		} catch (CustomException e) {
 			log.error("error: "+e);
-			model.addAttribute("mensajeError", e.getMessage());
-			model.addAttribute("listMonedas", listMonedas);
-			return "convenio/moneda/listaMonedas";
-			//return "redirect:/";
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			model.addAttribute(LISTAMONEDAS, listMonedas);
+			
 		}
-		
+		return URLINDEX;
 	}
 	
 	
@@ -303,12 +292,7 @@ public class MonedaController {
 	}
 	
 	
-	/*
-	 * @InitBinder public void initBinder(WebDataBinder webDataBinder) {
-	 * SimpleDateFormat dataFormat = new SimpleDateFormat("dd-MM-yyyy");
-	 * webDataBinder.registerCustomEditor(Date.class, new
-	 * CustomDateEditor(dataFormat, false)); }
-	 */
+	
 	
 
 	

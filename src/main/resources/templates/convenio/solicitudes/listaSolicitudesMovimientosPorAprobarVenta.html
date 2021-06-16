@@ -172,79 +172,7 @@
 		              <tbody>
 		                <tr>
 		                  <td>
-		                  	
-							        <div class="card">
-							          <div class="card-header">
-							            <i class="fa fa-align-justify"></i> Listado Movimientos <b>Demandas</b>  por Aprobar
-							            
-							          </div><!--/.card-header-->
-							          <div class="card-body">
-							          	<div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
-							            		Ocurrio los siguientes errores:
-							            		<ul>
-							            			<li th:text="${mensajeError}"></li>
-							            		</ul>
-							            	</div>
-						          	
-						          			<div th:if="${mensaje != null}" class="alert alert-success" th:text="${mensaje}" role="alert"></div>
-							            <table class="table">
-							              <thead>
-							                <tr>
-							                  <th>Cod. Operacion</th>
-							                  <th>Cod. Moneda</th>
-							              	  <th>Monto Divisa</th>
-							                  <th>Tipo de Cambio</th>
-							                  <th></th>
-							                  <th></th>
-							                  <th></th> 
-							                </tr>
-							              </thead>
-							              <tbody>
-							                <tr th:each = "movimientoCompra: ${listaMovimientosCompra}">
-							                  <td th:text="${movimientoCompra.codOperacion}"></td>
-							                  <td th:text="${movimientoCompra.codMoneda}"></td>
-							                  <td th:text="${movimientoCompra.montoDivisa}"></td>
-							                  <td th:text="${movimientoCompra.tasaCliente}"></td>
-							                  <td>
-							                  	<a  onclick="return confirm('¿Estas seguro de aprobar la solicitud de Compra (Demanda)?')" class="btn btn-success" th:href="@{/solicitudes/aprobarCompra/{codOperacion}/{page} (codOperacion=${movimientoCompra.codOperacion}, page=${datosPaginacionCompra.paginaActual}) }" role="button" title="Aprobar Solicitud."><i class="fas fa-check" aria-hidden="true"></i></a>
-							                  </td>
-							                  <td>
-							                  	<a  class="btn btn-primary" th:href="@{/solicitudes/procesarCompra/{id}/{page} (id=${movimientoCompra.codOperacion}, page=${datosPaginacionCompra.paginaActual}) }"  role="button" title="Procesar Solicitud."><i class="fas fa-sync" aria-hidden="true"></i></a>
-							                  </td>							
-							                  <td>
-							                  	<a onclick="return confirm('¿Estas seguro de rechazar la solicitud de Compra? (Demanda)')" class="btn btn-danger" th:href="@{/solicitudes/rechazarCompra/{codOperacion}/{page} (codOperacion=${movimientoCompra.codOperacion}, page=${datosPaginacionCompra.paginaActual}) }" role="button" title="Rechazar Solicitud."><i class="fas fa-times" aria-hidden="true"></i></a>
-							                  </td>		             
-							                </tr>
-							              </tbody>
-							            </table>
-							            
-							            
-							            
-							            <nav th:if="${datosPaginacionCompra.totalPaginas > 0}" aria-label="Page navigation example" > 
-							            	<ul class="pagination justify-content-center">         
-							            		<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == 1 ? 'disabled' : ''}">
-							            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/{page}  (page=${datosPaginacionCompra.paginaActual - 1})}" class="page-link">Anterior</a>
-							            		</li> 
-							            		<li class="page-item">
-													<a class="page-link"  th:text="${'Pagina  '+ datosPaginacionCompra.paginaActual + ' - '+ datosPaginacionCompra.totalPaginas}" th:title="${'Page '+ datosPaginacionCompra.paginaActual}" data-toggle="tooltip"></a>
-												</li>
-							            		<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == (datosPaginacionCompra.totalPaginas) ? 'disabled' : ''}">
-							            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/{page}  (page=${datosPaginacionCompra.paginaActual + 1})}" class="page-link">Siguiente</a>
-							            		</li>  
-							            	</ul> 
-							            </nav>
-							            
-							           
-							            
-							             
-							          </div><!--/.card-body-->
-							        </div><!--/.card-->
-							      
-		                  	
-		                  </td>
-		                  <td>
-		                  	
-							        <div class="card">
+		                  			<div class="card">
 							          <div class="card-header">
 							            <i class="fa fa-align-justify"></i> Listado Movimientos <b>Ofertas</b> por Aprobar
 							            
@@ -311,7 +239,77 @@
 							             
 							          </div><!--/.card-body-->
 							        </div><!--/.card-->
-							     
+							        
+							      
+		                  	
+		                  </td>
+		                  <td>
+		                  		<div class="card">
+							          <div class="card-header">
+							            <i class="fa fa-align-justify"></i> Listado Movimientos <b>Demandas</b>  por Aprobar
+							            
+							          </div><!--/.card-header-->
+							          <div class="card-body">
+							          	<div th:if="${mensajeError != null}" class="alert alert-danger" role="alert">
+							            		Ocurrio los siguientes errores:
+							            		<ul>
+							            			<li th:text="${mensajeError}"></li>
+							            		</ul>
+							            	</div>
+						          	
+						          			<div th:if="${mensaje != null}" class="alert alert-success" th:text="${mensaje}" role="alert"></div>
+							            <table class="table">
+							              <thead>
+							                <tr>
+							                  <th>Cod. Operacion</th>
+							                  <th>Cod. Moneda</th>
+							              	  <th>Monto Divisa</th>
+							                  <th>Tipo de Cambio</th>
+							                  <th></th>
+							                  <th></th>
+							                  <th></th> 
+							                </tr>
+							              </thead>
+							              <tbody>
+							                <tr th:each = "movimientoCompra: ${listaMovimientosCompra}">
+							                  <td th:text="${movimientoCompra.codOperacion}"></td>
+							                  <td th:text="${movimientoCompra.codMoneda}"></td>
+							                  <td th:text="${movimientoCompra.montoDivisa}"></td>
+							                  <td th:text="${movimientoCompra.tasaCliente}"></td>
+							                  <td>
+							                  	<a  onclick="return confirm('¿Estas seguro de aprobar la solicitud de Compra (Demanda)?')" class="btn btn-success" th:href="@{/solicitudes/aprobarCompra/{codOperacion}/{page} (codOperacion=${movimientoCompra.codOperacion}, page=${datosPaginacionCompra.paginaActual}) }" role="button" title="Aprobar Solicitud."><i class="fas fa-check" aria-hidden="true"></i></a>
+							                  </td>
+							                  <td>
+							                  	<a  class="btn btn-primary" th:href="@{/solicitudes/procesarCompra/{id}/{page} (id=${movimientoCompra.codOperacion}, page=${datosPaginacionCompra.paginaActual}) }"  role="button" title="Procesar Solicitud."><i class="fas fa-sync" aria-hidden="true"></i></a>
+							                  </td>							
+							                  <td>
+							                  	<a onclick="return confirm('¿Estas seguro de rechazar la solicitud de Compra? (Demanda)')" class="btn btn-danger" th:href="@{/solicitudes/rechazarCompra/{codOperacion}/{page} (codOperacion=${movimientoCompra.codOperacion}, page=${datosPaginacionCompra.paginaActual}) }" role="button" title="Rechazar Solicitud."><i class="fas fa-times" aria-hidden="true"></i></a>
+							                  </td>		             
+							                </tr>
+							              </tbody>
+							            </table>
+							            
+							            
+							            
+							            <nav th:if="${datosPaginacionCompra.totalPaginas > 0}" aria-label="Page navigation example" > 
+							            	<ul class="pagination justify-content-center">         
+							            		<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == 1 ? 'disabled' : ''}">
+							            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/{page}  (page=${datosPaginacionCompra.paginaActual - 1})}" class="page-link">Anterior</a>
+							            		</li> 
+							            		<li class="page-item">
+													<a class="page-link"  th:text="${'Pagina  '+ datosPaginacionCompra.paginaActual + ' - '+ datosPaginacionCompra.totalPaginas}" th:title="${'Page '+ datosPaginacionCompra.paginaActual}" data-toggle="tooltip"></a>
+												</li>
+							            		<li class="page-item" th:classappend="${datosPaginacionCompra.paginaActual == (datosPaginacionCompra.totalPaginas) ? 'disabled' : ''}">
+							            			<a th:href="@{/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/{page}  (page=${datosPaginacionCompra.paginaActual + 1})}" class="page-link">Siguiente</a>
+							            		</li>  
+							            	</ul> 
+							            </nav>
+							            
+							           
+							            
+							             
+							          </div><!--/.card-body-->
+							        </div><!--/.card-->
 		                  	
 		                  </td>	
 		                  </tr>

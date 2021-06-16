@@ -1,4 +1,4 @@
-package com.bancoexterior.app.convenio.apiRest;
+package com.bancoexterior.app.convenio.service;
 
 import java.io.IOException;
 
@@ -39,6 +39,7 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
     @Value("${des.acumulados.urlConsulta}")
     private String urlConsulta;
     
+    String errorMicroCOnexion = "No hubo conexion con el micreoservicio acumulados";
     
     public WSRequest getWSRequest() {
     	WSRequest wsrequest = new WSRequest();
@@ -51,7 +52,6 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 	@Override
 	public String consultarAcumulados(AcumuladoRequest acumuladoRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
-		WSResponse retorno;
 		String acumuladoRequestJSON;
 		acumuladoRequestJSON = new Gson().toJson(acumuladoRequest);
 		log.info("acumuladoRequestJSON: "+acumuladoRequestJSON);
@@ -60,8 +60,7 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		wsrequest.setUrl(urlConsulta);
 			
 		log.info("antes de llamarte WS en consultarAcumulados");
-		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
+		WSResponse retorno = wsService.post(wsrequest);
 		return null;
 	}
 
@@ -72,31 +71,27 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		String acumuladoRequestJSON;
 		AcumuladoResponse acumuladoResponse = new AcumuladoResponse();
 		acumuladoRequestJSON = new Gson().toJson(acumuladoRequest);
-		log.info("acumuladoRequestJSON: "+acumuladoRequestJSON);
-		
 		wsrequest.setBody(acumuladoRequestJSON);
 		wsrequest.setUrl(urlConsulta);
 			
 		log.info("antes de llamarte WS en consultarAcumuladosDiariosBanco");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
 				log.info("Respusta codigo 200 en consultarAcumuladosDiariosBanco");
 	            try {
 	            	acumuladoResponse = mapper.jsonToClass(retorno.getBody(), AcumuladoResponse.class);
+	            	log.info(acumuladoResponse.getResultado().getCodigo());
+		            return acumuladoResponse;
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-	            log.info("acumuladoResponse: "+acumuladoResponse);
-	            log.info(acumuladoResponse.getResultado().getCodigo());
-	            return acumuladoResponse;
+	            
 			}else {
 				if(retorno.getStatus() == 422) {
 					log.info("entro en error 422 en consultarAcumuladosDiariosBanco");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						String mensaje = response.getResultado() .getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -105,7 +100,7 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio acumulados");
+			throw new CustomException(errorMicroCOnexion);
 		}
 		return null;
 	}
@@ -118,32 +113,21 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		String acumuladoRequestJSON;
 		AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = new AcumuladoCompraVentaResponse();
 		acumuladoRequestJSON = new Gson().toJson(acumuladoRequest);
-		log.info("acumuladoRequestJSON: "+acumuladoRequestJSON);
-		
 		wsrequest.setBody(acumuladoRequestJSON);
 		wsrequest.setUrl(urlConsulta);
 			
 		log.info("antes de llamarte WS en consultarAcumuladosCompraVenta");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en consultarAcumuladosCompraVenta");
-	            try {
-	            	acumuladoCompraVentaResponse = mapper.jsonToClass(retorno.getBody(), AcumuladoCompraVentaResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            log.info("acumuladoCompraVentaResponse: "+acumuladoCompraVentaResponse);
-	            log.info(acumuladoCompraVentaResponse.getResultado().getCodigo());
-	            return acumuladoCompraVentaResponse;
+				return respuesta2xx(retorno);
+	            
+	            
 			}else {
 				if(retorno.getStatus() == 422) {
 					log.info("entro en error 422 en consultarAcumuladosCompraVenta");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
-						//String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
 						String mensaje = response.getResultado() .getDescripcion();
 						throw new CustomException(mensaje);
 					} catch (IOException e) {
@@ -152,11 +136,31 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio acumulados");
+			throw new CustomException(errorMicroCOnexion);
 		}
 		return null;
 	}
 	
+	public AcumuladoCompraVentaResponse respuesta2xx(WSResponse retorno) {
+		try {
+			AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = mapper.jsonToClass(retorno.getBody(), AcumuladoCompraVentaResponse.class);
+        	log.info(acumuladoCompraVentaResponse.getResultado().getCodigo());
+            return acumuladoCompraVentaResponse;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
+	public String  respuesta4xx(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado().getDescripcion();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }

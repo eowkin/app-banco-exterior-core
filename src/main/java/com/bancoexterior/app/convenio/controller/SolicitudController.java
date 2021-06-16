@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,9 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bancoexterior.app.convenio.apiRest.IAcumuladosServiceApiRest;
-import com.bancoexterior.app.convenio.apiRest.IMonedaServiceApiRest;
-import com.bancoexterior.app.convenio.apiRest.IMovimientosApiRest;
 import com.bancoexterior.app.convenio.dto.AcumuladoCompraVentaResponse;
 import com.bancoexterior.app.convenio.dto.AcumuladoRequest;
 import com.bancoexterior.app.convenio.dto.AcumuladoResponse;
@@ -43,6 +41,9 @@ import com.bancoexterior.app.convenio.model.Fechas;
 import com.bancoexterior.app.convenio.model.Moneda;
 import com.bancoexterior.app.convenio.model.Movimiento;
 import com.bancoexterior.app.convenio.model.Venta;
+import com.bancoexterior.app.convenio.service.IAcumuladosServiceApiRest;
+import com.bancoexterior.app.convenio.service.IMonedaServiceApiRest;
+import com.bancoexterior.app.convenio.service.IMovimientosApiRest;
 import com.bancoexterior.app.util.ConsultaExcelExporter;
 import com.bancoexterior.app.util.LibreriaUtil;
 import com.bancoexterior.app.util.UserExcelExporter;
@@ -191,7 +192,7 @@ public class SolicitudController {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
 					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeErrorVenta", "Operacion Exitosa.La consulta no arrojo resultado.");
+					//model.addAttribute("mensajeErrorVenta", "Operacion Exitosa.La consulta no arrojo resultado.");
 				}
 				
 				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
@@ -214,7 +215,7 @@ public class SolicitudController {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
 						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					}else {
-						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+						//model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
 					}
 					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
 					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
@@ -384,7 +385,7 @@ public class SolicitudController {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
 					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeErrorVenta", "Operacion Exitosa.La consulta no arrojo resultado.");
+					//model.addAttribute("mensajeErrorVenta", "Operacion Exitosa.La consulta no arrojo resultado.");
 				}
 				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
 				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
@@ -404,7 +405,7 @@ public class SolicitudController {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
 						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					}else {
-						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+						//model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
 					}
 					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
 					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
@@ -1211,7 +1212,31 @@ public class SolicitudController {
 		
     }
 	
-	
+    @GetMapping("/generarExcelVenta/export")
+    public void exportToExcelVenta(Model model1,Map<String, Object> model, HttpServletResponse response) {
+		log.info("exportToExcelVenta");
+		log.info("model1: "+model1);
+		log.info("model: "+model);
+		 		List<Movimiento> listaMovimientos = (List<Movimiento>)model.get("listaMovimientosVenta");
+		
+				response.setContentType("application/octet-stream");
+		        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+		        String currentDateTime = dateFormatter.format(new Date());
+		         
+		        String headerKey = "Content-Disposition";
+		        String headerValue = "attachment; filename=movimientosVenta_" + currentDateTime + ".xlsx";
+		        response.setHeader(headerKey, headerValue);
+		        UserExcelExporter excelExporter = new UserExcelExporter(listaMovimientos); 
+		        try {
+					excelExporter.export(response);
+					response.getOutputStream().flush();
+					 response.getOutputStream().close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				}
+		
+    }
 	
 	
 	

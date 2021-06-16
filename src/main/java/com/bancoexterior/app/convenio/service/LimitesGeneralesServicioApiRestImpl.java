@@ -1,6 +1,7 @@
-package com.bancoexterior.app.convenio.apiRest;
+package com.bancoexterior.app.convenio.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 	@Value("${des.limitesGenerales.urlActualizar}")
 	private String urlActualizar;
 	
+	private static final String ERRORMICROCONEXION = "No hubo conexion con el micreoservicio LimitesGenerales";
+	
 	
 	public WSRequest getWSRequest() {
 	   WSRequest wsrequest = new WSRequest();
@@ -59,11 +62,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 	public List<LimitesGenerales> listaLimitesGenerales(LimiteRequest limiteRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		LimiteResponse limiteResponse = new LimiteResponse();
 		String limiteRequestJSON;
 		limiteRequestJSON = new Gson().toJson(limiteRequest);
-		log.info("limiteRequestJSON: "+limiteRequestJSON);
-		
 		wsrequest.setBody(limiteRequestJSON);
 		wsrequest.setUrl(urlConsulta);
 			
@@ -72,34 +72,34 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 		
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista limitesGenerales");
-	            try {
-					limiteResponse = mapper.jsonToClass(retorno.getBody(), LimiteResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            log.info("limiteResponse: "+limiteResponse);
-	            log.info(limiteResponse.getResultado().getCodigo());
-	            return limiteResponse.getLimites();
+				return respuesta2xxListaLimitesGenerales(retorno);
 			}else {
-				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en listaLimitesGenerales");
-					try {
-						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						log.info("resultado: "+resultado);
-						String mensaje = resultado.getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxListaLimitesGenerales(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio LimitesGenerales");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		
-		return null;
+	}
+	
+	public List<LimitesGenerales> respuesta2xxListaLimitesGenerales(WSResponse retorno){
+		try {
+			LimiteResponse limiteResponse = mapper.jsonToClass(retorno.getBody(), LimiteResponse.class);
+			return limiteResponse.getLimites();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+        
+	}
+	
+	public String respuesta4xxListaLimitesGenerales(WSResponse retorno){
+		try {
+			Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
+			return resultado.getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -109,36 +109,18 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 		LimiteResponse limiteResponse = new LimiteResponse();
 		String limiteRequestJSON;
 		limiteRequestJSON = new Gson().toJson(limiteRequest);
-		log.info("limiteRequestJSON: "+limiteRequestJSON);
-		
 		wsrequest.setBody(limiteRequestJSON);
 		wsrequest.setUrl(urlConsulta);
-		
 		log.info("antes de llamarte WS en consultar buscarLimitesGenerales");
 		retorno = wsService.post(wsrequest);
 		
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscarLimitesGenerales");
-	            try {
-					limiteResponse = mapper.jsonToClass(retorno.getBody(), LimiteResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            log.info("limiteResponse: "+limiteResponse);
-	            log.info(limiteResponse.getResultado().getCodigo());
-	            if(limiteResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe el limite");
-	            	return limiteResponse.getLimites().get(0);
-	            }else {
-	            	return null;
-	            }
+				return respuesta2xxbuscarLimitesGenerales(retorno);
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en buscarLimitesGenerales");
 					try {
 						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						String error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -149,9 +131,25 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio LimitesGenerales");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
 		return null;
+	}
+	
+	public LimitesGenerales respuesta2xxbuscarLimitesGenerales(WSResponse retorno){
+		try {
+			LimiteResponse limiteResponse = mapper.jsonToClass(retorno.getBody(), LimiteResponse.class);
+			if(limiteResponse.getResultado().getCodigo().equals("0000")){
+	        	return limiteResponse.getLimites().get(0);
+	        }else {
+	        	return null;
+	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+        
+        
 	}
 
 	@Override
@@ -163,20 +161,15 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 		String error;
 		String limiteRequestJSON;
 		limiteRequestJSON = new Gson().toJson(limiteRequest);
-		log.info("limiteRequestJSON: "+limiteRequestJSON);
-		
 		wsrequest.setBody(limiteRequestJSON);
 		wsrequest.setUrl(urlActualizar);
 			
 		log.info("antes de llamarte WS en actualizar limitesGenerales");
 		retorno = wsService.put(wsrequest);
-		log.info("retorno: "+retorno);
 			if(retorno.isExitoso()) {
 				if(retorno.getStatus() == 200) {
-					log.info("Respusta codigo 200 en Actualizar el limiteGenerales por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -186,10 +179,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 					
 				}else {
 					if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-						log.info("Respusta codigo " +retorno.getStatus()+ "en Actualizar la moneda por codigo");
 						try {
 							response = mapper.jsonToClass(retorno.getBody(), Response.class);
-							log.info("response: "+response);
 							error = response.getResultado().getDescripcion();
 							throw new CustomException(error);
 							
@@ -200,7 +191,7 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 					}
 				}
 			}else {
-				throw new CustomException("No hubo conexion con el micreoservicio LimitesGenerales");
+				throw new CustomException(ERRORMICROCONEXION);
 			}	
 				
 		return null;
@@ -215,19 +206,14 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 		String error;
 		String limiteRequestJSON;
 		limiteRequestJSON = new Gson().toJson(limiteRequest);
-		log.info("limiteRequestJSON: "+limiteRequestJSON);
-		
 		wsrequest.setBody(limiteRequestJSON);
 		wsrequest.setUrl(urlActualizar);
 		log.info("antes de llamarte WS en crear");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en crear el limiteGenerales por codigo");
 				try {
 					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-					log.info("response: "+response);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -237,10 +223,8 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 				
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en crear el limiteGenerales por codigo");
 					try {
 						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
 						error = response.getResultado().getDescripcion();
 						throw new CustomException(error);
 						
@@ -251,7 +235,7 @@ public class LimitesGeneralesServicioApiRestImpl implements ILimitesGeneralesSer
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio LimitesGenerales");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
 		
 		return null;
