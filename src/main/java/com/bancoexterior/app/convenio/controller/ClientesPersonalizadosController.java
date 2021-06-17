@@ -62,12 +62,40 @@ public class ClientesPersonalizadosController {
 	@Value("${des.clientesPersonalizados.numeroRegistroPage}")
     private int numeroRegistroPage;
 	
+	private static final String URLINDEX = "convenio/clientesPersonalizados/listaClientesPersonalizados";
 	
+	private static final String URLINDEXLIMITESPERSONALIZADOS = "convenio/clientesPersonalizados/listaLimitesPersonalizados";
+	
+	private static final String URLFORMMONEDA = "convenio/moneda/formMoneda";
+	
+	private static final String URLFORMCLIENTEPERSONALIZADOEDIT = "convenio/clientesPersonalizados/formClientesPersonalizadosEdit";
+	
+	private static final String URLFORMLIMITEPERSONALIZADOEDIT = "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
+	
+	private static final String URLFORMLIMITEPERSONALIZADO = "convenio/clientesPersonalizados/formLimitesPersonalizados";
+	
+	private static final String LISTACLIENTESPERSONALIZADOS = "listaClientesPersonalizados";
+	
+	private static final String LISTAMONEDAS = "listaMonedas";
+	
+	private static final String DATOSPAGINACION = "datosPaginacion";
+	
+	private static final String MENSAJEERROR = "mensajeError";
+	
+	private static final String REDIRECTINDEX = "redirect:/clientesPersonalizados/index/";
+	
+	private static final String REDIRECTINDEXLIMITESPERSONALIZADOS = "redirect:/clientesPersonalizados/verLimites/";
+	
+	private static final String LISTAERROR = "listaError";
+	
+	private static final String MENSAJE = "mensaje";
+	
+	private static final String MENSAJENORESULTADO = "Operacion Exitosa.La consulta no arrojo resultado.";
 	
 	@GetMapping("/index/{page}")
 	public String index(@PathVariable("page") int page,Model model, RedirectAttributes redirectAttributes) {
 		log.info("si me llamo a index clientesPersonalizadosWs");
-		log.info("page: "+page);
+		
 		
 
 		ClienteRequest clienteRequest = getClienteRequest();
@@ -90,33 +118,25 @@ public class ClientesPersonalizadosController {
 						clientesPersonalizados2.setFechaModificacion(arrOfStr[0]);
 					}
 				}
-				log.info("listaClientesPersonalizados: "+listaClientesPersonalizados);
 				datosPaginacion = clienteResponse.getDatosPaginacion();
-				log.info("datosPaginacion: "+datosPaginacion);
-				model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-				model.addAttribute("datosPaginacion", datosPaginacion);
-				return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+				model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+				model.addAttribute(DATOSPAGINACION, datosPaginacion);
+				
 			}else {
 				datosPaginacion.setTotalPaginas(0);
-				model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-				model.addAttribute("datosPaginacion", datosPaginacion);
-				//redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-				return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+				model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+				model.addAttribute(DATOSPAGINACION, datosPaginacion);
+				
 			}
 			
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			log.error("se vino por aqui");
+			model.addAttribute(DATOSPAGINACION, datosPaginacion);
+			model.addAttribute(MENSAJEERROR, e.getMessage());
 			
-			model.addAttribute("datosPaginacion", datosPaginacion);
-			model.addAttribute("mensajeError", e.getMessage());
-			return "convenio/clientesPersonalizados/listaClientesPersonalizados";
-			//redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			//return "redirect:/";
 		}
 		
-		
+		return URLINDEX;
 		
 	}	
 	
@@ -124,8 +144,7 @@ public class ClientesPersonalizadosController {
 	public String activarWs(@PathVariable("codigoIbs") String codigoIbs, @PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes) {
 		log.info("activarWs");
-		log.info("codigoIbs: " + codigoIbs);
-		log.info("page: " + page);
+		
 
 		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
 
@@ -141,12 +160,11 @@ public class ClientesPersonalizadosController {
 			clientesPersonalizadosEdit.setFlagActivo(true);
 			clienteRequest.setCliente(clientesPersonalizadosEdit);
 			String respuesta = clientePersonalizadoServiceApiRest.actualizar(clienteRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/clientesPersonalizados/index/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEX+page;
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/clientesPersonalizados/index/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX+page;
 		}
 		
 	}
@@ -155,9 +173,6 @@ public class ClientesPersonalizadosController {
 	public String desactivarWs(@PathVariable("codigoIbs") String codigoIbs, @PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes) {
 		log.info("desactivarWs");
-		log.info("codigoIbs: " + codigoIbs);
-		log.info("page: " + page);
-
 		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
 
 		ClienteRequest clienteRequest = getClienteRequest();
@@ -172,12 +187,11 @@ public class ClientesPersonalizadosController {
 			clientesPersonalizadosEdit.setFlagActivo(false);
 			clienteRequest.setCliente(clientesPersonalizadosEdit);
 			String respuesta = clientePersonalizadoServiceApiRest.actualizar(clienteRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/clientesPersonalizados/index/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEX+page;
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/clientesPersonalizados/index/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX+page;
 		}
 		
 	}
@@ -186,7 +200,6 @@ public class ClientesPersonalizadosController {
 	public String editarWs(@PathVariable("codigoIbs") String codigoIbs, 
 			ClientesPersonalizados clientesPersonalizados, Model model, RedirectAttributes redirectAttributes) {
 		log.info("editarWs");
-		log.info("codigoIbs: " + codigoIbs);
 
 		ClientesPersonalizados clientesPersonalizadosEdit = new ClientesPersonalizados();
 
@@ -199,15 +212,14 @@ public class ClientesPersonalizadosController {
 			clientesPersonalizadosEdit = clientePersonalizadoServiceApiRest.buscarClientesPersonalizados(clienteRequest);
 			if(clientesPersonalizadosEdit != null) {
 				model.addAttribute("clientesPersonalizados", clientesPersonalizadosEdit);
-				return "convenio/clientesPersonalizados/formClientesPersonalizadosEdit";
+				return URLFORMCLIENTEPERSONALIZADOEDIT;
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "redirect:/clientesPersonalizados/index";
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+				return REDIRECTINDEX+1;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/agencias/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX+1;
 		}
 	}
 	
@@ -215,9 +227,6 @@ public class ClientesPersonalizadosController {
 	public String verLimitesWs(@PathVariable("codigoIbs") String codigoIbs, 
 			ClientesPersonalizados clientesPersonalizados, Model model, RedirectAttributes redirectAttributes) {
 		log.info("verLimitesWs");
-		log.info("codigoIbs: " + codigoIbs);
-
-		
 		List<LimitesPersonalizados> listaLimitesPersonalizados = new ArrayList<>();
 		
 		LimitesPersonalizadosRequest limitesPersonalizadosRequest = getLimitesPersonalizadosRequest();
@@ -239,7 +248,6 @@ public class ClientesPersonalizadosController {
 			clientesPersonalizadosEdit = clientePersonalizadoServiceApiRest.buscarClientesPersonalizados(clienteRequest);
 			if(clientesPersonalizadosEdit != null) {
 				listaLimitesPersonalizados = limitesPersonalizadosServiceApiRest.listaLimitesPersonalizados(limitesPersonalizadosRequest);
-				log.info("lista: "+listaLimitesPersonalizados.isEmpty());
 				if(!listaLimitesPersonalizados.isEmpty()) {
 					
 					for (LimitesPersonalizados limitesPersonalizados : listaLimitesPersonalizados) {
@@ -250,22 +258,20 @@ public class ClientesPersonalizadosController {
 					}
 					model.addAttribute("listaLimitesPersonalizados", listaLimitesPersonalizados);
 					model.addAttribute("codigoIbs", codigoIbs);
-		    		return "convenio/clientesPersonalizados/listaLimitesPersonalizados";
+		    		return URLINDEXLIMITESPERSONALIZADOS;
 				}else {
-					//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
 					model.addAttribute("listaLimitesPersonalizados", listaLimitesPersonalizados);
 					model.addAttribute("codigoIbs", codigoIbs);
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-					return "convenio/clientesPersonalizados/listaLimitesPersonalizados";
+					model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+					return URLINDEXLIMITESPERSONALIZADOS;
 				}
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "redirect:/clientesPersonalizados/index/1";
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+				return  REDIRECTINDEX+1;
 			}		
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/clientesPersonalizados/index/1";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX+1;
 		}
 	}
 	
@@ -279,9 +285,6 @@ public class ClientesPersonalizadosController {
 		log.info(tipoTransaccion);
 		
 		LimitesPersonalizados limitesPersonalizadosEdit = new LimitesPersonalizados();
-		
-		
-		
 		LimitesPersonalizadosRequest limitesPersonalizadosRequest = getLimitesPersonalizadosRequest();
 		LimitesPersonalizados limitesP = new LimitesPersonalizados();
 		limitesP.setCodigoIbs(codigoIbs);
@@ -293,15 +296,14 @@ public class ClientesPersonalizadosController {
 			limitesPersonalizadosEdit = limitesPersonalizadosServiceApiRest.buscarLimitesPersonalizados(limitesPersonalizadosRequest);
 			if(limitesPersonalizadosEdit != null) {
 				model.addAttribute("limitesPersonalizados", limitesPersonalizadosEdit);
-				return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
+				return URLFORMLIMITEPERSONALIZADOEDIT;
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "redirect:/clientesPersonalizados/index";
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+				return REDIRECTINDEX+1;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/clientesPersonalizados/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX+1;
 		}
 		
 		
@@ -312,42 +314,33 @@ public class ClientesPersonalizadosController {
 	public String guardarLimiteClienteWs(LimitesPersonalizados limitesPersonalizados, BindingResult result,
 			RedirectAttributes redirectAttributes, Model model) {
 		log.info("guardarWs");
-		log.info("limitesPersonalizados", limitesPersonalizados);
 		List<String> listaError = new ArrayList<>();
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
-				//log.info("error.hashCode(): "+error.);
-				log.info("error.hashCode(): "+error.hashCode());
-				log.info("error.getCode(): "+error.getCode());
 				if(error.getCode().equals("typeMismatch")) {
 					listaError.add("Los valores de los montos debe ser numerico");
 				}
 				log.info("getObjectName(): "+error.getObjectName());
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
 			}
-			model.addAttribute("listaError", listaError);
-			return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMLIMITEPERSONALIZADOEDIT;
 		}
 		
-		//firstBigDecimal.compareTo(secondBigDecimal) < 0 // "<"
-		//firstBigDecimal.compareTo(secondBigDecimal) > 0 // ">"    
-		//firstBigDecimal.compareTo(secondBigDecimal) == 0 // "=="  
-		//firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="
-		  log.info("Comparar tamaño:" + limitesPersonalizados.getMontoMax().compareTo(limitesPersonalizados.getMontoMin())); 
 		  if(limitesPersonalizados.getMontoMax().compareTo(limitesPersonalizados.getMontoMin()) < 0) { 
 			  listaError.add("El monto mínimo no debe ser mayor al monto máximo");
-			  model.addAttribute("listaError", listaError);
-			  result.addError(new  ObjectError("codMoneda", " El monto mínimo no debe ser mayor al monto máximo"));
+			  model.addAttribute(LISTAERROR, listaError);
+			  result.addError(new  ObjectError(LISTAERROR, " El monto mínimo no debe ser mayor al monto máximo"));
 			  
-			  return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit"; 
+			  return URLFORMLIMITEPERSONALIZADOEDIT;
 		  }
 		 
-		  log.info("Comparar tamaño:" + limitesPersonalizados.getMontoMensual().compareTo(limitesPersonalizados.getMontoDiario())); 
+		 
 		  if(limitesPersonalizados.getMontoMensual().compareTo(limitesPersonalizados.getMontoDiario()) < 0) { 
-			  result.addError(new  ObjectError("codMoneda", " El monto diario no debe ser mayor al mensual"));
+			  result.addError(new  ObjectError(LISTAERROR, " El monto diario no debe ser mayor al mensual"));
 			  listaError.add("El monto diario no debe ser mayor al mensual");
-			  model.addAttribute("listaError", listaError);
-			  return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit"; 
+			  model.addAttribute(LISTAERROR, listaError);
+			  return URLFORMLIMITEPERSONALIZADOEDIT;
 		  }
 		
 		
@@ -357,15 +350,13 @@ public class ClientesPersonalizadosController {
 		try {
 			
 			String respuesta = limitesPersonalizadosServiceApiRest.actualizar(limitesPersonalizadosRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			//return "redirect:/limitesPersonalizados/index";
-			return "redirect:/clientesPersonalizados/verLimites/"+limitesPersonalizados.getCodigoIbs();
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEXLIMITESPERSONALIZADOS+limitesPersonalizados.getCodigoIbs();
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			result.addError(new ObjectError(LISTAERROR,e.getMessage()));
 			listaError.add(e.getMessage());
-			  model.addAttribute("listaError", listaError);
-			return "convenio/clientesPersonalizados/formLimitesPersonalizadosEdit";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMLIMITEPERSONALIZADOEDIT;
 		}
 	
 		
@@ -399,17 +390,16 @@ public class ClientesPersonalizadosController {
 			if(clientesPersonalizadosEdit != null) {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				limitesPersonalizados.setCodigoIbs(codigoIbs);
-				model.addAttribute("listaMonedas", limitesPersonalizados);
-				model.addAttribute("listaMonedas", listaMonedas);
-	    		return "convenio/clientesPersonalizados/formLimitesPersonalizados";
+				//model.addAttribute("listaMonedas", limitesPersonalizados);
+				model.addAttribute(LISTAMONEDAS, listaMonedas);
+	    		return URLFORMLIMITEPERSONALIZADO;
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "redirect:/clientesPersonalizados/index/1";
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+				return REDIRECTINDEX+1;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/clientesPersonalizados/index/1";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX+1;
 		}	
 	}
 	
@@ -544,12 +534,12 @@ public class ClientesPersonalizadosController {
 			limitesPersonalizadosEdit.setFlagActivo(true);
 			limitesPersonalizadosRequest.setLimiteCliente(limitesPersonalizadosEdit);
 			String respuesta = limitesPersonalizadosServiceApiRest.actualizar(limitesPersonalizadosRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/clientesPersonalizados/verLimites/"+codigoIbs;
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEXLIMITESPERSONALIZADOS+codigoIbs;
 		} catch (CustomException e) {
 			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/clientesPersonalizados/verLimites/"+codigoIbs;
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEXLIMITESPERSONALIZADOS+codigoIbs;
 		}
 	
 		
@@ -577,12 +567,12 @@ public class ClientesPersonalizadosController {
 			limitesPersonalizadosEdit.setFlagActivo(false);
 			limitesPersonalizadosRequest.setLimiteCliente(limitesPersonalizadosEdit);
 			String respuesta = limitesPersonalizadosServiceApiRest.actualizar(limitesPersonalizadosRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/clientesPersonalizados/verLimites/"+codigoIbs;
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEXLIMITESPERSONALIZADOS+codigoIbs;
 		} catch (CustomException e) {
 			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/clientesPersonalizados/verLimites/"+codigoIbs;
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEXLIMITESPERSONALIZADOS+codigoIbs;
 		}
 	
 		
@@ -592,7 +582,6 @@ public class ClientesPersonalizadosController {
 	public String search(
 			@ModelAttribute("clientesPersonalizadosSearch") ClientesPersonalizados clientesPersonalizadosSearch,
 			Model model, RedirectAttributes redirectAttributes) {
-		log.info("si me llamo a search clientesPersonalizadosWs");
 		log.info(clientesPersonalizadosSearch.getCodigoIbs());
 
 		
@@ -613,9 +602,6 @@ public class ClientesPersonalizadosController {
 			
 			if(clienteResponse != null) {
 				listaClientesPersonalizados = clienteResponse.getListaClientes();
-				log.info("listaClientesPersonalizados: "+listaClientesPersonalizados);
-				log.info("lista: "+listaClientesPersonalizados.isEmpty());
-				
 				if(!listaClientesPersonalizados.isEmpty()) {
 					for (ClientesPersonalizados clientesPersonalizados2 : listaClientesPersonalizados) {
 						if(clientesPersonalizados2.getFechaModificacion() != null) {
@@ -625,37 +611,33 @@ public class ClientesPersonalizadosController {
 					}
 					datosPaginacion = clienteResponse.getDatosPaginacion();
 					log.info("datosPaginacion: "+datosPaginacion);
-					model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-					model.addAttribute("datosPaginacion", datosPaginacion);
-					return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+					model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+					model.addAttribute(DATOSPAGINACION, datosPaginacion);
 				}else {
 					datosPaginacion.setTotalPaginas(0);
-					model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-					model.addAttribute("datosPaginacion", datosPaginacion);
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-					return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+					model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+					model.addAttribute(DATOSPAGINACION, datosPaginacion);
+					model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
 				}
 				
 				
 			}else {
 				datosPaginacion.setTotalPaginas(0);
-				model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-				model.addAttribute("datosPaginacion", datosPaginacion);
-				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+				model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+				model.addAttribute(DATOSPAGINACION, datosPaginacion);
+				model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
 			}
 			
 		} catch (CustomException e) {
 			
 			log.error("error: "+e);
 			datosPaginacion.setTotalPaginas(0);
-			model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-			model.addAttribute("datosPaginacion", datosPaginacion);
-			model.addAttribute("mensajeError", e.getMessage());
-			return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+			model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+			model.addAttribute(DATOSPAGINACION, datosPaginacion);
+			model.addAttribute(MENSAJEERROR, e.getMessage());
 		}
 		
-		
+		return URLINDEX;
 	}	
 	
 	
@@ -663,7 +645,6 @@ public class ClientesPersonalizadosController {
 	public String searchNroIdCliente(
 			@ModelAttribute("clientesPersonalizadosSearch") ClientesPersonalizados clientesPersonalizadosSearch,
 			Model model, RedirectAttributes redirectAttributes) {
-		log.info("si me llamo a search clientesPersonalizadosWs");
 		log.info(clientesPersonalizadosSearch.getCodigoIbs());
 
 	
@@ -684,9 +665,6 @@ public class ClientesPersonalizadosController {
 			
 			if(clienteResponse != null) {
 				listaClientesPersonalizados = clienteResponse.getListaClientes();
-				log.info("listaClientesPersonalizados: "+listaClientesPersonalizados);
-				log.info("lista: "+listaClientesPersonalizados.isEmpty());
-				
 				if(!listaClientesPersonalizados.isEmpty()) {
 					for (ClientesPersonalizados clientesPersonalizados2 : listaClientesPersonalizados) {
 						if(clientesPersonalizados2.getFechaModificacion() != null) {
@@ -695,25 +673,24 @@ public class ClientesPersonalizadosController {
 						}
 					}
 					datosPaginacion = clienteResponse.getDatosPaginacion();
-					log.info("datosPaginacion: "+datosPaginacion);
-					model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-					model.addAttribute("datosPaginacion", datosPaginacion);
-					return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+					model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+					model.addAttribute(DATOSPAGINACION, datosPaginacion);
+					
 				}else {
 					datosPaginacion.setTotalPaginas(0);
-					model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-					model.addAttribute("datosPaginacion", datosPaginacion);
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-					return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+					model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+					model.addAttribute(DATOSPAGINACION, datosPaginacion);
+					model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+					
 				}
 				
 				
 			}else {
 				datosPaginacion.setTotalPaginas(0);
-				model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-				model.addAttribute("datosPaginacion", datosPaginacion);
-				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+				model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+				model.addAttribute(DATOSPAGINACION, datosPaginacion);
+				model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+			
 			}
 			
 			
@@ -723,13 +700,13 @@ public class ClientesPersonalizadosController {
 			
 			log.error("error: "+e);
 			datosPaginacion.setTotalPaginas(0);
-			model.addAttribute("datosPaginacion", datosPaginacion);
-			model.addAttribute("listaClientesPersonalizados", listaClientesPersonalizados);
-			model.addAttribute("mensajeError", e.getMessage());
-			return "convenio/clientesPersonalizados/listaClientesPersonalizados";
+			model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
+			model.addAttribute(DATOSPAGINACION, datosPaginacion);
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			
 		}
 		
-		
+		return URLINDEX;
 	}
 	
 	

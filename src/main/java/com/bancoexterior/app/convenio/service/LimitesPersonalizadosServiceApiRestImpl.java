@@ -1,6 +1,7 @@
 package com.bancoexterior.app.convenio.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,8 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
     
     @Value("${des.limitesPersonalizados.urlActualizar}")
     private String urlActualizar;
+    
+    private static final String ERRORMICROCONEXION = "No hubo conexion con el micreoservicio limites personalizados";
 
     public WSRequest getWSRequest() {
     	WSRequest wsrequest = new WSRequest();
@@ -57,7 +60,6 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 			LimitesPersonalizadosRequest limitesPersonalizadosRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		LimitesPersonalizadosResponse limiteResponse = new LimitesPersonalizadosResponse();
 		String limitesPersonalizadosRequestJSON;
 		limitesPersonalizadosRequestJSON = new Gson().toJson(limitesPersonalizadosRequest);
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
@@ -67,36 +69,41 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-					limiteResponse = mapper.jsonToClass(retorno.getBody(), LimitesPersonalizadosResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            return limiteResponse.getLimitesPersonalizados();
+				return respuesta2xxListaLimitesPersonalizados(retorno);
 			}else {
-				if (retorno.getStatus() == 422) {
-					try {
-						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						String mensaje = resultado.getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxListaLimitesPersonalizados(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio limites personalizados");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
+	}
+	
+	public List<LimitesPersonalizados> respuesta2xxListaLimitesPersonalizados(WSResponse retorno){
+		try {
+			LimitesPersonalizadosResponse limiteResponse = mapper.jsonToClass(retorno.getBody(), LimitesPersonalizadosResponse.class);
+			return limiteResponse.getLimitesPersonalizados();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+        
 	}
 
+	public String respuesta4xxListaLimitesPersonalizados(WSResponse retorno){
+		try {
+			Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
+			return resultado.getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	@Override
 	public LimitesPersonalizados buscarLimitesPersonalizados(LimitesPersonalizadosRequest limitesPersonalizadosRequest)
 			throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		LimitesPersonalizadosResponse limiteResponse = new LimitesPersonalizadosResponse();
 		String limitesPersonalizadosRequestJSON;
 		limitesPersonalizadosRequestJSON = new Gson().toJson(limitesPersonalizadosRequest);
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
@@ -106,41 +113,34 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-					limiteResponse = mapper.jsonToClass(retorno.getBody(), LimitesPersonalizadosResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            if(limiteResponse.getResultado().getCodigo().equals("0000")){
-	            	return limiteResponse.getLimitesPersonalizados().get(0);
-	            }else {
-	            	return null;
-	            }
+				return respuesta2xxBuscarLimitesPersonalizados(retorno);
 			}else {
-				if (retorno.getStatus() == 422) {
-					try {
-						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						String mensaje = resultado.getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxListaLimitesPersonalizados(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio limitesPersonalizados");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
 	}
 
+	public LimitesPersonalizados respuesta2xxBuscarLimitesPersonalizados(WSResponse retorno){
+		try {
+			LimitesPersonalizadosResponse limiteResponse = mapper.jsonToClass(retorno.getBody(), LimitesPersonalizadosResponse.class);
+			if(limiteResponse.getResultado().getCodigo().equals("0000")){
+	        	return limiteResponse.getLimitesPersonalizados().get(0);
+	        }else {
+	        	return null;
+	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+        
+	}
+	
 	@Override
 	public String actualizar(LimitesPersonalizadosRequest limitesPersonalizadosRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();  
-		String respuesta;
-		String error;
 		String limitesPersonalizadosRequestJSON;
 		limitesPersonalizadosRequestJSON = new Gson().toJson(limitesPersonalizadosRequest);
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
@@ -149,41 +149,40 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		retorno = wsService.put(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				respuesta = response.getResultado().getDescripcion();
-				return respuesta;
-				
-				
+				return respuesta2xxActualizarCrear(retorno);
 			}else {
-				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						error = response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxActualizarCrear(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio limites personalizados");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
 	}
 
+	public String respuesta2xxActualizarCrear(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado().getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	public String respuesta4xxActualizarCrear(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado().getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	@Override
 	public String crear(LimitesPersonalizadosRequest limitesPersonalizadosRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();  
-		String respuesta;
-		String error;
 		String limitesPersonalizadosRequestJSON;
 		limitesPersonalizadosRequestJSON = new Gson().toJson(limitesPersonalizadosRequest);
 		wsrequest.setBody(limitesPersonalizadosRequestJSON);
@@ -193,32 +192,13 @@ public class LimitesPersonalizadosServiceApiRestImpl implements ILimitesPersonal
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-					response = mapper.jsonToClass(retorno.getBody(), Response.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				respuesta = response.getResultado().getDescripcion();
-				return respuesta;
-				
-				
+				return respuesta2xxActualizarCrear(retorno);
 			}else {
-				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						error = response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxActualizarCrear(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio limites personalizados");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
 	}
 
 }
