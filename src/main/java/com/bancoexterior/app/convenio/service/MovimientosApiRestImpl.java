@@ -154,6 +154,7 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		wsrequest.setUrl(urlConsultarMovimientos);
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
+		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
 				try {
