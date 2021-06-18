@@ -2,13 +2,12 @@ package com.bancoexterior.app.convenio.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -68,9 +67,7 @@ public class LimitesGenerales implements Serializable{
 	
 	@JsonProperty("fechaModificacion")
 	private String fechaModificacion;
-	//@JsonProperty("fechaModificacion")
-	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	//private Date fechaModificacion;
+	
 	
 	/**
 	 * 

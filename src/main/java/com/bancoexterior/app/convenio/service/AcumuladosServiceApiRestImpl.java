@@ -10,10 +10,10 @@ import com.bancoexterior.app.convenio.dto.AcumuladoCompraVentaResponse;
 import com.bancoexterior.app.convenio.dto.AcumuladoRequest;
 import com.bancoexterior.app.convenio.dto.AcumuladoResponse;
 import com.bancoexterior.app.convenio.exception.CustomException;
+import com.bancoexterior.app.convenio.interfase.IWSService;
+import com.bancoexterior.app.convenio.interfase.model.WSRequest;
+import com.bancoexterior.app.convenio.interfase.model.WSResponse;
 import com.bancoexterior.app.convenio.response.Response;
-import com.bancoexterior.app.convenio.services.restApi.IWSService;
-import com.bancoexterior.app.convenio.services.restApi.model.WSRequest;
-import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
 import com.bancoexterior.app.util.Mapper;
 import com.google.gson.Gson;
 

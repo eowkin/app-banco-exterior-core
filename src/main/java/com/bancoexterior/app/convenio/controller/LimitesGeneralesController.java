@@ -307,67 +307,53 @@ public class LimitesGeneralesController {
 		Moneda moneda = new Moneda();
 		moneda.setFlagActivo(true);
 		monedasRequest.setMoneda(moneda);
-		
-		if (result.hasErrors()) {
-			for (ObjectError error : result.getAllErrors()) {
-				log.info("Ocurrio un error: " + error.getDefaultMessage());
-				if(error.getCode().equals("typeMismatch")) {
-					listaError.add("Los valores de los montos debe ser numerico");
+		try {
+			if (result.hasErrors()) {
+				for (ObjectError error : result.getAllErrors()) {
+					log.info("Ocurrio un error: " + error.getDefaultMessage());
+					if(error.getCode().equals("typeMismatch")) {
+						listaError.add("Los valores de los montos debe ser numerico");
+					}
 				}
-			}
-			
-			try {
-				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-				model.addAttribute(LISTAMONEDAS, listaMonedas);
-				model.addAttribute(LISTAERROR, listaError);
-				return URLFORMLIMITESGENERALES;
-			} catch (CustomException e) {
-				result.addError(new ObjectError(LISTAERROR, e.getMessage()));
-				model.addAttribute(LISTAERROR, e.getMessage());
-				return URLFORMLIMITESGENERALES;
-			}
-			
-		}
-		
- 
-		  if(limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin()) < 0) { 
-			  try {
-				  	listaError.add("El monto mínimo no debe ser mayor al monto máximo");
+				
+				
 					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 					model.addAttribute(LISTAMONEDAS, listaMonedas);
 					model.addAttribute(LISTAERROR, listaError);
-					result.addError(new  ObjectError(LISTAERROR, " El monto mínimo no debe ser mayor al monto máximo"));
 					return URLFORMLIMITESGENERALES;
-				} catch (CustomException e) {
-					result.addError(new ObjectError(LISTAERROR, e.getMessage()));
-					 listaError.add(e.getMessage());
-					 model.addAttribute(LISTAERROR, listaError);
-					 return URLFORMLIMITESGENERALES;
-				}
-		  }
-		  
-		   
-		  if(limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario()) < 0) { 
-			  try {
-					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-					model.addAttribute(LISTAMONEDAS, listaMonedas);
-					listaError.add("El monto diario no debe ser mayor al mensual");
-			        model.addAttribute(LISTAERROR, listaError);
-			        result.addError(new  ObjectError(LISTAERROR, " El monto diario no debe ser mayor al mensual"));
-			        return URLFORMLIMITESGENERALES;
-				} catch (CustomException e) {
-					result.addError(new ObjectError(LISTAERROR, e.getMessage()));
-					 listaError.add(e.getMessage());
-					 model.addAttribute(LISTAERROR, listaError);
-					 return URLFORMLIMITESGENERALES;
-				}
-		  }
+				
+				
+			}
+			
+	 
+			  if(limitesGenerales.getMontoMax().compareTo(limitesGenerales.getMontoMin()) < 0) { 
+				  
+					  	listaError.add("El monto mínimo no debe ser mayor al monto máximo");
+						listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+						model.addAttribute(LISTAMONEDAS, listaMonedas);
+						model.addAttribute(LISTAERROR, listaError);
+						result.addError(new  ObjectError(LISTAERROR, " El monto mínimo no debe ser mayor al monto máximo"));
+						return URLFORMLIMITESGENERALES;
+					
+			  }
+			  
+			   
+			  if(limitesGenerales.getMontoMensual().compareTo(limitesGenerales.getMontoDiario()) < 0) { 
+				 
+						listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
+						model.addAttribute(LISTAMONEDAS, listaMonedas);
+						listaError.add("El monto diario no debe ser mayor al mensual");
+				        model.addAttribute(LISTAERROR, listaError);
+				        result.addError(new  ObjectError(LISTAERROR, " El monto diario no debe ser mayor al mensual"));
+				        return URLFORMLIMITESGENERALES;
+					
+			  }
+			
+			LimiteRequest limiteRequest = getLimiteRequest(); 
+			limitesGenerales.setFlagActivo(true);
+			limiteRequest.setLimite(limitesGenerales);
+			
 		
-		LimiteRequest limiteRequest = getLimiteRequest(); 
-		limitesGenerales.setFlagActivo(true);
-		limiteRequest.setLimite(limitesGenerales);
-		
-		try {
 			String respuesta = limitesGeneralesServiceApirest.crear(limiteRequest);
 			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 			return REDIRECTINDEX;

@@ -85,6 +85,8 @@ public class Movimiento implements Serializable{
 	@JsonProperty("destinofondo")
 	private String destinofondo;
 	
+	@JsonProperty("nombreCliente")
+	private String nombreCliente;
 	
 	@JsonProperty("fechas")
 	private Fechas fechas;

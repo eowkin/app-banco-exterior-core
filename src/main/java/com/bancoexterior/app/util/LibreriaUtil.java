@@ -5,11 +5,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
-
-
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Component
 public class LibreriaUtil {
 	
@@ -17,7 +12,7 @@ public class LibreriaUtil {
 		LocalDateTime ahora = LocalDateTime.now();
 		String valorAno = "";
 		valorAno = ahora.getYear()+"";
-		//log.info("valorAno: "+valorAno);
+		
 		
 		String valorMes = "";
 		if(ahora.getMonthValue() < 10) {
@@ -25,7 +20,7 @@ public class LibreriaUtil {
 		}else {
 			valorMes = ""+ahora.getMonthValue();
 		}
-		//log.info("valorMes: "+valorMes);
+		
 		
 		String valorDia = "";
 		if(ahora.getDayOfMonth() < 10) {
@@ -33,7 +28,7 @@ public class LibreriaUtil {
 		}else {
 			valorDia = ""+ahora.getDayOfMonth();
 		}
-		//log.info("valorDia: "+valorDia);
+		
 		
 		String valorHora = "";
 		if(ahora.getHour() < 10) {
@@ -41,7 +36,7 @@ public class LibreriaUtil {
 		}else {
 			valorHora = ""+ahora.getHour();
 		}
-		//log.info("valorHora: "+valorHora);
+		
 		
 		String valorMin = "";
 		if(ahora.getMinute() < 10) {
@@ -49,7 +44,7 @@ public class LibreriaUtil {
 		}else {
 			valorMin = ""+ahora.getMinute();
 		}
-		//log.info("valorMin: "+valorMin);
+		
 		
 		String valorSeg = "";
 		if(ahora.getSecond() < 10) {
@@ -57,7 +52,7 @@ public class LibreriaUtil {
 		}else {
 			valorSeg = ""+ahora.getSecond();
 		}
-		//log.info("valorSeg: "+valorSeg);
+		
 		
 	
 		return valorAno+valorMes+valorDia+valorHora+valorMin+valorSeg;

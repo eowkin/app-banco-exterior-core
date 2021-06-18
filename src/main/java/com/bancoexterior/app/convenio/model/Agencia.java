@@ -1,9 +1,7 @@
 package com.bancoexterior.app.convenio.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -35,9 +33,7 @@ public class Agencia implements Serializable{
 	@JsonProperty("fechaModificacion")
 	private String fechaModificacion;
 	
-	//@JsonProperty("fechaModificacion")
-	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	//private Date fechaModificacion;
+	
 
 	/**
 	 * 

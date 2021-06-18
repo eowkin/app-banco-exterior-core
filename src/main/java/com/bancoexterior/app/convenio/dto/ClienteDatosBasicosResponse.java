@@ -1,8 +1,6 @@
 package com.bancoexterior.app.convenio.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.bancoexterior.app.convenio.model.DatosClientes;
 import com.bancoexterior.app.convenio.response.Resultado;

@@ -1,4 +1,4 @@
-package com.bancoexterior.app.convenio.services.restApi.model;
+package com.bancoexterior.app.convenio.interfase.model;
 
 public class WSRequest {
 	

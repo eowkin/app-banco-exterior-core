@@ -68,7 +68,8 @@ public class TasaController {
 	private static final String REDIRECTINDEX = "redirect:/tasas/index";
 	
 	private static final String MENSAJE = "mensaje";
-	
+
+	private static final String MENSAJENORESULTADO = "Operacion Exitosa.La consulta no arrojo resultado.";
 	
 	@GetMapping("/index")
 	public String index(Model model, RedirectAttributes redirectAttributes) {
@@ -120,7 +121,7 @@ public class TasaController {
 				model.addAttribute("tasa", tasaEdit);
             	return URLFORMTASAEDIT;
 			}else {
-				redirectAttributes.addFlashAttribute(MENSAJEERROR, " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, MENSAJENORESULTADO);
 				return REDIRECTINDEX;
 			}
 		} catch (CustomException e) {
@@ -221,7 +222,7 @@ public class TasaController {
 				model.addAttribute(LISTAERROR, listaError);
 				return URLFORMTASA;
 			} catch (CustomException e) {
-				result.addError(new ObjectError(LISTAERROR, " Codigo :" +e.getMessage()));
+				result.addError(new ObjectError(LISTAERROR, e.getMessage()));
 				model.addAttribute(LISTAERROR, e.getMessage());
 				return URLFORMTASA;
 			}
@@ -235,17 +236,16 @@ public class TasaController {
 			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 			return REDIRECTINDEX;
 		} catch (CustomException e) {
-			log.error("error: "+e);
 			try {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				model.addAttribute(LISTAMONEDAS, listaMonedas);
-				result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+				result.addError(new ObjectError(LISTAERROR, e.getMessage()));
 				listaError.add(e.getMessage());
 				model.addAttribute(LISTAERROR, listaError);
 				return URLFORMTASA;
 			} catch (CustomException e1) {
 				log.error("error: "+e1);
-				result.addError(new ObjectError("codMoneda", " Codigo :" +e1.getMessage()));
+				result.addError(new ObjectError(LISTAERROR,e1.getMessage()));
 				listaError.add(e1.getMessage());
 				model.addAttribute(LISTAERROR, listaError);
 				return URLFORMTASA;

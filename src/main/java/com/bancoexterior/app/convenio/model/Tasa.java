@@ -1,14 +1,13 @@
 package com.bancoexterior.app.convenio.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -18,8 +17,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor @NoArgsConstructor
-public class Tasa {
+public class Tasa implements Serializable{
 	
+	
+
+
 	@NotEmpty(message = "Codigo moneda no puede ser vacia")
 	@JsonProperty("codMonedaOrigen")
 	@Size(min = 1, max = 3 , message = "Codigo moneda origen debe tener maximo 3 caracteres")
@@ -47,8 +49,10 @@ public class Tasa {
 	
 	@JsonProperty("fechaModificacion")
 	private String fechaModificacion;
-	//@JsonProperty("fechaModificacion")
-	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	//private Date fechaModificacion;
 	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 }

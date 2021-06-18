@@ -6,9 +6,9 @@ import com.bancoexterior.app.convenio.dto.ClienteDatosBasicoRequest;
 import com.bancoexterior.app.convenio.dto.ClienteRequest;
 import com.bancoexterior.app.convenio.dto.ClienteResponse;
 import com.bancoexterior.app.convenio.exception.CustomException;
+import com.bancoexterior.app.convenio.interfase.model.WSResponse;
 import com.bancoexterior.app.convenio.model.ClientesPersonalizados;
 import com.bancoexterior.app.convenio.model.DatosClientes;
-import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
 
 
 public interface IClientePersonalizadoServiceApiRest {

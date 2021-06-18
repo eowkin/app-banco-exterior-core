@@ -392,7 +392,6 @@ public class ClientesPersonalizadosController {
 			if(clientesPersonalizadosEdit != null) {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				limitesPersonalizados.setCodigoIbs(codigoIbs);
-				//model.addAttribute("listaMonedas", limitesPersonalizados);
 				model.addAttribute(LISTAMONEDAS, listaMonedas);
 	    		return URLFORMLIMITEPERSONALIZADO;
 			}else {
@@ -410,13 +409,14 @@ public class ClientesPersonalizadosController {
 		log.info("saveLimiteClienteWs");
 
 		
-		List<Moneda> listaMonedas = new ArrayList<>();
+		List<Moneda> listaMonedas;
 		List<String> listaError = new ArrayList<>();
 		MonedasRequest monedasRequest = getMonedasRequest();
 		Moneda moneda = new Moneda();
 		moneda.setFlagActivo(true);
 		monedasRequest.setMoneda(moneda);
 		
+		try {
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
@@ -425,64 +425,46 @@ public class ClientesPersonalizadosController {
 				}
 			}
 			
-			try {
+		
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				model.addAttribute(LISTAMONEDAS, listaMonedas);
 				model.addAttribute(LISTAERROR, listaError);
 	    		return URLFORMLIMITEPERSONALIZADO;
-			} catch (CustomException e) {
-				result.addError(new ObjectError(LISTAERROR,e.getMessage()));
-				 listaError.add(e.getMessage());
-				 model.addAttribute("listaError", e.getMessage());
-				return URLFORMLIMITEPERSONALIZADO;
-			}
+			
 			
 		}
 		 
 		  if(limitesPersonalizados.getMontoMax().compareTo(limitesPersonalizados.getMontoMin()) < 0) { 
-			  try {
+			  
 				  	listaError.add("El monto mínimo no debe ser mayor al monto máximo");
 					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 					model.addAttribute(LISTAMONEDAS, listaMonedas);
 					model.addAttribute(LISTAERROR, listaError);
 					result.addError(new  ObjectError(LISTAERROR, " El monto mínimo no debe ser mayor al monto máximo"));
 					return URLFORMLIMITEPERSONALIZADO;
-				} catch (CustomException e) {
-					log.error("error: "+e);
-					result.addError(new ObjectError(LISTAERROR, e.getMessage()));
-					 listaError.add(e.getMessage());
-					 model.addAttribute(LISTAERROR, listaError);
-					return URLFORMLIMITEPERSONALIZADO;
-				}
+				
 		  }
 		  
 		  if(limitesPersonalizados.getMontoMensual().compareTo(limitesPersonalizados.getMontoDiario()) < 0) {
-			  try {
+			  
 					listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 					model.addAttribute(LISTAMONEDAS, listaMonedas);
 					listaError.add("El monto diario no debe ser mayor al mensual");
 			        model.addAttribute(LISTAERROR, listaError);
 			        result.addError(new  ObjectError(LISTAERROR, " El monto diario no debe ser mayor al mensual"));
 		    		return URLFORMLIMITEPERSONALIZADO;
-				} catch (CustomException e) {
-					log.error("error: "+e);
-					result.addError(new ObjectError(LISTAERROR, e.getMessage()));
-					 listaError.add(e.getMessage());
-					 model.addAttribute(LISTAERROR, listaError);
-					return URLFORMLIMITEPERSONALIZADO;
-				}
+				
 		  }
 		
 		LimitesPersonalizadosRequest limitesPersonalizadosRequest = getLimitesPersonalizadosRequest();
 		limitesPersonalizados.setFlagActivo(true);
 		limitesPersonalizadosRequest.setLimiteCliente(limitesPersonalizados);
 		
-		try {
+		
 			String respuesta = limitesPersonalizadosServiceApiRest.crear(limitesPersonalizadosRequest);
 			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 			return REDIRECTINDEXLIMITESPERSONALIZADOS+limitesPersonalizados.getCodigoIbs();
 		} catch (CustomException e) {
-			log.error("error: "+e);
 			try {
 				listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
 				model.addAttribute(LISTAMONEDAS, listaMonedas);
@@ -491,7 +473,6 @@ public class ClientesPersonalizadosController {
 				model.addAttribute(LISTAERROR, listaError);
 	    		return URLFORMLIMITEPERSONALIZADO;
 			} catch (CustomException e1) {
-				log.error("error: "+e1);
 				result.addError(new ObjectError("codMoneda", " Codigo :" +e1.getMessage()));
 				listaError.add(e1.getMessage());
 				model.addAttribute(LISTAERROR, listaError);
@@ -527,7 +508,6 @@ public class ClientesPersonalizadosController {
 			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 			return REDIRECTINDEXLIMITESPERSONALIZADOS+codigoIbs;
 		} catch (CustomException e) {
-			log.error("error: "+e);
 			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
 			return REDIRECTINDEXLIMITESPERSONALIZADOS+codigoIbs;
 		}
@@ -560,7 +540,6 @@ public class ClientesPersonalizadosController {
 			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 			return REDIRECTINDEXLIMITESPERSONALIZADOS+codigoIbs;
 		} catch (CustomException e) {
-			log.error("error: "+e);
 			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
 			return REDIRECTINDEXLIMITESPERSONALIZADOS+codigoIbs;
 		}
@@ -619,8 +598,6 @@ public class ClientesPersonalizadosController {
 			}
 			
 		} catch (CustomException e) {
-			
-			log.error("error: "+e);
 			datosPaginacion.setTotalPaginas(0);
 			model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
 			model.addAttribute(DATOSPAGINACION, datosPaginacion);
@@ -687,8 +664,6 @@ public class ClientesPersonalizadosController {
 			
 			
 		} catch (CustomException e) {
-			
-			log.error("error: "+e);
 			datosPaginacion.setTotalPaginas(0);
 			model.addAttribute(LISTACLIENTESPERSONALIZADOS, listaClientesPersonalizados);
 			model.addAttribute(DATOSPAGINACION, datosPaginacion);
@@ -752,13 +727,12 @@ public class ClientesPersonalizadosController {
 		
 		try {
 			String respuesta = clientePersonalizadoServiceApiRest.actualizar(clienteRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 			return "redirect:/clientesPersonalizados/index";
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			model.addAttribute("mensajeError",e.getMessage());
-			return "convenio/clientesPersonalizados/formClientesPersonalizadosEdit";
+			model.addAttribute(MENSAJEERROR,e.getMessage());
+			return URLFORMLIMITEPERSONALIZADOEDIT;
 		}
 	}
 	
@@ -774,11 +748,10 @@ public class ClientesPersonalizadosController {
 		
 		try {
 			String respuesta = clientePersonalizadoServiceApiRest.crear(clienteRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta+ " Puede crear limites Personalizados al cliiente nuevo");
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta+ " Puede crear limites Personalizados al cliiente nuevo");
 			return "redirect:/clientesPersonalizados/formLimiteClientePersonalizado/"+clientesPersonalizados.getCodigoIbs();
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
 			model.addAttribute(MENSAJEERROR,e.getMessage());
 			return URLFORMCLIENTESPERSONALIZADOS;
 		}

@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +46,7 @@ import com.bancoexterior.app.convenio.service.IMonedaServiceApiRest;
 import com.bancoexterior.app.convenio.service.IMovimientosApiRest;
 import com.bancoexterior.app.util.ConsultaExcelExporter;
 import com.bancoexterior.app.util.LibreriaUtil;
-import com.bancoexterior.app.util.UserExcelExporter;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -106,9 +106,15 @@ public class SolicitudController {
 	
 	private static final String LISTAMOVIMIENTOSCOMPRA = "listaMovimientosCompra";
 	
+	private static final String LISTAMONEDAS = "listaMonedas";
+	
 	private static final String URLLISTAMOVIMIENTOSPORAPROBARVENTA = "convenio/solicitudes/listaSolicitudesMovimientosPorAprobarVenta";
 	
 	private static final String URLLISTAMOVIMIENTOSVENTA = "convenio/solicitudes/listaSolicitudesMovimientosVenta";
+	
+	private static final String URLLISTAMOVIMIENTOSVENTASEARCHESTATUS =  "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+	
+	private static final String URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS =  "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
 	
 	private static final String URLLISTAMOVIMIENTOSCOMPRA = "convenio/solicitudes/listaSolicitudesMovimientosCompra";
 	
@@ -116,9 +122,21 @@ public class SolicitudController {
 	
 	private static final String URLFORMSOLICITUDVENTA = "convenio/solicitudes/formSolicitudVenta";
 	
+	private static final String URLFORMSOLICITUDGENERARREPORTE = "convenio/solicitudes/formSolicitudGenerarReporte";
+	
 	private static final String PAGINAACTUAL = "paginaActual";
 	
+	private static final String ESTATUS = "estatus";
+	
+	private static final String FECHADESDE = "fechaDesde";
+	
+	private static final String FECHAHASTA = "fechaHasta";
+	
+	private static final String STRDATEFORMET = "yyyy-MM-dd";
+	
 	private static final String MENSAJE = "mensaje";
+	
+	private static final String MENSAJEVENTA = "mensajeVenta";
 	
 	private static final String MENSAJEERROR = "mensajeError";
 	
@@ -128,11 +146,15 @@ public class SolicitudController {
 	
 	private static final String MENSAJENORESULTADO = "Operacion Exitosa.La consulta no arrojo resultado.";
 	
+	private static final String MENSAJEFECHASINVALIDAS = "Los valores de las fechas son invalidos";
+	
 	private static final String LISTAERROR = "listaError";
 	
 	private static final String REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA = "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/";
 	
 	private static final String REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS = "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/";
+	
+	private static final String REDIRECTINICIO = "redirect:/";
 	
 	@GetMapping("/listaSolicitudesMovimientosPorAprobarVentas/{page}")
 	public String consultaMovimientoPorAprobarVenta(@PathVariable("page") int page,Model model) {
@@ -240,7 +262,7 @@ public class SolicitudController {
 				}
 				
 			}else {
-				return "redirect:/";
+				return REDIRECTINICIO;
 			}
 		} catch (CustomException e) {
 			model.addAttribute(MENSAJEERROR, e.getMessage());
@@ -381,7 +403,7 @@ public class SolicitudController {
 				}
 				
 			}else {
-				return "redirect:/";
+				return REDIRECTINICIO;
 			}
 		} catch (CustomException e) {
 			model.addAttribute(MENSAJEERROR, e.getMessage());
@@ -474,7 +496,7 @@ public class SolicitudController {
 				}
 				
 			}else {
-				return "redirect:/";
+				return REDIRECTINICIO;
 			}
 		} catch (CustomException e) {
 			model.addAttribute(MENSAJEERROR, e.getMessage());
@@ -546,7 +568,7 @@ public class SolicitudController {
 				}
 				
 			}else {
-				return "redirect:/";
+				return REDIRECTINICIO;
 			}
 		} catch (CustomException e) {
 			model.addAttribute(MENSAJEERROR, e.getMessage());
@@ -719,7 +741,7 @@ public class SolicitudController {
 		
 		try {
 			String respuesta = movimientosApiRest.aprobarVenta(aprobarRechazarRequest);
-			redirectAttributes.addFlashAttribute("mensajeVenta", respuesta);
+			redirectAttributes.addFlashAttribute(MENSAJEVENTA, respuesta);
 			return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+movimiento.getPaginaActual();
 			
 		} catch (CustomException e) {
@@ -787,8 +809,6 @@ public class SolicitudController {
 			@PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
 		log.info("aprobarCompra");
-		log.info("codOperacion: "+codOperacion);
-		log.info("page: "+page);
 		
 		
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
@@ -804,8 +824,7 @@ public class SolicitudController {
 			if(response.getResultado().getCodigo().equals("0000")) {
 				movimientoProcesar = response.getMovimientos().get(0);
 				movimientoProcesar.setPaginaActual(page);
-				log.info("movimientoProcesar: "+movimientoProcesar);
-				model.addAttribute("paginaActual", page);
+				model.addAttribute(PAGINAACTUAL, page);
 				
 				
 				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
@@ -818,14 +837,14 @@ public class SolicitudController {
 				aprobarRechazarRequest.setEstatus(1);
 				
 				String respuesta = movimientosApiRest.aprobarCompra(aprobarRechazarRequest);
-				redirectAttributes.addFlashAttribute("mensaje", respuesta);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+				redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA+page;
 				
 				
 			}else {
-				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
-				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+				String mensajeError = response.getResultado().getDescripcion();
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, mensajeError);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA+page;
 			}
 			
 			
@@ -833,9 +852,8 @@ public class SolicitudController {
 			
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJEERROR,e.getMessage());
+			return REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA+page;
 		}
 	}
 	
@@ -844,8 +862,6 @@ public class SolicitudController {
 			@PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
 		log.info("rechazarVenta");
-		log.info("codOperacion: "+codOperacion);
-		log.info("page: "+page);
 		
 		
 		
@@ -865,8 +881,7 @@ public class SolicitudController {
 			if(response.getResultado().getCodigo().equals("0000")) {
 				movimientoProcesar = response.getMovimientos().get(0);
 				movimientoProcesar.setPaginaActual(page);
-				log.info("movimientoProcesar: "+movimientoProcesar);
-				model.addAttribute("paginaActual", page);
+				model.addAttribute(PAGINAACTUAL, page);
 				
 				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
 				aprobarRechazarRequest.setIp(request.getRemoteAddr());
@@ -879,23 +894,22 @@ public class SolicitudController {
 				
 				
 				String respuesta = movimientosApiRest.rechazarVenta(aprobarRechazarRequest);
-				redirectAttributes.addFlashAttribute("mensajeVenta", respuesta);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+				redirectAttributes.addFlashAttribute(MENSAJEVENTA, respuesta);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+page;
 				
 				
 			}else {
-				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
-				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+				String mensajeError = response.getResultado().getDescripcion();
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, mensajeError);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+page;
 			}
 			
 			
 			
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeErrorVenta",e.getMessage());
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJEERRORVENTA,e.getMessage());
+			return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+page;
 		}
 	}
 	
@@ -904,10 +918,6 @@ public class SolicitudController {
 			@PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
 		log.info("aprobarVenta");
-		log.info("codOperacion: "+codOperacion);
-		log.info("page: "+page);
-		
-		
 		
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		Movimiento movimientoProcesar = new Movimiento();
@@ -923,8 +933,7 @@ public class SolicitudController {
 			if(response.getResultado().getCodigo().equals("0000")) {
 				movimientoProcesar = response.getMovimientos().get(0);
 				movimientoProcesar.setPaginaActual(page);
-				log.info("movimientoProcesar: "+movimientoProcesar);
-				model.addAttribute("paginaActual", page);
+				model.addAttribute(PAGINAACTUAL, page);
 				
 				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
 				aprobarRechazarRequest.setIp(request.getRemoteAddr());
@@ -937,22 +946,21 @@ public class SolicitudController {
 				
 				
 				String respuesta = movimientosApiRest.aprobarVenta(aprobarRechazarRequest);
-				redirectAttributes.addFlashAttribute("mensajeVenta", respuesta);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+				redirectAttributes.addFlashAttribute(MENSAJEVENTA, respuesta);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+page;
 				
 				
 			}else {
 				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
-				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+				redirectAttributes.addFlashAttribute(MENSAJEERRORVENTA, mensajeError);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+page;
 			}
 			
 			
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeErrorVenta",e.getMessage());
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJEERRORVENTA,e.getMessage());
+			return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+page;
 		}
 	}
 	
@@ -967,7 +975,6 @@ public class SolicitudController {
         
 		List<String> listaError = new ArrayList<>();
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
-		
 		
 		List<Movimiento> listaMovimientos = new ArrayList<>();
 		
@@ -986,37 +993,22 @@ public class SolicitudController {
 			if(!movimiento.getTipoCliente().equals(""))
 				filtros.setTipoCliente(movimiento.getTipoCliente());
 			
-			//movimientosRequest.setFiltros(filtros);
-			log.info("movimiento.getFechaDesde(): "+movimiento.getFechas().getFechaDesde());
-			log.info("movimiento.getFechaHasta(): "+movimiento.getFechas().getFechaHasta());
+			
 			if(!movimiento.getFechas().getFechaDesde().equals("") && !movimiento.getFechas().getFechaHasta().equals("")) {
 				if(isFechaValidaDesdeHasta(movimiento.getFechas().getFechaDesde(), movimiento.getFechas().getFechaHasta())) {
 					Fechas fechas = new Fechas();
 					fechas.setFechaDesde(movimiento.getFechas().getFechaDesde());
 					fechas.setFechaHasta(movimiento.getFechas().getFechaHasta());
-					//movimientosRequest.setFechas(fechas);
 					filtros.setFechas(fechas);
 				}else {
 					MonedasRequest monedasRequest = getMonedasRequest();
 					Moneda moneda = new Moneda();
 					moneda.setFlagActivo(true);
 					monedasRequest.setMoneda(moneda);
-					List<Moneda> listaMonedas = new ArrayList<>();
-					
-					try {
-						listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-						model.addAttribute("listaMonedas", listaMonedas);
-						result.addError(new ObjectError("codMoneda", " Codigo :" +"Los valores de las fechas son invalidos"));
-						listaError.add("Los valores de las fechas son invalidos");
-						model.addAttribute("listaError", listaError);
-						return "convenio/solicitudes/formSolicitudGenerarReporte";
-					} catch (CustomException e) {
-						log.error("error: "+e);
-						result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
-						model.addAttribute("listaError", e.getMessage());
-						return "convenio/solicitudes/formSolicitudGenerarReporte";
-					}
-					
+					model.addAttribute(LISTAMONEDAS, monedaServiceApiRest.listaMonedas(monedasRequest));
+					result.addError(new ObjectError(LISTAERROR, MENSAJEFECHASINVALIDAS));
+					listaError.add(MENSAJEFECHASINVALIDAS);
+					model.addAttribute(LISTAERROR, listaError);
 					
 				}
 			}
@@ -1028,53 +1020,27 @@ public class SolicitudController {
 			if(responseVenta != null) {
 				listaMovimientos = responseVenta.getMovimientos();
 				if(!listaMovimientos.isEmpty()) {
-					for (Movimiento movimiento2 : listaMovimientos) {
-						log.info("movimiento2: "+movimiento2);
-					}
 					exportToExcelConsulta(listaMovimientos, response);
-					
-					return "convenio/solicitudes/formSolicitudGenerarReporte";
 				}else {
 					MonedasRequest monedasRequest = getMonedasRequest();
 					Moneda moneda = new Moneda();
 					moneda.setFlagActivo(true);
 					monedasRequest.setMoneda(moneda);
-					List<Moneda> listaMonedas = new ArrayList<>();
-					
-					try {
-						listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-						model.addAttribute("listaMonedas", listaMonedas);
-						result.addError(new ObjectError("codMoneda", "Los parametros de consulta no trae resultados."));
-						model.addAttribute("listaError", "Los parametros de consulta no trae resultados.");
-						return "convenio/solicitudes/formSolicitudGenerarReporte";
-
-					} catch (CustomException e) {
-						log.error("error: "+e);
-						result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
-						model.addAttribute("listaError", e.getMessage());
-						return "convenio/solicitudes/formSolicitudGenerarReporte";
-					}
-					
-					
-									}
-				
-		        
-		        
+					model.addAttribute(LISTAERROR, monedaServiceApiRest.listaMonedas(monedasRequest));
+					result.addError(new ObjectError(LISTAERROR, MENSAJENORESULTADO));
+					model.addAttribute(LISTAERROR, MENSAJENORESULTADO);
+				}
 			}else {
-				result.addError(new ObjectError("codMoneda", "Los parametros de consulta no trae resultados."));
-				model.addAttribute("listaError", "Los parametros de consulta no trae resultados.");
-				return "convenio/solicitudes/formSolicitudGenerarReporte";
+				result.addError(new ObjectError(LISTAERROR, MENSAJENORESULTADO));
+				model.addAttribute(LISTAERROR, MENSAJENORESULTADO);
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			result.addError(new ObjectError(LISTAERROR,e.getMessage()));
 			 listaError.add(e.getMessage());
-			 model.addAttribute("listaError", listaError);
-			return "convenio/solicitudes/formSolicitudGenerarReporte";
-			
+			 model.addAttribute(LISTAERROR, listaError);			
 		}
 		
-		
+		return URLFORMSOLICITUDGENERARREPORTE;
     }
 	
 	
@@ -1096,37 +1062,12 @@ public class SolicitudController {
 					response.getOutputStream().flush();
 					 response.getOutputStream().close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
 		
     }
 	
-    @GetMapping("/generarExcelVenta/export")
-    public void exportToExcelVenta(Model model1,Map<String, Object> model, HttpServletResponse response) {
-		log.info("exportToExcelVenta");
-		log.info("model1: "+model1);
-		log.info("model: "+model);
-		 		List<Movimiento> listaMovimientos = (List<Movimiento>)model.get("listaMovimientosVenta");
-		
-				response.setContentType("application/octet-stream");
-		        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-		        String currentDateTime = dateFormatter.format(new Date());
-		         
-		        String headerKey = "Content-Disposition";
-		        String headerValue = "attachment; filename=movimientosVenta_" + currentDateTime + ".xlsx";
-		        response.setHeader(headerKey, headerValue);
-		        UserExcelExporter excelExporter = new UserExcelExporter(listaMovimientos); 
-		        try {
-					excelExporter.export(response);
-					response.getOutputStream().flush();
-					 response.getOutputStream().close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-				}
-		
-    }
+    
 	
 	
 	
@@ -1137,7 +1078,7 @@ public class SolicitudController {
 		datosConsulta.setFechaDesde(fecha(new Date()));
 		datosConsulta.setFechaHasta(fecha(new Date()));
 		acumuladoRequest.setDatosConsulta(datosConsulta);
-		List<Venta> listaVenta = new ArrayList<>();
+		List<Venta> listaVenta;
 		Venta ventaRes = new Venta("","", new BigDecimal("0.00"), new BigDecimal("0.00"));
 		
 		
@@ -1171,7 +1112,7 @@ public class SolicitudController {
 		datosConsulta.setFechaDesde(fecha(new Date()));
 		datosConsulta.setFechaHasta(fecha(new Date()));
 		acumuladoRequest.setDatosConsulta(datosConsulta);
-		List<Compra> listaCompra = new ArrayList<>();
+		List<Compra> listaCompra;
 		Compra compraRes = new Compra("","", new BigDecimal("0.00"), new BigDecimal("0.00"));
 		AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = acumuladosServiceApiRest.consultarAcumuladosCompraVenta(acumuladoRequest);
 		if(acumuladoCompraVentaResponse.getResultado().getCodigo().equals("0000")) {
@@ -1200,7 +1141,7 @@ public class SolicitudController {
 		datosConsulta.setFechaDesde("2021-01-01");
 		datosConsulta.setFechaHasta(fecha(new Date()));
 		acumuladoRequest.setDatosConsulta(datosConsulta);
-		List<Venta> listaPorAprobarVenta = new ArrayList<>();
+		List<Venta> listaPorAprobarVenta;
 		Venta ventaPorAprobarRes = new Venta("","", new BigDecimal("0.00"), new BigDecimal("0.00"));
 		AcumuladoResponse acumuladoResponse = acumuladosServiceApiRest.consultarAcumuladosDiariosBanco(acumuladoRequest);
 		if(acumuladoResponse.getResultado().getCodigo().equals("0000")) {
@@ -1226,7 +1167,7 @@ public class SolicitudController {
 		datosConsulta.setFechaDesde("2021-01-01");
 		datosConsulta.setFechaHasta(fecha(new Date()));
 		acumuladoRequest.setDatosConsulta(datosConsulta);
-		List<Compra> listaPorAprobarCompra = new ArrayList<>();
+		List<Compra> listaPorAprobarCompra;
 		Compra compraPorAprobarRes = new Compra("","", new BigDecimal("0.00"), new BigDecimal("0.00"));
 		AcumuladoResponse acumuladoResponse = acumuladosServiceApiRest.consultarAcumuladosDiariosBanco(acumuladoRequest);
 		if(acumuladoResponse.getResultado().getCodigo().equals("0000")) {
@@ -1272,7 +1213,6 @@ public class SolicitudController {
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		acumuladoRequest.setIdUsuario(userName);
 		acumuladoRequest.setIdSesion(libreriaUtil.obtenerIdSesion());
-		//acumuladoRequest.setCodUsuario(userName);
 		acumuladoRequest.setCanal(canal);
 		return acumuladoRequest;
 		
@@ -1331,11 +1271,9 @@ public class SolicitudController {
 					fechas.setFechaHasta(movimientoSearch.getFechas().getFechaHasta());
 					filtrosVenta.setFechas(fechas);
 			}else {
-					model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-					model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-					model.addAttribute("mensajeError", "Los valores de las fechas son invalidos");
-					//return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
-					
+					model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+					model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+					model.addAttribute(MENSAJEERROR, MENSAJEFECHASINVALIDAS);
 					movimientosRequest.setNumeroPagina(1);
 					movimientosRequest.setTamanoPagina(numeroRegistroPage);
 					Movimiento filtrosCompra = new Movimiento();
@@ -1344,29 +1282,25 @@ public class SolicitudController {
 					MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
 					
 					if(responseCompra != null) {
-						
 						listaMovimientosCompra = responseCompra.getMovimientos();
-						log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-						log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 						if(!listaMovimientosCompra.isEmpty()) {
 							datosPaginacionCompra = responseCompra.getDatosPaginacion();
-							log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 						}else {
-							model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+							model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
 						}
 						
-						model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-						model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-						model.addAttribute("estatus", movimientoSearch.getEstatus());
-						return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+						model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+						model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+						model.addAttribute(ESTATUS, movimientoSearch.getEstatus());
+						return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 						
 						
 						
 					}else {
 						datosPaginacionCompra.setTotalPaginas(0);
-						model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-						model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-						return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+						model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+						model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+						return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 					}
 			}
 			
@@ -1378,21 +1312,18 @@ public class SolicitudController {
 			MovimientosResponse responseVenta = movimientosApiRest.consultarMovimientos(movimientosRequest);
 			if(responseVenta != null) {
 				listaMovimientosVenta = responseVenta.getMovimientos();
-				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
-				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
 				if(!listaMovimientosVenta.isEmpty()) {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
-					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+					model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
 				}
 					
 				
-				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-				model.addAttribute("estatus", movimientoSearch.getEstatus());
-				model.addAttribute("fechaDesde", movimientoSearch.getFechas().getFechaDesde());
-				model.addAttribute("fechaHasta", movimientoSearch.getFechas().getFechaHasta());
+				model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+				model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+				model.addAttribute(ESTATUS, movimientoSearch.getEstatus());
+				model.addAttribute(FECHADESDE, movimientoSearch.getFechas().getFechaDesde());
+				model.addAttribute(FECHAHASTA, movimientoSearch.getFechas().getFechaHasta());
 				
 				movimientosRequest.setNumeroPagina(1);
 				movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -1403,39 +1334,35 @@ public class SolicitudController {
 				
 				if(responseCompra != null) {
 					listaMovimientosCompra = responseCompra.getMovimientos();
-					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 					if(!listaMovimientosCompra.isEmpty()) {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
-						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					}else {
-						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+						model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
 					}
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 					
 					
 					
 				}else {
 					datosPaginacionCompra.setTotalPaginas(0);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 				}
 				
 			}else {
-				return "redirect:/";
+				return REDIRECTINICIO;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e.getMessage());
-			model.addAttribute("mensajeError", e.getMessage());
-			model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-			model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-			model.addAttribute("mensajeErrorCompra", e.getMessage());
-			model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-			model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-			return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 		}
 		
 	}
@@ -1443,8 +1370,7 @@ public class SolicitudController {
 	@GetMapping("/listaSolicitudesMovimientosVentas/{page}/{estatus}/{fechaDesde}/{fechaHasta}")
 	public String consultaMovimientoVentaSearchEstatus(@PathVariable("page") int page,@PathVariable("estatus") int estatus, 
 			@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta,Model model) {
-		log.info("page: "+page);
-		log.info("estatus: "+estatus);
+
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
@@ -1459,19 +1385,15 @@ public class SolicitudController {
 			filtrosVenta.setTipoTransaccion("V");
 			filtrosVenta.setEstatus(estatus);
 			
-			
-			
-			
 			if(isFechaValidaDesdeHasta(fechaDesde, fechaHasta)) {
 				Fechas fechas = new Fechas();
 				fechas.setFechaDesde(fechaDesde);
 				fechas.setFechaHasta(fechaHasta);
 				filtrosVenta.setFechas(fechas);
 			}else {
-				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-				model.addAttribute("mensajeError", "Los valores de las fechas son invalidos");
-				//return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+				model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+				model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+				model.addAttribute(MENSAJEERROR, "Los valores de las fechas son invalidos");
 				
 				movimientosRequest.setNumeroPagina(1);
 				movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -1481,27 +1403,23 @@ public class SolicitudController {
 				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
 				
 				if(responseCompra != null) {
-					
 					listaMovimientosCompra = responseCompra.getMovimientos();
-					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 					if(!listaMovimientosCompra.isEmpty()) {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
-						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					}else {
-						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+						model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
 					}
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 					
 					
 					
 				}else {
 					datosPaginacionCompra.setTotalPaginas(0);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 				}
 			}
 			
@@ -1513,20 +1431,17 @@ public class SolicitudController {
 				
 				
 				listaMovimientosVenta = responseVenta.getMovimientos();
-				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
-				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
 				if(!listaMovimientosVenta.isEmpty()) {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
-					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");	
+					model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);	
 				}
 					
-				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-				model.addAttribute("estatus", estatus);
-				model.addAttribute("fechaDesde", fechaDesde);
-				model.addAttribute("fechaHasta", fechaHasta);
+				model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+				model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+				model.addAttribute(ESTATUS, estatus);
+				model.addAttribute(FECHADESDE, fechaDesde);
+				model.addAttribute(FECHAHASTA, fechaHasta);
 				
 				movimientosRequest.setNumeroPagina(1);
 				movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -1538,40 +1453,36 @@ public class SolicitudController {
 				if(responseCompra != null) {
 					
 					listaMovimientosCompra = responseCompra.getMovimientos();
-					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 					if(!listaMovimientosCompra.isEmpty()) {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
-						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					}else {
-						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+						model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
 					}
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
 					
-					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 					
 					
 					
 				}else {
 					datosPaginacionCompra.setTotalPaginas(0);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 				}
 				
 			}else {
-				return "redirect:/";
+				return REDIRECTINICIO;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e.getMessage());
-			model.addAttribute("mensajeError", e.getMessage());
-			model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-			model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-			model.addAttribute("mensajeErrorCompra", e.getMessage());
-			model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-			model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-			return "convenio/solicitudes/listaSolicitudesMovimientosVentaSearchEstatus";
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 		}
 	}
 	
@@ -1598,16 +1509,13 @@ public class SolicitudController {
 			if(responseVenta != null) {
 				
 				listaMovimientosVenta = responseVenta.getMovimientos();
-				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
-				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
 				if(!listaMovimientosVenta.isEmpty()) {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
-					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");	
+					model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);	
 				}
-				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+				model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(1);
 				movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -1622,10 +1530,10 @@ public class SolicitudController {
 					fechas.setFechaHasta(movimientoSearch.getFechas().getFechaHasta());
 					filtrosCompra.setFechas(fechas);
 				}else {
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("mensajeErrorCompra", "Los valores de las fechas son invalidos");
-					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(MENSAJEERRORCOMPRA, "Los valores de las fechas son invalidos");
+					return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 				}
 				
 				
@@ -1637,42 +1545,38 @@ public class SolicitudController {
 				if(responseCompra != null) {
 					
 					listaMovimientosCompra = responseCompra.getMovimientos();
-					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 					if(!listaMovimientosCompra.isEmpty()) {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
-						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					}else {
-						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+						model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
 					}
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					model.addAttribute("estatus", movimientoSearch.getEstatus());
-					model.addAttribute("fechaDesde", movimientoSearch.getFechas().getFechaDesde());
-					model.addAttribute("fechaHasta", movimientoSearch.getFechas().getFechaHasta());
-					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					model.addAttribute(ESTATUS, movimientoSearch.getEstatus());
+					model.addAttribute(FECHADESDE, movimientoSearch.getFechas().getFechaDesde());
+					model.addAttribute(FECHAHASTA, movimientoSearch.getFechas().getFechaHasta());
+					return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 					
 					
 					
 				}else {
 					datosPaginacionCompra.setTotalPaginas(0);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 				}
 				
 			}else {
-				return "redirect:/";
+				return REDIRECTINICIO;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e.getMessage());
-			model.addAttribute("mensajeErrorCompra", e.getMessage());
-			model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-			model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-			model.addAttribute("mensajeErrorCompra", e.getMessage());
-			model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-			model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-			return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 		}
 		
 	}
@@ -1680,8 +1584,7 @@ public class SolicitudController {
 	@GetMapping("/listaSolicitudesMovimientosCompras/{page}/{estatus}/{fechaDesde}/{fechaHasta}")
 	public String consultaMovimientoCompraSearchEstatus(@PathVariable("page") int page,@PathVariable("estatus") int estatus,
 			@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta,Model model) {
-		log.info("page: "+page);
-		log.info("estatus: "+estatus);
+		
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		
@@ -1700,16 +1603,13 @@ public class SolicitudController {
 			if(responseVenta != null) {
 				
 				listaMovimientosVenta = responseVenta.getMovimientos();
-				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
-				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
 				if(!listaMovimientosVenta.isEmpty()) {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
-					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");	
+					model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);	
 				}
-				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+				model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(page);
 				movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -1724,17 +1624,10 @@ public class SolicitudController {
 					fechas.setFechaHasta(fechaHasta);
 					filtrosCompra.setFechas(fechas);
 				}else {
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					model.addAttribute("mensajeErrorCompra", "Los valores de las fechas son invalidos");
-					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					model.addAttribute(MENSAJEERRORCOMPRA, "Los valores de las fechas son invalidos");
+					return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 				}
-				
-				
-				
-				
-				
-				
-				
 				
 				movimientosRequest.setFiltros(filtrosCompra);
 				MovimientosResponse responseCompra = movimientosApiRest.consultarMovimientos(movimientosRequest);
@@ -1742,40 +1635,37 @@ public class SolicitudController {
 				if(responseCompra != null) {
 					
 					listaMovimientosCompra = responseCompra.getMovimientos();
-					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 					if(!listaMovimientosCompra.isEmpty()) {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
-						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					}else {
-						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+						model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
 					}
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					model.addAttribute("estatus", estatus);
-					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					model.addAttribute(ESTATUS, estatus);
+					return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 					
 					
 					
 				}else {
 					datosPaginacionCompra.setTotalPaginas(0);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 				}
 				
 			}else {
-				return "redirect:/";
+				return REDIRECTINICIO;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e.getMessage());
-			model.addAttribute("mensajeErrorCompra", e.getMessage());
-			model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-			model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-			model.addAttribute("mensajeErrorCompra", e.getMessage());
-			model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-			model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-			return "convenio/solicitudes/listaSolicitudesMovimientosCompraSearchEstatus";
+			log.error(e.getMessage());
+			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 		}
 	}
 	
@@ -1791,11 +1681,10 @@ public class SolicitudController {
 		
 		try {
 			listaMonedas = monedaServiceApiRest.listaMonedas(monedasRequest);
-			model.addAttribute("listaMonedas", listaMonedas);
-			return "convenio/solicitudes/formSolicitudGenerarReporte";
+			model.addAttribute(LISTAMONEDAS, listaMonedas);
+			return URLFORMSOLICITUDGENERARREPORTE;
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
 			return "redirect:/solicitudes/listaSolicitudesMovimientosVentas/1";
 		}
 		
@@ -1805,11 +1694,8 @@ public class SolicitudController {
 	
 	public String fecha(Date fecha) {
 		
-		//SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-		System.out.println(fecha); 
-        String strDateFormat = "yyyy-MM-dd"; // El formato de fecha está especificado  
-        SimpleDateFormat objSDF = new SimpleDateFormat(strDateFormat); // La cadena de formato de fecha se pasa como un argumento al objeto 
-        System.out.println(objSDF.format(fecha)); // El
+		String strDateFormat = STRDATEFORMET;   
+        SimpleDateFormat objSDF = new SimpleDateFormat(strDateFormat); 
         
         return objSDF.format(fecha);
 	}
@@ -1817,8 +1703,7 @@ public class SolicitudController {
 	
 	public boolean isFechaValida(String fechaLiquidacion) {
 		
-		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-		//SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat formato = new SimpleDateFormat(STRDATEFORMET);
 		
         try {
         	
@@ -1831,7 +1716,6 @@ public class SolicitudController {
         		return false;
         	}else{
         	     if ( fechaDate2.before(fechaDate1) ){
-        	    	 //resultado= "La Fecha 1 es Mayor ";
         	    	 log.info("La fechaActual es menor que la fechaLiquidacion");
         	    	 return true;
         	     }else{
@@ -1842,7 +1726,7 @@ public class SolicitudController {
         } 
         catch (ParseException ex) 
         {
-            System.out.println(ex);
+            log.error(ex.getMessage());
         }
         
         return false;
@@ -1850,8 +1734,7 @@ public class SolicitudController {
 	
 	public boolean isFechaValidaDesdeHasta(String fechaDesde, String fechaHasta) {
 		
-		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-		//SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat formato = new SimpleDateFormat(STRDATEFORMET);
 		
         try {
         	
@@ -1864,7 +1747,6 @@ public class SolicitudController {
         		return false;
         	}else{
         	     if ( fechaDate1.before(fechaDate2) ){
-        	    	 //resultado= "La Fecha 1 es Mayor ";
         	    	 log.info("La fechaDesde es menor que la fechaHasta");
         	    	 return true;
         	     }else{
@@ -1875,7 +1757,7 @@ public class SolicitudController {
         } 
         catch (ParseException ex) 
         {
-            System.out.println(ex);
+        	log.error(ex.getMessage());
         }
         
         return false;
@@ -1887,7 +1769,6 @@ public class SolicitudController {
 		movimientosRequest.setNumeroPagina(1);
 		movimientosRequest.setTamanoPagina(numeroRegistroPage);
 		Movimiento filtros = new Movimiento();
-		//filtros.setEstatus(0);
 		filtros.setTipoTransaccion("V");
 		movimientosRequest.setFiltros(filtros);
 		
@@ -1895,23 +1776,16 @@ public class SolicitudController {
 			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
 			if(response != null) {
 				DatosPaginacion datosPaginacion = response.getDatosPaginacion();
-				log.info("datosPaginacion: "+datosPaginacion);
 				List<Movimiento> listaMovimientos = response.getMovimientos();
-				log.info("listaMovimientos: "+listaMovimientos);
-				log.info("listaMovimientos.size: "+listaMovimientos.size());
-				
-				
-				//List<Solicitud> listaSolicitud = solicitudService.bucarPorAprobar();
-				
 				model.addAttribute("listaMovimientos", listaMovimientos);
 				model.addAttribute("datosPaginacion", datosPaginacion);
-				return "convenio/solicitudes/listaSolicitudesMovimientosVenta";
+				return URLLISTAMOVIMIENTOSVENTA;
 			}else {
-				return "redirect:/";
+				return REDIRECTINICIO;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			return "redirect:/";
+			log.error(e.getMessage());
+			return REDIRECTINICIO;
 		}
 	}
 	

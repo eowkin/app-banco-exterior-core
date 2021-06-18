@@ -1,4 +1,4 @@
-package com.bancoexterior.app.convenio.services.restApi;
+package com.bancoexterior.app.convenio.interfase;
 
 import java.security.Key;
 import java.util.Date;
@@ -13,8 +13,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import com.bancoexterior.app.convenio.services.restApi.model.WSRequest;
-import com.bancoexterior.app.convenio.services.restApi.model.WSResponse;
+import com.bancoexterior.app.convenio.interfase.model.WSRequest;
+import com.bancoexterior.app.convenio.interfase.model.WSResponse;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;

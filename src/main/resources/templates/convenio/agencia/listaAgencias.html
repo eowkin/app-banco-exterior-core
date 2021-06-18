@@ -21,7 +21,7 @@
   <link th:href="@{/vendors/pace-progress/css/pace.min.css}" rel="stylesheet" type="text/css">
 </head>
 
-<body class="app header-fixed sidebar-fixed sidebar-lg-show" ng-app="app" ng-controller="controller" data-ng-init="getData()">
+<body class="app header-fixed sidebar-fixed sidebar-lg-show"  data-ng-init="getData()">
   <header class="app-header navbar navbar-expand-xl">
     <a class="navbar-brand mr-4" href="#">
       <img class="navbar-brand-full" th:src="@{/img/brand/logo_banco.svg}" width="89" height="25" alt="CoreUI Logo">
@@ -49,11 +49,6 @@
       <!-- Breadcrumb-->
       <ol class="breadcrumb">
       	<li class="breadcrumb-item" th:each="uri : ${arrUri}" th:text="${uri}">Home</li>
-        <!--  
-        <li class="breadcrumb-item">
-          <a href="#">Admin</a>
-        </li>
-        <li class="breadcrumb-item active">Dashboard</li>-->
       </ol>
       <div class="container-fluid">
         <div class="animated fadeIn">
@@ -108,18 +103,12 @@
 								  <input th:onclick="|window.location.href='@{/agencias/desactivar/{codAgencia} (codAgencia=${agencia.codAgencia}) }'|" type="checkbox" class="switch-input" checked>
 								  <span class="switch-slider"></span>
 								</label>
-							  <!--  		
-		                   		<a  onclick="return confirm('¿Estas seguro de desactivar la moneda?')" th:href="@{/agencias/desactivar/{codAgencia} (codAgencia=${agencia.codAgencia}) }" class="btn btn-danger" role="button" title="Desactivar el registro.">Desactivar</a>
-		                   	  -->		
 			              </td>
 		                  <td th:unless="${agencia.flagActivo}"> 
 		                  	<label class="switch switch-pill switch-secondary">
 								  <input th:onclick="|window.location.href='@{/agencias/activar/{codAgencia} (codAgencia=${agencia.codAgencia}) }'|" type="checkbox" class="switch-input" checked>
 								  <span class="switch-slider"></span>
 							</label>
-								<!--
-		                    	<a onclick="return confirm('¿Estas seguro de activar la moneda?')" th:href="@{/agencias/activar/{codAgencia} (codAgencia=${agencia.codAgencia}) }" class="btn btn-primary" role="button" title="Activar el registro.">Activar</a>
-		                    	-->
 		                   </td>
 		                </tr>
 		              </tbody>
