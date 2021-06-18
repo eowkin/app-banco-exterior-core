@@ -1,6 +1,7 @@
 package com.bancoexterior.app.convenio.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,8 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
     @Value("${des.agencia.urlActualizar}")
     private String urlActualizar;
 	
-
+    private static final String ERRORMICROCONEXION = "No hubo conexion con el micreoservicio Agencias";
+    
     public WSRequest getWSRequest() {
     	WSRequest wsrequest = new WSRequest();
     	wsrequest.setConnectTimeout(connectTimeout);
@@ -57,7 +59,6 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 	public List<Agencia> listaAgencias(AgenciaRequest agenciaRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		AgenciaResponse agenciaResponse = new AgenciaResponse();
 		String agenciaRequestJSON;
 		agenciaRequestJSON = new Gson().toJson(agenciaRequest);
 		wsrequest.setBody(agenciaRequestJSON);
@@ -66,39 +67,41 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscar la lista agencias");
-	            try {
-					agenciaResponse = mapper.jsonToClass(retorno.getBody(), AgenciaResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            log.info(agenciaResponse.getResultado().getCodigo());
-	            return agenciaResponse.getListaAgencias();
+				return respuesta2xxListaAgencias(retorno);
 			}else {
-				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en buscar la lista agencias");
-					try {
-						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						String mensaje = resultado.getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxListaAgencias(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio agencias");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		
-		return null;
 	}
 
+	public List<Agencia> respuesta2xxListaAgencias(WSResponse retorno){
+		try {
+			AgenciaResponse agenciaResponse = mapper.jsonToClass(retorno.getBody(), AgenciaResponse.class);
+			log.info(agenciaResponse.getResultado().getCodigo());
+	        return agenciaResponse.getListaAgencias();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+        
+	}
+	
+	public String respuesta4xxListaAgencias(WSResponse retorno){
+		try {
+			Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
+			return resultado.getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	@Override
 	public Agencia buscarAgencia(AgenciaRequest agenciaRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		AgenciaResponse agenciaResponse = new AgenciaResponse();
 		String agenciaRequestJSON;
 		agenciaRequestJSON = new Gson().toJson(agenciaRequest);
 		wsrequest.setBody(agenciaRequestJSON);
@@ -107,46 +110,37 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en buscarAgencia");
-	            try {
-					agenciaResponse = mapper.jsonToClass(retorno.getBody(), AgenciaResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            log.info(agenciaResponse.getResultado().getCodigo());
-	            if(agenciaResponse.getResultado().getCodigo().equals("0000")){
-	            	log.info("Respusta codigo 0000 si existe la agencia");
-	            	return agenciaResponse.getListaAgencias().get(0);
-	            }else {
-	            	return null;
-	            }
+				return respuesta2xxBuscarAgencia(retorno);
 			}else {
-				if (retorno.getStatus() == 422) {
-					log.info("entro en error 422 en buscarAgencia");
-					try {
-						Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-						String mensaje = resultado.getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxListaAgencias(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio agencias");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
 	}
 
+	public Agencia respuesta2xxBuscarAgencia(WSResponse retorno){
+		try {
+			AgenciaResponse agenciaResponse = mapper.jsonToClass(retorno.getBody(), AgenciaResponse.class);
+			log.info(agenciaResponse.getResultado().getCodigo());
+	        if(agenciaResponse.getResultado().getCodigo().equals("0000")){
+	        	log.info("Respusta codigo 0000 si existe la agencia");
+	        	return agenciaResponse.getListaAgencias().get(0);
+	        }else {
+	        	return null;
+	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+        
+	}
+	
+	
 	@Override
 	public String actualizar(AgenciaRequest agenciaRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();
-		Resultado resultado = new Resultado();
-		String respuesta;
-		String error;
 		String agenciaRequestJSON;
 		agenciaRequestJSON = new Gson().toJson(agenciaRequest);
 		wsrequest.setBody(agenciaRequestJSON);
@@ -155,45 +149,43 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 		retorno = wsService.put(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en Actualizar agencia por codigo");
-				try {
-					resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-				respuesta = resultado.getDescripcion();
-				return respuesta;
-				
-				
+				return respuesta2xxActualizarCrear(retorno);
 			}else {
-				if (retorno.getStatus() == 422 || retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-					log.info("Respusta error   Actualizar la agencia por codigo");
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						log.info("response: "+response);
-						error = response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-				}
+				throw new CustomException(respuesta4xxActualizarCrear(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio agencias");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
 	}
 
+	public String respuesta2xxActualizarCrear(WSResponse retorno) {
+		log.info("Respusta codigo 200 en Actualizar agencia por codigo");
+		try {
+			Resultado resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
+			return resultado.getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
+	
+	public String respuesta4xxActualizarCrear(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado().getDescripcion();		
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	@Override
 	public String crear(AgenciaRequest agenciaRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Resultado resultado = new Resultado();
-		String respuesta;
-		String error;
 		String agenciaRequestJSON;
 		agenciaRequestJSON = new Gson().toJson(agenciaRequest);
 		wsrequest.setBody(agenciaRequestJSON);
@@ -202,47 +194,19 @@ public class AgenciaServiceApiRestImpl implements IAgenciaServiceApiRest{
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en crear la agencia por codigo");
-				try {
-					resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-					log.info("resultado: "+resultado);
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				respuesta = resultado.getDescripcion();
-				return respuesta;
-				
-				
+				return respuesta2xxActualizarCrear(retorno);
 			}else {
 				if (retorno.getStatus() == 422) {
-					log.info("Respusta codigo " +retorno.getStatus()+ "en crear la agencia por codigo");
-					try {
-						
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						error = response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					throw new CustomException(respuesta4xxActualizarCrear(retorno));
 					
 				}else {
 					if (retorno.getStatus() == 400 || retorno.getStatus() == 600) {
-						try {
-							resultado = mapper.jsonToClass(retorno.getBody(), Resultado.class);
-							error = resultado.getDescripcion();
-							throw new CustomException(error);
-							
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						
+						throw new CustomException(respuesta4xxListaAgencias(retorno));
 					}
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio agencias");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
 		return null;
 	}

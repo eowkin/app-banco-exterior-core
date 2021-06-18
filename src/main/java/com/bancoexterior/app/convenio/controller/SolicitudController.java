@@ -74,11 +74,68 @@ public class SolicitudController {
 	@Value("${des.movimientos.numeroRegistroPage}")
     private int numeroRegistroPage;
 	
+	private static final String VENTAACUMULADOUSD = "ventaAcumuladoUSD";
 	
+	private static final String VENTAACUMULADOEUR = "ventaAcumuladoEUR";
+	
+	private static final String MONTOBSTOTALVENTA = "montoBsTotalVenta";
+	
+	private static final String COMPRAACUMULADOUSD = "compraAcumuladoUSD";
+	
+	private static final String COMPRAACUMULADOEUR = "compraAcumuladoEUR";
+	
+	private static final String MONTOBSTOTALCOMPRA = "montoBsTotalCompra";
+	
+	private static final String VENTAPORAPROBARUSD = "ventaPorAprobarUSD";
+	
+	private static final String VENTAPORAPROBAREUR = "ventaPorAprobarEUR";
+	
+	private static final String MONTOBSTOTALPORAPROBARVENTA = "montoBsTotalPorAprobarVenta";
+	
+	private static final String COMPRAPORAPROBARUSD = "compraPorAprobarUSD";
+	
+	private static final String COMPRAPORAPROBAREUR = "compraPorAprobarEUR";
+	
+	private static final String MONTOBSTOTALPORAPROBARCOMPRA = "montoBsTotalPorAprobarCompra";
+	
+	private static final String DATOSPAGINACIONVENTA = "datosPaginacionVenta";
+	
+	private static final String LISTAMOVIMIENTOSVENTA = "listaMovimientosVenta";
+	
+	private static final String DATOSPAGINACIONCOMPRA = "datosPaginacionCompra";
+	
+	private static final String LISTAMOVIMIENTOSCOMPRA = "listaMovimientosCompra";
+	
+	private static final String URLLISTAMOVIMIENTOSPORAPROBARVENTA = "convenio/solicitudes/listaSolicitudesMovimientosPorAprobarVenta";
+	
+	private static final String URLLISTAMOVIMIENTOSVENTA = "convenio/solicitudes/listaSolicitudesMovimientosVenta";
+	
+	private static final String URLLISTAMOVIMIENTOSCOMPRA = "convenio/solicitudes/listaSolicitudesMovimientosCompra";
+	
+	private static final String URLFORMSOLICITUD = "convenio/solicitudes/formSolicitud";
+	
+	private static final String URLFORMSOLICITUDVENTA = "convenio/solicitudes/formSolicitudVenta";
+	
+	private static final String PAGINAACTUAL = "paginaActual";
+	
+	private static final String MENSAJE = "mensaje";
+	
+	private static final String MENSAJEERROR = "mensajeError";
+	
+	private static final String MENSAJEERRORVENTA = "mensajeErrorVenta";
+	
+	private static final String MENSAJEERRORCOMPRA = "mensajeErrorCompra";
+	
+	private static final String MENSAJENORESULTADO = "Operacion Exitosa.La consulta no arrojo resultado.";
+	
+	private static final String LISTAERROR = "listaError";
+	
+	private static final String REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA = "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/";
+	
+	private static final String REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS = "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/";
 	
 	@GetMapping("/listaSolicitudesMovimientosPorAprobarVentas/{page}")
 	public String consultaMovimientoPorAprobarVenta(@PathVariable("page") int page,Model model) {
-		log.info("page: "+page);
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
@@ -101,80 +158,41 @@ public class SolicitudController {
 		BigDecimal montoBsTotalPorAprobarCompra = new BigDecimal("0.00");
 		try {
 			ventaAcumuladoUSD = acumuladosVenta("USD");
-			log.info("ventaAcumuladoUSD: "+ventaAcumuladoUSD);
-			if(ventaAcumuladoUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				ventaAcumuladoUSD.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
-			ventaAcumuladoEUR = acumuladosVenta("EUR");
-			log.info("ventaAcumuladoEUR: "+ventaAcumuladoEUR);
-			if(ventaAcumuladoEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				ventaAcumuladoEUR.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
-			montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
-			if(montoBsTotalVenta.compareTo(BigDecimal.ZERO) == 0) { 			
-				log.info("si es 0");
-				montoBsTotalVenta = new BigDecimal("0.00");
-			}
-			log.info("montoBsTotalVenta: "+montoBsTotalVenta);
-			model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
-			compraAcumuladoUSD = acumuladosCompra("USD");
-			log.info("compraAcumuladoUSD: "+compraAcumuladoUSD);
-			if(compraAcumuladoUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				compraAcumuladoUSD.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
-			compraAcumuladoEUR = acumuladosCompra("EUR");
-			if(compraAcumuladoEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				compraAcumuladoEUR.setMonto(new BigDecimal("0.00"));
-			}
-			log.info("compraAcumuladoEUR: "+compraAcumuladoEUR);
-			model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
-			montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
-			if(montoBsTotalCompra.compareTo(BigDecimal.ZERO) == 0) { 			
-				log.info("si es 0");
-				montoBsTotalCompra = new BigDecimal("0.00");
-			}
-			log.info("montoBsTotalCompra: "+montoBsTotalCompra);
-			model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
+			model.addAttribute(VENTAACUMULADOUSD, evaluarBigDecimalVenta(ventaAcumuladoUSD));
 			
+			ventaAcumuladoEUR = acumuladosVenta("EUR");
+			model.addAttribute(VENTAACUMULADOEUR, evaluarBigDecimalVenta(ventaAcumuladoEUR));
+			
+			montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
+			model.addAttribute(MONTOBSTOTALVENTA, evaluarBigDecimal(montoBsTotalVenta));
+			
+			compraAcumuladoUSD = acumuladosCompra("USD");
+			model.addAttribute(COMPRAACUMULADOUSD, evaluarBigDecimalCompra(compraAcumuladoUSD)); 
+			
+			compraAcumuladoEUR = acumuladosCompra("EUR");
+			model.addAttribute(COMPRAACUMULADOEUR, evaluarBigDecimalCompra(compraAcumuladoEUR));
+			
+			montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
+			model.addAttribute(MONTOBSTOTALCOMPRA, evaluarBigDecimal(montoBsTotalCompra));
 			
 			ventaPorAprobarUSD = acumuladosPorAprobarVenta("USD");
-			log.info("ventaPorAprobarUSD: "+ventaPorAprobarUSD);
-			if(ventaPorAprobarUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				ventaPorAprobarUSD.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("ventaPorAprobarUSD", ventaPorAprobarUSD);
+			model.addAttribute(VENTAPORAPROBARUSD,  evaluarBigDecimalVenta(ventaPorAprobarUSD));
+			
 			ventaPorAprobarEUR = acumuladosPorAprobarVenta("EUR");
-			log.info("ventaPorAprobarEUR: "+ventaPorAprobarEUR);
-			if(ventaPorAprobarEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				ventaPorAprobarEUR.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("ventaPorAprobarEUR", ventaPorAprobarEUR);
+			model.addAttribute(VENTAPORAPROBAREUR, evaluarBigDecimalVenta(ventaPorAprobarEUR)); 
+			
 			montoBsTotalPorAprobarVenta =  ventaPorAprobarEUR.getMontoBs().add(ventaPorAprobarUSD.getMontoBs());
-			if(montoBsTotalPorAprobarVenta.compareTo(BigDecimal.ZERO) == 0) { 			
-				montoBsTotalPorAprobarVenta = new BigDecimal("0.00");
-			}
-			model.addAttribute("montoBsTotalPorAprobarVenta", montoBsTotalPorAprobarVenta);
+			model.addAttribute(MONTOBSTOTALPORAPROBARVENTA, evaluarBigDecimal(montoBsTotalPorAprobarVenta)); 
 			
 			compraPorAprobarUSD = acumuladosPorAprobarCompra("USD");
-			log.info("compraPorAprobarUSD: "+compraPorAprobarUSD);
-			if(compraPorAprobarUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				compraPorAprobarUSD.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("compraPorAprobarUSD", compraPorAprobarUSD);
+			model.addAttribute(COMPRAPORAPROBARUSD, evaluarBigDecimalCompra(compraPorAprobarUSD)); 
+			
 			compraPorAprobarEUR = acumuladosPorAprobarCompra("EUR");
+			model.addAttribute(COMPRAPORAPROBAREUR, evaluarBigDecimalCompra(compraPorAprobarEUR));
 			log.info("compraPorAprobarEUR: "+compraPorAprobarEUR);
-			if(compraPorAprobarEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				compraPorAprobarEUR.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("compraPorAprobarEUR", compraPorAprobarEUR);
+			
 			montoBsTotalPorAprobarCompra =  compraPorAprobarEUR.getMontoBs().add(compraPorAprobarUSD.getMontoBs());
-			if(montoBsTotalPorAprobarCompra.compareTo(BigDecimal.ZERO) == 0) { 			
-				montoBsTotalPorAprobarCompra = new BigDecimal("0.00");
-			}
-			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
+			model.addAttribute(MONTOBSTOTALPORAPROBARCOMPRA, evaluarBigDecimal(montoBsTotalPorAprobarCompra));
 			
 			movimientosRequest.setNumeroPagina(page);
 			movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -186,17 +204,12 @@ public class SolicitudController {
 			if(responseVenta != null) {
 				
 				listaMovimientosVenta = responseVenta.getMovimientos();
-				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
-				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
 				if(!listaMovimientosVenta.isEmpty()) {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
-					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
-				}else {
-					//model.addAttribute("mensajeErrorVenta", "Operacion Exitosa.La consulta no arrojo resultado.");
 				}
 				
-				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+				model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(1);
 				movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -209,60 +222,54 @@ public class SolicitudController {
 				if(responseCompra != null) {
 					
 					listaMovimientosCompra = responseCompra.getMovimientos();
-					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 					if(!listaMovimientosCompra.isEmpty()) {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
-						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
-					}else {
-						//model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
 					}
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
 					
-					return "convenio/solicitudes/listaSolicitudesMovimientosPorAprobarVenta";
+					return URLLISTAMOVIMIENTOSPORAPROBARVENTA;
 					
 					
 					
 				}else {
 					datosPaginacionCompra.setTotalPaginas(0);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosPorAporbarVenta";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSPORAPROBARVENTA;
 				}
 				
 			}else {
 				return "redirect:/";
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e.getMessage());
-			model.addAttribute("mensajeError", e.getMessage());
-			model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-			model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-			model.addAttribute("mensajeErrorVenta", e.getMessage());
-			model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-			model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			model.addAttribute(MENSAJEERRORVENTA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
 			ventaAcumuladoUSD.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
+			model.addAttribute(VENTAACUMULADOUSD, ventaAcumuladoUSD);
 			ventaAcumuladoEUR.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
-			model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
+			model.addAttribute(VENTAACUMULADOEUR, ventaAcumuladoEUR);
+			model.addAttribute(MONTOBSTOTALVENTA, montoBsTotalVenta);
 			compraAcumuladoUSD.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
+			model.addAttribute(COMPRAACUMULADOUSD, compraAcumuladoUSD);
 			compraAcumuladoEUR.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
-			model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
+			model.addAttribute(COMPRAACUMULADOEUR, compraAcumuladoEUR);
+			model.addAttribute(MONTOBSTOTALCOMPRA, montoBsTotalCompra);
 			ventaPorAprobarUSD.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("ventaPorAprobarUSD", ventaPorAprobarUSD);
+			model.addAttribute(VENTAPORAPROBARUSD, ventaPorAprobarUSD);
 			ventaPorAprobarEUR.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("ventaPorAprobarEUR", ventaPorAprobarEUR);
-			model.addAttribute("montoBsTotalPorAprobarVenta", montoBsTotalPorAprobarVenta);
+			model.addAttribute(VENTAPORAPROBAREUR, ventaPorAprobarEUR);
+			model.addAttribute(MONTOBSTOTALPORAPROBARVENTA, montoBsTotalPorAprobarVenta);
 			compraPorAprobarUSD.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("compraPorAprobarUSD", compraPorAprobarUSD);
+			model.addAttribute(COMPRAPORAPROBARUSD, compraPorAprobarUSD);
 			compraPorAprobarEUR.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("compraPorAprobarEUR", compraPorAprobarEUR);
-			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
-			return "convenio/solicitudes/listaSolicitudesMovimientosPorAprobarVenta";
+			model.addAttribute(COMPRAPORAPROBAREUR, compraPorAprobarEUR);
+			model.addAttribute(MONTOBSTOTALPORAPROBARCOMPRA, montoBsTotalPorAprobarCompra);
+			return URLLISTAMOVIMIENTOSPORAPROBARVENTA;
 		}
 	}
 	
@@ -271,7 +278,6 @@ public class SolicitudController {
 	
 	@GetMapping("/listaSolicitudesMovimientosPorAprobarCompra/{page}")
 	public String consultaMovimientoPorAprobarCompra(@PathVariable("page") int page,Model model) {
-		log.info("page: "+page);
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
@@ -294,80 +300,41 @@ public class SolicitudController {
 		BigDecimal montoBsTotalPorAprobarCompra = new BigDecimal("0.00");
 		try {
 			ventaAcumuladoUSD = acumuladosVenta("USD");
-			log.info("ventaAcumuladoUSD: "+ventaAcumuladoUSD);
-			if(ventaAcumuladoUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				ventaAcumuladoUSD.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
-			ventaAcumuladoEUR = acumuladosVenta("EUR");
-			log.info("ventaAcumuladoEUR: "+ventaAcumuladoEUR);
-			if(ventaAcumuladoEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				ventaAcumuladoEUR.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
-			montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
-			if(montoBsTotalVenta.compareTo(BigDecimal.ZERO) == 0) { 			
-				log.info("si es 0");
-				montoBsTotalVenta = new BigDecimal("0.00");
-			}
-			log.info("montoBsTotalVenta: "+montoBsTotalVenta);
-			model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
-			compraAcumuladoUSD = acumuladosCompra("USD");
-			log.info("compraAcumuladoUSD: "+compraAcumuladoUSD);
-			if(compraAcumuladoUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				compraAcumuladoUSD.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
-			compraAcumuladoEUR = acumuladosCompra("EUR");
-			if(compraAcumuladoEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				compraAcumuladoEUR.setMonto(new BigDecimal("0.00"));
-			}
-			log.info("compraAcumuladoEUR: "+compraAcumuladoEUR);
-			model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
-			montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
-			if(montoBsTotalCompra.compareTo(BigDecimal.ZERO) == 0) { 			
-				log.info("si es 0");
-				montoBsTotalCompra = new BigDecimal("0.00");
-			}
-			log.info("montoBsTotalCompra: "+montoBsTotalCompra);
-			model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
+			model.addAttribute(VENTAACUMULADOUSD, evaluarBigDecimalVenta(ventaAcumuladoUSD));
 			
+			ventaAcumuladoEUR = acumuladosVenta("EUR");
+			model.addAttribute(VENTAACUMULADOEUR, evaluarBigDecimalVenta(ventaAcumuladoEUR));
+			
+			montoBsTotalVenta =  ventaAcumuladoEUR.getMontoBs().add(ventaAcumuladoUSD.getMontoBs());
+			model.addAttribute(MONTOBSTOTALVENTA, evaluarBigDecimal(montoBsTotalVenta));
+			
+			compraAcumuladoUSD = acumuladosCompra("USD");
+			model.addAttribute(COMPRAACUMULADOUSD, evaluarBigDecimalCompra(compraAcumuladoUSD)); 
+			
+			compraAcumuladoEUR = acumuladosCompra("EUR");
+			model.addAttribute(COMPRAACUMULADOEUR, evaluarBigDecimalCompra(compraAcumuladoEUR));
+			
+			montoBsTotalCompra =  compraAcumuladoEUR.getMontoBs().add(compraAcumuladoUSD.getMontoBs());
+			model.addAttribute(MONTOBSTOTALCOMPRA, evaluarBigDecimal(montoBsTotalCompra));
 			
 			ventaPorAprobarUSD = acumuladosPorAprobarVenta("USD");
-			log.info("ventaPorAprobarUSD: "+ventaPorAprobarUSD);
-			if(ventaPorAprobarUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				ventaPorAprobarUSD.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("ventaPorAprobarUSD", ventaPorAprobarUSD);
+			model.addAttribute(VENTAPORAPROBARUSD,  evaluarBigDecimalVenta(ventaPorAprobarUSD));
+			
 			ventaPorAprobarEUR = acumuladosPorAprobarVenta("EUR");
-			log.info("ventaPorAprobarEUR: "+ventaPorAprobarEUR);
-			if(ventaPorAprobarEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				ventaPorAprobarEUR.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("ventaPorAprobarEUR", ventaPorAprobarEUR);
+			model.addAttribute(VENTAPORAPROBAREUR, evaluarBigDecimalVenta(ventaPorAprobarEUR)); 
+			
 			montoBsTotalPorAprobarVenta =  ventaPorAprobarEUR.getMontoBs().add(ventaPorAprobarUSD.getMontoBs());
-			if(montoBsTotalPorAprobarVenta.compareTo(BigDecimal.ZERO) == 0) { 			
-				montoBsTotalPorAprobarVenta = new BigDecimal("0.00");
-			}
-			model.addAttribute("montoBsTotalPorAprobarVenta", montoBsTotalPorAprobarVenta);
+			model.addAttribute(MONTOBSTOTALPORAPROBARVENTA, evaluarBigDecimal(montoBsTotalPorAprobarVenta)); 
 			
 			compraPorAprobarUSD = acumuladosPorAprobarCompra("USD");
-			log.info("compraPorAprobarUSD: "+compraPorAprobarUSD);
-			if(compraPorAprobarUSD.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				compraPorAprobarUSD.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("compraPorAprobarUSD", compraPorAprobarUSD);
+			model.addAttribute(COMPRAPORAPROBARUSD, evaluarBigDecimalCompra(compraPorAprobarUSD)); 
+			
 			compraPorAprobarEUR = acumuladosPorAprobarCompra("EUR");
+			model.addAttribute(COMPRAPORAPROBAREUR, evaluarBigDecimalCompra(compraPorAprobarEUR));
 			log.info("compraPorAprobarEUR: "+compraPorAprobarEUR);
-			if(compraPorAprobarEUR.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
-				compraPorAprobarEUR.setMonto(new BigDecimal("0.00"));
-			}
-			model.addAttribute("compraPorAprobarEUR", compraPorAprobarEUR);
+			
 			montoBsTotalPorAprobarCompra =  compraPorAprobarEUR.getMontoBs().add(compraPorAprobarUSD.getMontoBs());
-			if(montoBsTotalPorAprobarCompra.compareTo(BigDecimal.ZERO) == 0) { 			
-				montoBsTotalPorAprobarCompra = new BigDecimal("0.00");
-			}
-			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
+			model.addAttribute(MONTOBSTOTALPORAPROBARCOMPRA, evaluarBigDecimal(montoBsTotalPorAprobarCompra));
 			
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -379,16 +346,11 @@ public class SolicitudController {
 			if(responseVenta != null) {
 				
 				listaMovimientosVenta = responseVenta.getMovimientos();
-				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
-				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
 				if(!listaMovimientosVenta.isEmpty()) {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
-					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
-				}else {
-					//model.addAttribute("mensajeErrorVenta", "Operacion Exitosa.La consulta no arrojo resultado.");
 				}
-				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+				model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(page);
 				movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -403,58 +365,52 @@ public class SolicitudController {
 					listaMovimientosCompra = responseCompra.getMovimientos();
 					if(!listaMovimientosCompra.isEmpty()) {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
-						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
-					}else {
-						//model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
 					}
-					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
 					
-					return "convenio/solicitudes/listaSolicitudesMovimientosPorAprobarVenta";
+					return URLLISTAMOVIMIENTOSPORAPROBARVENTA;
 					
 					
 					
 				}else {
 					datosPaginacionCompra.setTotalPaginas(0);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosPorAporbarVenta";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSPORAPROBARVENTA;
 				}
 				
 			}else {
 				return "redirect:/";
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e.getMessage());
-			model.addAttribute("mensajeError", e.getMessage());
-			model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-			model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-			model.addAttribute("mensajeErrorVenta", e.getMessage());
-			model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-			model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			model.addAttribute(MENSAJEERRORVENTA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
 			ventaAcumuladoUSD.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("ventaAcumuladoUSD", ventaAcumuladoUSD);
+			model.addAttribute(VENTAACUMULADOUSD, ventaAcumuladoUSD);
 			ventaAcumuladoEUR.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("ventaAcumuladoEUR", ventaAcumuladoEUR);
-			model.addAttribute("montoBsTotalVenta", montoBsTotalVenta);
+			model.addAttribute(VENTAACUMULADOEUR, ventaAcumuladoEUR);
+			model.addAttribute(MONTOBSTOTALVENTA, montoBsTotalVenta);
 			compraAcumuladoUSD.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("compraAcumuladoUSD", compraAcumuladoUSD);
+			model.addAttribute(COMPRAACUMULADOUSD, compraAcumuladoUSD);
 			compraAcumuladoEUR.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("compraAcumuladoEUR", compraAcumuladoEUR);
-			model.addAttribute("montoBsTotalCompra", montoBsTotalCompra);
+			model.addAttribute(COMPRAACUMULADOEUR, compraAcumuladoEUR);
+			model.addAttribute(MONTOBSTOTALCOMPRA, montoBsTotalCompra);
 			ventaPorAprobarUSD.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("ventaPorAprobarUSD", ventaPorAprobarUSD);
+			model.addAttribute(VENTAPORAPROBARUSD, ventaPorAprobarUSD);
 			ventaPorAprobarEUR.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("ventaPorAprobarEUR", ventaPorAprobarEUR);
-			model.addAttribute("montoBsTotalPorAprobarVenta", montoBsTotalPorAprobarVenta);
+			model.addAttribute(VENTAPORAPROBAREUR, ventaPorAprobarEUR);
+			model.addAttribute(MONTOBSTOTALPORAPROBARVENTA, montoBsTotalPorAprobarVenta);
 			compraPorAprobarUSD.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("compraPorAprobarUSD", compraPorAprobarUSD);
+			model.addAttribute(COMPRAPORAPROBARUSD, compraPorAprobarUSD);
 			compraPorAprobarEUR.setMonto(new BigDecimal("0.00"));
-			model.addAttribute("compraPorAprobarEUR", compraPorAprobarEUR);
-			model.addAttribute("montoBsTotalPorAprobarCompra", montoBsTotalPorAprobarCompra);
-			return "convenio/solicitudes/listaSolicitudesMovimientosPorAprobarVenta";
+			model.addAttribute(COMPRAPORAPROBAREUR, compraPorAprobarEUR);
+			model.addAttribute(MONTOBSTOTALPORAPROBARCOMPRA, montoBsTotalPorAprobarCompra);
+			return URLLISTAMOVIMIENTOSPORAPROBARVENTA;
 		}
 	}
 	
@@ -462,7 +418,6 @@ public class SolicitudController {
 	
 	@GetMapping("/listaSolicitudesMovimientosVentas/{page}")
 	public String consultaMovimientoVenta(@PathVariable("page") int page,Model model) {
-		log.info("page: "+page);
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		
@@ -481,16 +436,13 @@ public class SolicitudController {
 			if(responseVenta != null) {
 				
 				listaMovimientosVenta = responseVenta.getMovimientos();
-				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
-				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
 				if(!listaMovimientosVenta.isEmpty()) {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
-					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+					model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
 				}
-				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+				model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(1);
 				movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -502,48 +454,42 @@ public class SolicitudController {
 				if(responseCompra != null) {
 					
 					listaMovimientosCompra = responseCompra.getMovimientos();
-					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 					if(!listaMovimientosCompra.isEmpty()) {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
-						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					}else {
-						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+						model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
 					}
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
 					
-					return "convenio/solicitudes/listaSolicitudesMovimientosVenta";
+					return URLLISTAMOVIMIENTOSVENTA;
 					
 					
 					
 				}else {
 					datosPaginacionCompra.setTotalPaginas(0);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosVenta";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSVENTA;
 				}
 				
 			}else {
 				return "redirect:/";
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e.getMessage());
-			model.addAttribute("mensajeError", e.getMessage());
-			model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-			model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
-			model.addAttribute("mensajeErrorCompra", e.getMessage());
-			model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-			model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-			//return "redirect:/";
-			return "convenio/solicitudes/listaSolicitudesMovimientosVenta";
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			return URLLISTAMOVIMIENTOSVENTA;
 		}
 	}
 	
 	
 	@GetMapping("/listaSolicitudesMovimientosCompras/{page}")
 	public String consultaMovimientoCompra(@PathVariable("page") int page,Model model) {
-		log.info("page: "+page);
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
 		
@@ -562,16 +508,13 @@ public class SolicitudController {
 			if(responseVenta != null) {
 				
 				listaMovimientosVenta = responseVenta.getMovimientos();
-				log.info("listaMovimientosVenta: "+listaMovimientosVenta);
-				log.info("listaMovimientosVenta.size: "+listaMovimientosVenta.size());
 				if(!listaMovimientosVenta.isEmpty()) {
 					datosPaginacionVenta = responseVenta.getDatosPaginacion();
-					log.info("datosPaginacionVenta: "+datosPaginacionVenta);
 				}else {
-					model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
+					model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
 				}
-				model.addAttribute("listaMovimientosVenta", listaMovimientosVenta);
-				model.addAttribute("datosPaginacionVenta", datosPaginacionVenta);
+				model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+				model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
 				
 				movimientosRequest.setNumeroPagina(page);
 				movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -583,34 +526,36 @@ public class SolicitudController {
 				if(responseCompra != null) {
 					
 					listaMovimientosCompra = responseCompra.getMovimientos();
-					log.info("listaMovimientosCompra: "+listaMovimientosCompra);
-					log.info("listaMovimientosCompra.size: "+listaMovimientosCompra.size());
 					if(!listaMovimientosCompra.isEmpty()) {
 						datosPaginacionCompra = responseCompra.getDatosPaginacion();
-						log.info("datosPaginacionCompra: "+datosPaginacionCompra);
 					}else {
-						model.addAttribute("mensajeErrorCompra", "Operacion Exitosa.La consulta no arrojo resultado.");
+						model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
 					}
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
 					
-					return "convenio/solicitudes/listaSolicitudesMovimientosCompra";
+					return URLLISTAMOVIMIENTOSCOMPRA;
 					
 					
 					
 				}else {
 					datosPaginacionCompra.setTotalPaginas(0);
-					model.addAttribute("listaMovimientosCompra", listaMovimientosCompra);
-					model.addAttribute("datosPaginacionCompra", datosPaginacionCompra);
-					return "convenio/solicitudes/listaSolicitudesMovimientosCompra";
+					model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+					model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+					return URLLISTAMOVIMIENTOSCOMPRA;
 				}
 				
 			}else {
 				return "redirect:/";
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			return "redirect:/";
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
+			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			return URLLISTAMOVIMIENTOSCOMPRA;
 		}
 	}
 	
@@ -618,8 +563,6 @@ public class SolicitudController {
 	public String procesarCompra(@PathVariable("codOperacion") String codOperacion, @PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, Movimiento movimiento ) {
 		log.info("procesarCompra");
-		log.info("codOperacion: "+codOperacion);
-		log.info("page: "+page);
 		
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
@@ -630,8 +573,6 @@ public class SolicitudController {
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtros = new Movimiento();
-			//filtrosVenta.setTipoTransaccion("V");
-			//filtrosVenta.setEstatus(0);
 			filtros.setCodOperacion(codOperacion);
 			movimientosRequest.setFiltros(filtros);
 			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
@@ -639,32 +580,25 @@ public class SolicitudController {
 			if(response.getResultado().getCodigo().equals("0000")) {
 				movimientoProcesar = response.getMovimientos().get(0);
 				movimientoProcesar.setPaginaActual(page);
-				log.info("movimientoProcesar: "+movimientoProcesar);
-				model.addAttribute("paginaActual", page);
+				model.addAttribute(PAGINAACTUAL, page);
 				model.addAttribute("movimiento", movimientoProcesar);
-				return "convenio/solicitudes/formSolicitud";
+				return URLFORMSOLICITUD;
 			}else {
-				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
-				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
-			}
-			
-			
-			
-			
+				String mensajeError = response.getResultado().getDescripcion();
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, mensajeError);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA+page;
+			}	
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJEERROR,e.getMessage());
+			return REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA+page;
 		}
 	}
 	
 	@PostMapping("/guardarProcesarCompra")
 	public String guardarProcesarCompra(Movimiento movimiento, BindingResult result, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request) {
-		log.info("movimiento: "+movimiento);
 		List<String> listaError = new ArrayList<>();
-		model.addAttribute("paginaActual", movimiento.getPaginaActual());
+		model.addAttribute(PAGINAACTUAL, movimiento.getPaginaActual());
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
@@ -674,28 +608,16 @@ public class SolicitudController {
 			}
 			
 			
-			model.addAttribute("listaError", listaError);
-			return "convenio/solicitudes/formSolicitud";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMSOLICITUD;
 		}
 		
-		//firstBigDecimal.compareTo(secondBigDecimal) < 0 // "<"
-				//firstBigDecimal.compareTo(secondBigDecimal) > 0 // ">"    
-				//firstBigDecimal.compareTo(secondBigDecimal) == 0 // "=="  
-				//firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="
-		/*
-		 * log.info("Comparar tamaño:" + movimiento.getNuevaTasaCliente().compareTo
-		 * (movimiento.getTasaCliente())); if(movimiento.getNuevaTasaCliente().compareTo
-		 * (movimiento.getTasaCliente()) < 0) { result.addError(new
-		 * ObjectError("codMoneda", " La tasa de cambio es manor que la nueva tasa"));
-		 * return "convenio/solicitudes/formSolicitud"; }
-		 */
-		
 		if(!isFechaValida(movimiento.getFecha())) {
-			result.addError(new ObjectError("codMoneda", " La fecha liquidacion es invalida"));
+			result.addError(new ObjectError(LISTAERROR, " La fecha liquidacion es invalida"));
 			
 			listaError.add("La fecha liquidacion es invalida");
-			model.addAttribute("listaError", listaError);
-			return "convenio/solicitudes/formSolicitud";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMSOLICITUD;
 		}
 		
 		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
@@ -709,15 +631,14 @@ public class SolicitudController {
 		
 		try {
 			String respuesta = movimientosApiRest.aprobarCompra(aprobarRechazarRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+movimiento.getPaginaActual();
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA+movimiento.getPaginaActual();
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			result.addError(new ObjectError(LISTAERROR, e.getMessage()));
 			listaError.add(e.getMessage());
-			model.addAttribute("listaError", listaError);
-			return "convenio/solicitudes/formSolicitud";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMSOLICITUD;
 			
 		}
 	}
@@ -725,13 +646,9 @@ public class SolicitudController {
 	@GetMapping("/procesarVenta/{codOperacion}/{page}")
 	public String procesarVenta(@PathVariable("codOperacion") String codOperacion, @PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, Movimiento movimiento ) {
-		log.info("procesarCompra");
-		log.info("codOperacion: "+codOperacion);
-		log.info("page: "+page);
+		log.info("procesarVenta");
 		
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
-		
-		
 		Movimiento movimientoProcesar = new Movimiento();
 		
 		try {
@@ -739,7 +656,6 @@ public class SolicitudController {
 			movimientosRequest.setTamanoPagina(numeroRegistroPage);
 			Movimiento filtros = new Movimiento();
 			filtros.setTipoTransaccion("V");
-			//filtrosVenta.setEstatus(0);
 			filtros.setCodOperacion(codOperacion);
 			movimientosRequest.setFiltros(filtros);
 			MovimientosResponse response = movimientosApiRest.consultarMovimientos(movimientosRequest);
@@ -747,23 +663,21 @@ public class SolicitudController {
 			if(response.getResultado().getCodigo().equals("0000")) {
 				movimientoProcesar = response.getMovimientos().get(0);
 				movimientoProcesar.setPaginaActual(page);
-				log.info("movimientoProcesar: "+movimientoProcesar);
-				model.addAttribute("paginaActual", page);
+				model.addAttribute(PAGINAACTUAL, page);
 				model.addAttribute("movimiento", movimientoProcesar);
-				return "convenio/solicitudes/formSolicitudVenta";
+				return URLFORMSOLICITUDVENTA;
 			}else {
 				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
-				redirectAttributes.addFlashAttribute("mensajeErrorVenta", mensajeError);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+				redirectAttributes.addFlashAttribute(MENSAJEERRORVENTA, mensajeError);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+page;
 			}
 			
 			
 			
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeErrorVenta",e.getMessage());
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJEERRORVENTA,e.getMessage());
+			return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+page;
 		}
 	}
 	
@@ -771,9 +685,9 @@ public class SolicitudController {
 	@PostMapping("/guardarProcesarVenta")
 	public String guardarProcesarVenta(Movimiento movimiento, BindingResult result, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request) {
-		log.info("movimiento: "+movimiento);
+
 		List<String> listaError = new ArrayList<>();
-		model.addAttribute("paginaActual", movimiento.getPaginaActual());
+		model.addAttribute(PAGINAACTUAL, movimiento.getPaginaActual());
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				log.info("Ocurrio un error: " + error.getDefaultMessage());
@@ -783,27 +697,15 @@ public class SolicitudController {
 			}
 			
 			
-			model.addAttribute("listaError", listaError);
-			return "convenio/solicitudes/formSolicitudVenta";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMSOLICITUDVENTA;
 		}
 		
-		//firstBigDecimal.compareTo(secondBigDecimal) < 0 // "<"
-				//firstBigDecimal.compareTo(secondBigDecimal) > 0 // ">"    
-				//firstBigDecimal.compareTo(secondBigDecimal) == 0 // "=="  
-				//firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="
-		/*
-		 * log.info("Comparar tamaño:" + movimiento.getNuevaTasaCliente().compareTo
-		 * (movimiento.getTasaCliente())); if(movimiento.getNuevaTasaCliente().compareTo
-		 * (movimiento.getTasaCliente()) < 0) { result.addError(new
-		 * ObjectError("codMoneda", " La tasa de cambio es manor que la nueva tasa"));
-		 * return "convenio/solicitudes/formSolicitud"; }
-		 */
-		
 		if(!isFechaValida(movimiento.getFecha())) {
-			result.addError(new ObjectError("codMoneda", " La fecha liquidacion es invalida"));
+			result.addError(new ObjectError(LISTAERROR, " La fecha liquidacion es invalida"));
 			listaError.add("La fecha liquidacion es invalida");
-			model.addAttribute("listaError", listaError);
-			return "convenio/solicitudes/formSolicitudVenta";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMSOLICITUDVENTA;
 		}
 		
 		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
@@ -818,14 +720,13 @@ public class SolicitudController {
 		try {
 			String respuesta = movimientosApiRest.aprobarVenta(aprobarRechazarRequest);
 			redirectAttributes.addFlashAttribute("mensajeVenta", respuesta);
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarVentas/"+movimiento.getPaginaActual();
+			return REDIRECTLISTAMOVIMIENTOSPORAPROBARVENTAS+movimiento.getPaginaActual();
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
+			result.addError(new ObjectError(LISTAERROR, e.getMessage()));
 			listaError.add(e.getMessage());
-			model.addAttribute("listaError", listaError);
-			return "convenio/solicitudes/formSolicitudVenta";
+			model.addAttribute(LISTAERROR, listaError);
+			return URLFORMSOLICITUDVENTA;
 		}
 	}
 	
@@ -835,9 +736,6 @@ public class SolicitudController {
 			@PathVariable("page") int page, Model model,
 			RedirectAttributes redirectAttributes, HttpServletRequest request ) {
 		log.info("rechazarCompra");
-		log.info("codOperacion: "+codOperacion);
-		log.info("page: "+page);
-		
 		
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		Movimiento movimientoProcesar = new Movimiento();
@@ -857,8 +755,7 @@ public class SolicitudController {
 			if(response.getResultado().getCodigo().equals("0000")) {
 				movimientoProcesar = response.getMovimientos().get(0);
 				movimientoProcesar.setPaginaActual(page);
-				log.info("movimientoProcesar: "+movimientoProcesar);
-				model.addAttribute("paginaActual", page);
+				model.addAttribute(PAGINAACTUAL, page);
 				
 				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
 				aprobarRechazarRequest.setIp(request.getRemoteAddr());
@@ -870,25 +767,18 @@ public class SolicitudController {
 				aprobarRechazarRequest.setEstatus(2);
 				
 				String respuesta = movimientosApiRest.rechazarCompra(aprobarRechazarRequest);
-				redirectAttributes.addFlashAttribute("mensaje", respuesta);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+				redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA+page;
 				
 				
 			}else {
 				String mensajeError = response.getResultado().getCodigo() + " " + response.getResultado().getDescripcion();
-				redirectAttributes.addFlashAttribute("mensajeError", mensajeError);
-				return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, mensajeError);
+				return REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA+page;
 			}
-			
-			
-			
-			
-			
-			
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
-			return "redirect:/solicitudes/listaSolicitudesMovimientosPorAprobarCompra/"+page;
+			redirectAttributes.addFlashAttribute(MENSAJEERROR,e.getMessage());
+			return REDIRECTLISTAMOVIMIENTOSPORAPROBARCOMPRA+page;
 		}
 	}
 	
@@ -2025,8 +1915,27 @@ public class SolicitudController {
 		}
 	}
 	
-	///borrar
 	
+	public Venta evaluarBigDecimalVenta(Venta ventaAcumulado) {
+		if(ventaAcumulado.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+			ventaAcumulado.setMonto(new BigDecimal("0.00"));
+		}
+		return ventaAcumulado;
+	}
 	
+	public Compra evaluarBigDecimalCompra(Compra compraAcumulado) {
+		if(compraAcumulado.getMonto().compareTo(BigDecimal.ZERO) == 0) { 			
+			compraAcumulado.setMonto(new BigDecimal("0.00"));
+		}
+		return compraAcumulado;
+	}
+	
+	public BigDecimal evaluarBigDecimal(BigDecimal valor) {
+		if(valor.compareTo(BigDecimal.ZERO) == 0) { 			
+			return new BigDecimal("0.00");
+		}else {
+			return valor;
+		}
+	}
 
 }

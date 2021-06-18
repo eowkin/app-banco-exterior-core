@@ -43,6 +43,23 @@ public class AgenciaController {
 	@Value("${des.canal}")
     private String canal;	
 	
+	private static final String URLINDEX = "convenio/agencia/listaAgencias";
+	
+	private static final String URLFORMAGENCIA = "convenio/agencia/formAgencia";
+	
+	private static final String URLFORMAGENCIABUSCAR = "convenio/agencia/formBuscarAgencia";
+	
+	private static final String URLFORMAGENCIAEDIT = "convenio/agencia/formAgenciaEdit";
+	
+	private static final String LISTAAGENCIAS = "listaAgencias";
+	
+	private static final String MENSAJEERROR = "mensajeError";
+	
+	private static final String REDIRECTINDEX = "redirect:/agencias/index";
+	
+	private static final String MENSAJE = "mensaje";
+	
+	private static final String MENSAJENORESULTADO = "Operacion Exitosa.La consulta no arrojo resultado.";
 	
 	@GetMapping("/index")
 	public String index(Model model, RedirectAttributes redirectAttributes) {
@@ -64,24 +81,18 @@ public class AgenciaController {
 				}
 			}
 			
-			model.addAttribute("listaAgencias", listaAgencias);
-			return "convenio/agencia/listaAgencias";
+			model.addAttribute(LISTAAGENCIAS, listaAgencias);
 		} catch (CustomException e) {
-			
-			log.error("error: "+e);
-			model.addAttribute("mensajeError", e.getMessage());
-			return "convenio/agencia/listaAgencias";
+			model.addAttribute(MENSAJEERROR, e.getMessage());
 		}
 		
-		
+		return URLINDEX;
 	}	
 	
 	@GetMapping("/activar/{codAgencia}")
 	public String activarWs(@PathVariable("codAgencia") String codAgencia, Model model,
 			RedirectAttributes redirectAttributes) {
 		log.info("activarWs");
-		log.info("codAgencia: " + codAgencia);
-		
 	
 		Agencia agenciaEdit = new Agencia(); 
 		AgenciaRequest agenciaRequest = getAgenciaRequest();
@@ -95,15 +106,12 @@ public class AgenciaController {
 			agenciaEdit.setFlagActivo(true);
 			agenciaRequest.setAgencia(agenciaEdit);
 			String respuesta = agenciaServiceApiRest.actualizar(agenciaRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/agencias/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/agencias/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
 		}
 		
-		
+		return REDIRECTINDEX;
 	}	
 	
 	
@@ -111,8 +119,6 @@ public class AgenciaController {
 	public String desactivarWs(@PathVariable("codAgencia") String codAgencia, Model model,
 			RedirectAttributes redirectAttributes) {
 		log.info("activarWs");
-		log.info("codAgencia: " + codAgencia);
-		
 		
 		Agencia agenciaEdit = new Agencia(); 
 		AgenciaRequest agenciaRequest = getAgenciaRequest();
@@ -126,15 +132,12 @@ public class AgenciaController {
 			agenciaEdit.setFlagActivo(false);
 			agenciaRequest.setAgencia(agenciaEdit);
 			String respuesta = agenciaServiceApiRest.actualizar(agenciaRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/agencias/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/agencias/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
 		}
 		
-		
+		return REDIRECTINDEX;
 	}
 	
 	
@@ -142,8 +145,6 @@ public class AgenciaController {
 	public String editarWs(@PathVariable("codAgencia") String codAgencia, 
 			Agencia agencia, Model model, RedirectAttributes redirectAttributes) {
 		log.info("editarWs");
-		log.info("codAgencia: "+codAgencia);
-		
 		
 		Agencia agenciaEdit = new Agencia(); 
 		AgenciaRequest agenciaRequest = getAgenciaRequest();
@@ -156,15 +157,14 @@ public class AgenciaController {
 			agenciaEdit = agenciaServiceApiRest.buscarAgencia(agenciaRequest);
 			if(agenciaEdit != null) {
 				model.addAttribute("agencia", agenciaEdit);
-				return "convenio/agencia/formAgenciaEdit";
+				return URLFORMAGENCIAEDIT;
 			}else {
-				redirectAttributes.addFlashAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "redirect:/agencias/index";
+				redirectAttributes.addFlashAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+				return REDIRECTINDEX;
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/agencias/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX;
 		}
 		
 		
@@ -185,12 +185,11 @@ public class AgenciaController {
 		try {
 			
 			String respuesta = agenciaServiceApiRest.actualizar(agenciaRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/agencias/index";
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
+			return REDIRECTINDEX;
 		} catch (CustomException e) {
-			log.error("error: "+e);
 			result.addError(new ObjectError("codMoneda", " Codigo :" +e.getMessage()));
-			return "convenio/agencia/formAgenciaEdit";
+			return URLFORMAGENCIAEDIT;
 		}
 		
 	}
@@ -208,12 +207,11 @@ public class AgenciaController {
 		
 		try {
 			listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
-			model.addAttribute("listaAgencias", listaAgencias);
-			return "convenio/agencia/formBuscarAgencia";
+			model.addAttribute(LISTAAGENCIAS, listaAgencias);
+			return URLFORMAGENCIABUSCAR;
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-			return "redirect:/agencias/index";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR, e.getMessage());
+			return REDIRECTINDEX;
 		}
 		
 	}
@@ -221,7 +219,7 @@ public class AgenciaController {
 	@GetMapping("/formAgencia")
 	public String fromAgencia(Agencia agencia,  Model model) {
 		
-		return "convenio/agencia/formAgencia";
+		return URLFORMAGENCIA;
 	}
 	
 	@GetMapping("/searchCrear")
@@ -242,33 +240,30 @@ public class AgenciaController {
 			agenciaEdit = agenciaServiceApiRest.buscarAgencia(agenciaRequest);
 			if(agenciaEdit != null) {
 				model.addAttribute("agencia", agenciaEdit);
-				return "convenio/agencia/formAgencia";
+				return URLFORMAGENCIA;
 			}else {
 				Agencia agenciaBuscarCargar = new Agencia();
 				agenciaBuscarCargar.setFlagDivisa(false);
 				agenciaRequest.setAgencia(agenciaBuscarCargar);
 				listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
-				model.addAttribute("listaAgencias", listaAgencias);
-				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "convenio/agencia/formBuscarAgencia";
+				model.addAttribute(LISTAAGENCIAS, listaAgencias);
+				model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+				return URLFORMAGENCIABUSCAR;
 			}
 			
 			
 		} catch (CustomException e) {
-			log.error("error: "+e);
 			Agencia agenciaBuscarCargar = new Agencia();
 			agenciaBuscarCargar.setFlagDivisa(false);
 			agenciaRequest.setAgencia(agenciaBuscarCargar);
 			try {
 				listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
-				model.addAttribute("listaAgencias", listaAgencias);
-				model.addAttribute("mensajeError", e.getMessage());
-				return "convenio/agencia/formBuscarAgencia";
+				model.addAttribute(LISTAAGENCIAS, listaAgencias);
+				model.addAttribute(MENSAJEERROR, e.getMessage());
+				return URLFORMAGENCIABUSCAR;
 			} catch (CustomException e1) {
-				// TODO Auto-generated catch block
-				log.error("error: "+e1);
-				model.addAttribute("mensajeError", e1.getMessage());
-				return "convenio/agencia/formBuscarAgencia";
+				model.addAttribute(MENSAJEERROR, e1.getMessage());
+				return URLFORMAGENCIABUSCAR;
 			}
 			
 		}
@@ -292,19 +287,12 @@ public class AgenciaController {
 		
 		try {
 			String respuesta = agenciaServiceApiRest.crear(agenciaRequest);
-			redirectAttributes.addFlashAttribute("mensaje", respuesta);
-			return "redirect:/agencias/index";
-			
+			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			redirectAttributes.addFlashAttribute("mensajeError",e.getMessage());
-			return "redirect:/agencias/index";
-			
-			//model.addAttribute("mensajeError", e.getMessage());
-			//return "convenio/agencia/formBuscarAgencia";
+			redirectAttributes.addFlashAttribute(MENSAJEERROR,e.getMessage());
 		}
 		
-		
+		return REDIRECTINDEX;
 	}	
 	
 	
@@ -325,7 +313,6 @@ public class AgenciaController {
 		
 		try {
 			listaAgencias = agenciaServiceApiRest.listaAgencias(agenciaRequest);
-			log.info("lista: "+listaAgencias.isEmpty());
 			if(!listaAgencias.isEmpty()) {
 				for (Agencia agencia2 : listaAgencias) {
 					if(agencia2.getFechaModificacion() != null) {
@@ -333,27 +320,17 @@ public class AgenciaController {
 						agencia2.setFechaModificacion(arrOfStr[0]);
 					}
 				}
-				model.addAttribute("listaAgencias", listaAgencias);
-				return "convenio/agencia/listaAgencias";
+				model.addAttribute(LISTAAGENCIAS, listaAgencias);
+				
 			}else {
-				//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
-				model.addAttribute("listaAgencias", listaAgencias);
-				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "convenio/agencia/listaAgencias";
+				model.addAttribute(LISTAAGENCIAS, listaAgencias);
+				model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
 			}
 		} catch (CustomException e) {
-			log.error("error: "+e);
-			model.addAttribute("listaAgencias", listaAgencias);
-			model.addAttribute("mensajeError", e.getMessage());
-			return "convenio/agencia/listaAgencias";
+			model.addAttribute(LISTAAGENCIAS, listaAgencias);
+			model.addAttribute(MENSAJEERROR, e.getMessage());
 		}
-		
-		
-		
-		
-		
-		
-		
+		return URLINDEX;
 	}	
 	
 	
@@ -382,22 +359,19 @@ public class AgenciaController {
 						agencia2.setFechaModificacion(arrOfStr[0]);
 					}
 				}
-				model.addAttribute("listaAgencias", listaAgencias);
-				return "convenio/agencia/listaAgencias";
+				model.addAttribute(LISTAAGENCIAS, listaAgencias);
 			}else {
-				//redirectAttributes.addFlashAttribute("mensajeError", " Codigo : 0001 descripcion: Operacion Exitosa.La consulta no arrojo resultado.");
-				model.addAttribute("listaAgencias", listaAgencias);
-				model.addAttribute("mensajeError", "Operacion Exitosa.La consulta no arrojo resultado.");
-				return "convenio/agencia/listaAgencias";
+				model.addAttribute(LISTAAGENCIAS, listaAgencias);
+				model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
 			}
 		} catch (CustomException e) {
 			log.error("error: "+e);
-			model.addAttribute("listaAgencias", listaAgencias);
-			model.addAttribute("mensajeError", e.getMessage());
-			return "convenio/agencia/listaAgencias";
+			model.addAttribute(LISTAAGENCIAS, listaAgencias);
+			model.addAttribute(MENSAJEERROR, e.getMessage());
+			
 		}
 		
-		
+		return URLINDEX;
 		
 		
 		

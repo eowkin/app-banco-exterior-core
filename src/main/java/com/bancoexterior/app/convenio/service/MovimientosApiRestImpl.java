@@ -1,6 +1,7 @@
 package com.bancoexterior.app.convenio.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,8 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
     @Value("${des.movimientos.venta.actualizar}")
     private String urlActualizarMovimientosVenta;
     
+    private static final String ERRORMICROCONEXION = "No hubo conexion con el micreoservicio Movimientos";
+    
     
     public WSRequest getWSRequest() {
     	WSRequest wsrequest = new WSRequest();
@@ -69,75 +72,64 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String movimientosRequestJSON;
-		MovimientosResponse movimientosResponse = new MovimientosResponse();
 		movimientosRequestJSON = new Gson().toJson(movimientosRequest);
 		wsrequest.setBody(movimientosRequestJSON);
-		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos?sort=codMoneda,desc&sort=tasaCliente,asc&sort=montoDivisa,asc");
 		wsrequest.setUrl(urlConsultarMovimientosPorAprobar);
-			
-		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            return movimientosResponse;
+				return respuesta2xxConsultarMovimientosPorAprobar(retorno);
 			}else {
-				if(retorno.getStatus() == 422) {
-					try {
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				throw new CustomException(respuesta4xxConsultarMovimientosPorAprobar(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
 	}
 
+	
+	public MovimientosResponse respuesta2xxConsultarMovimientosPorAprobar(WSResponse retorno) {
+		try {
+			return mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+       
+	}
+	
+	public String respuesta4xxConsultarMovimientosPorAprobar(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado() .getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	@Override
 	public MovimientosResponse consultarMovimientosPorAprobarVenta(MovimientosRequest movimientosRequest)
 			throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String movimientosRequestJSON;
-		MovimientosResponse movimientosResponse = new MovimientosResponse();
 		movimientosRequestJSON = new Gson().toJson(movimientosRequest);
 		wsrequest.setBody(movimientosRequestJSON);
-		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos?sort=codMoneda,desc&sort=tasaCliente,desc&sort=montoDivisa,desc");
 		wsrequest.setUrl(urlConsultarMovimientosPorAprobarVenta);
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            return movimientosResponse;
+				return respuesta2xxConsultarMovimientosPorAprobar(retorno);
 			}else {
-				if(retorno.getStatus() == 422) {
-					try {
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				throw new CustomException(respuesta4xxConsultarMovimientosPorAprobar(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
+		
 	}
 	
 	
@@ -147,118 +139,94 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String movimientosRequestJSON;
-		MovimientosResponse movimientosResponse = new MovimientosResponse();
 		movimientosRequestJSON = new Gson().toJson(movimientosRequest);
 		wsrequest.setBody(movimientosRequestJSON);
-		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos");
 		wsrequest.setUrl(urlConsultarMovimientos);
 		log.info("antes de llamarte WS en consultar");
 		retorno = wsService.post(wsrequest);
-		log.info("retorno: "+retorno);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
-	            	
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            return movimientosResponse;
+				return respuesta2xxConsultarMovimientosPorAprobar(retorno);
 			}else {
-				if(retorno.getStatus() == 422) {
-					try {
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				throw new CustomException(respuesta4xxConsultarMovimientosPorAprobar(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
 	}
 
 	@Override
 	public String rechazarCompra(AprobarRechazarRequest aprobarRechazarRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();
-		Resultado resultado = new Resultado();
-		String respuesta;
-		String error;
-		AprobarRechazarResponse aprobarRechazarResponse = new AprobarRechazarResponse();
 		String aprobarRechazarRequestJSON;
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
 		wsrequest.setBody(aprobarRechazarRequestJSON);								 
-		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionescompras");
 		wsrequest.setUrl(urlActualizarMovimientosCompra);
 		log.info("antes de llamarte WS en rechazarCompraSolicitud");
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-					aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-					if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
-		            	resultado = aprobarRechazarResponse.getResultado();
-		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						return respuesta;
-		            }else {
-		            	resultado = aprobarRechazarResponse.getResultado();
-		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						return respuesta;
-		            }
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				    
-				
-				
-				
+				return respuesta2xxRechazarAprobarCompraVenta(retorno);
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400) {
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
+					throw new CustomException(respuesta4xxRechazarAprobarCompraVenta(retorno));
 				}else {
 					if (retorno.getStatus() == 500) {
-						try {
-							aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						resultado = aprobarRechazarResponse.getResultado();
-						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						throw new CustomException(error);
-							
-						
-						
+						throw new CustomException(respuesta5xxRechazarAprobarCompraVenta(retorno));
 					}
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
 		return null;
 	}
 
+	
+	public String respuesta2xxRechazarAprobarCompraVenta(WSResponse retorno) {
+		try {
+			AprobarRechazarResponse aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
+			if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
+				Resultado resultado = aprobarRechazarResponse.getResultado();
+				return resultado.getDescripcion();
+            }else {
+            	Resultado resultado = aprobarRechazarResponse.getResultado();
+            	return resultado.getDescripcion();
+            }
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public String respuesta4xxRechazarAprobarCompraVenta(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado().getDescripcion();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public String respuesta5xxRechazarAprobarCompraVenta(WSResponse retorno) {
+		try {
+			AprobarRechazarResponse aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
+			Resultado resultado = aprobarRechazarResponse.getResultado();
+			return resultado.getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
 	@Override
 	public String aprobarCompra(AprobarRechazarRequest aprobarRechazarRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();
-		Resultado resultado = new Resultado();
-		String respuesta;
-		String error;
-		AprobarRechazarResponse aprobarRechazarResponse = new AprobarRechazarResponse();
 		String aprobarRechazarRequestJSON;
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
 		wsrequest.setBody(aprobarRechazarRequestJSON);
@@ -267,54 +235,18 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-					aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-					if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
-		            	
-		            	resultado = aprobarRechazarResponse.getResultado();
-		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						return respuesta;
-		            }else {
-		            	resultado = aprobarRechazarResponse.getResultado();
-		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						return respuesta;
-		            }
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				    
-				
-				
-				
+				return respuesta2xxRechazarAprobarCompraVenta(retorno);
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400) {
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
+					throw new CustomException(respuesta4xxRechazarAprobarCompraVenta(retorno));
 				}else {
 					if (retorno.getStatus() == 500) {
-						try {
-							aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						resultado = aprobarRechazarResponse.getResultado();
-						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						throw new CustomException(error);
-							
-						
-						
+						throw new CustomException(respuesta5xxRechazarAprobarCompraVenta(retorno));
 					}
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
 		return null;
 	}
@@ -323,69 +255,27 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 	public String rechazarVenta(AprobarRechazarRequest aprobarRechazarRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();
-		Resultado resultado = new Resultado();
-		String respuesta;
-		String error;
-		AprobarRechazarResponse aprobarRechazarResponse = new AprobarRechazarResponse();
 		String aprobarRechazarRequestJSON;
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
 		wsrequest.setBody(aprobarRechazarRequestJSON);
-		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionesventas");
 		wsrequest.setUrl(urlActualizarMovimientosVenta);
 		
 		log.info("antes de llamarte WS en rechazarVentaSolicitud");
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-					aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-					if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
-		            	
-		            	resultado = aprobarRechazarResponse.getResultado();
-		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						return respuesta;
-		            }else {
-		            	resultado = aprobarRechazarResponse.getResultado();
-		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						return respuesta;
-		            }
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				    
-				
-				
-				
+				return respuesta2xxRechazarAprobarCompraVenta(retorno);
 			}else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400) {
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
+					throw new CustomException(respuesta4xxRechazarAprobarCompraVenta(retorno));
 				}else {
 					if (retorno.getStatus() == 500) {
-						try {
-							aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						resultado = aprobarRechazarResponse.getResultado();
-						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						throw new CustomException(error);
-							
-						
-						
+						throw new CustomException(respuesta5xxRechazarAprobarCompraVenta(retorno));
 					}
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
 		return null;
 	}
@@ -394,65 +284,26 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 	public String aprobarVenta(AprobarRechazarRequest aprobarRechazarRequest) throws CustomException {
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
-		Response response = new Response();
-		Resultado resultado = new Resultado();
-		String respuesta;
-		String error;
-		AprobarRechazarResponse aprobarRechazarResponse = new AprobarRechazarResponse();
 		String aprobarRechazarRequestJSON;
 		aprobarRechazarRequestJSON = new Gson().toJson(aprobarRechazarRequest);
 		wsrequest.setBody(aprobarRechazarRequestJSON);										 
-		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/aprobacionesventas");
 		wsrequest.setUrl(urlActualizarMovimientosVenta);
 		log.info("antes de llamarte WS en aprobarVentaSolicitud");
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-					aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-					if(aprobarRechazarResponse.getResultado().getCodigo().equals("0000")){
-		            	
-		            	resultado = aprobarRechazarResponse.getResultado();
-		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						return respuesta;
-		            }else {
-		            	resultado = aprobarRechazarResponse.getResultado();
-		            	respuesta =" Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						return respuesta;
-		            }
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				 
+				return respuesta2xxRechazarAprobarCompraVenta(retorno);		 
 		     }else {
 				if (retorno.getStatus() == 422 || retorno.getStatus() == 400) {
-					try {
-						response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						error = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado().getDescripcion();
-						throw new CustomException(error);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
+					throw new CustomException(respuesta4xxRechazarAprobarCompraVenta(retorno));
 				}else {
 					if (retorno.getStatus() == 500) {
-						try {
-							aprobarRechazarResponse = mapper.jsonToClass(retorno.getBody(), AprobarRechazarResponse.class);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						resultado = aprobarRechazarResponse.getResultado();
-						error = " Codigo :" +resultado.getCodigo() +" descripcion: "+resultado.getDescripcion();
-						throw new CustomException(error);
-							
-						
-						
+						throw new CustomException(respuesta5xxRechazarAprobarCompraVenta(retorno));
 					}
 				}
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
 		return null;
 	}
@@ -462,39 +313,42 @@ public class MovimientosApiRestImpl implements IMovimientosApiRest{
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String movimientosRequestJSON;
-		MovimientosResponse movimientosResponse = new MovimientosResponse();
 		movimientosRequestJSON = new Gson().toJson(movimientosRequest);
 		wsrequest.setBody(movimientosRequestJSON);
-		//wsrequest.setUrl("https://172.19.148.51:8443/api/des/V1/divisas/consultasmovimientos");
 		wsrequest.setUrl(urlConsultarMovimientos);
 		log.info("antes de llamarte WS buscarListaMovimientos");
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				try {
-	            	movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
-	            	
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            return movimientosResponse.getMovimientos();
+				return respuesta2xxGetListaMovimientos(retorno);
 	       	}else {
-				if(retorno.getStatus() == 422) {
-					try {
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						String mensaje = " Codigo :" +response.getResultado().getCodigo() +" descripcion: "+response.getResultado() .getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+	       		throw new CustomException(respuesta4xxGetListaMovimientos(retorno));
 			}
 		}else {
-			throw new CustomException("No hubo conexion con el micreoservicio movimientos");
+			throw new CustomException(ERRORMICROCONEXION);
 		}
-		return null;
 	}
 
+	public List<Movimiento> respuesta2xxGetListaMovimientos(WSResponse retorno){
+		try {
+			MovimientosResponse movimientosResponse = mapper.jsonToClass(retorno.getBody(), MovimientosResponse.class);
+        	return movimientosResponse.getMovimientos();
+        	
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+       
+	}
 	
+	public String respuesta4xxGetListaMovimientos(WSResponse retorno){
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado() .getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }

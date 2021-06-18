@@ -69,7 +69,6 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String acumuladoRequestJSON;
-		AcumuladoResponse acumuladoResponse = new AcumuladoResponse();
 		acumuladoRequestJSON = new Gson().toJson(acumuladoRequest);
 		wsrequest.setBody(acumuladoRequestJSON);
 		wsrequest.setUrl(urlConsulta);
@@ -78,31 +77,34 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				log.info("Respusta codigo 200 en consultarAcumuladosDiariosBanco");
-	            try {
-	            	acumuladoResponse = mapper.jsonToClass(retorno.getBody(), AcumuladoResponse.class);
-	            	log.info(acumuladoResponse.getResultado().getCodigo());
-		            return acumuladoResponse;
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	            
+				return respuesta2xxConsultarAcumuladosDiariosBanco(retorno);
 			}else {
-				if(retorno.getStatus() == 422) {
-					log.info("entro en error 422 en consultarAcumuladosDiariosBanco");
-					try {
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						String mensaje = response.getResultado() .getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				throw new CustomException(respuesta4xxConsultarAcumuladosDiariosBanco(retorno));
 			}
 		}else {
 			throw new CustomException(errorMicroCOnexion);
 		}
-		return null;
+	}
+	
+	public AcumuladoResponse respuesta2xxConsultarAcumuladosDiariosBanco(WSResponse retorno) {
+		 try {
+			 AcumuladoResponse acumuladoResponse = mapper.jsonToClass(retorno.getBody(), AcumuladoResponse.class);
+         	 log.info(acumuladoResponse.getResultado().getCodigo());
+	         return acumuladoResponse;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;	
+		}
+	}
+	
+	public String respuesta4xxConsultarAcumuladosDiariosBanco(WSResponse retorno) {
+		try {
+			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
+			return response.getResultado() .getDescripcion();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -111,7 +113,6 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		WSRequest wsrequest = getWSRequest();
 		WSResponse retorno;
 		String acumuladoRequestJSON;
-		AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = new AcumuladoCompraVentaResponse();
 		acumuladoRequestJSON = new Gson().toJson(acumuladoRequest);
 		wsrequest.setBody(acumuladoRequestJSON);
 		wsrequest.setUrl(urlConsulta);
@@ -120,28 +121,17 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		retorno = wsService.post(wsrequest);
 		if(retorno.isExitoso()) {
 			if(retorno.getStatus() == 200) {
-				return respuesta2xx(retorno);
-	            
-	            
-			}else {
-				if(retorno.getStatus() == 422) {
-					log.info("entro en error 422 en consultarAcumuladosCompraVenta");
-					try {
-						Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
-						String mensaje = response.getResultado() .getDescripcion();
-						throw new CustomException(mensaje);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				return respuesta2xxconsultarConsultarAcumuladosCompraVenta(retorno);
+	        }else {
+				throw new CustomException(respuesta4xxConsultarAcumuladosCompraVenta(retorno));
 			}
 		}else {
 			throw new CustomException(errorMicroCOnexion);
 		}
-		return null;
+		
 	}
 	
-	public AcumuladoCompraVentaResponse respuesta2xx(WSResponse retorno) {
+	public AcumuladoCompraVentaResponse respuesta2xxconsultarConsultarAcumuladosCompraVenta(WSResponse retorno) {
 		try {
 			AcumuladoCompraVentaResponse acumuladoCompraVentaResponse = mapper.jsonToClass(retorno.getBody(), AcumuladoCompraVentaResponse.class);
         	log.info(acumuladoCompraVentaResponse.getResultado().getCodigo());
@@ -152,7 +142,7 @@ public class AcumuladosServiceApiRestImpl implements IAcumuladosServiceApiRest{
 		}
 	}
 	
-	public String  respuesta4xx(WSResponse retorno) {
+	public String  respuesta4xxConsultarAcumuladosCompraVenta(WSResponse retorno) {
 		try {
 			Response response = mapper.jsonToClass(retorno.getBody(), Response.class);
 			return response.getResultado().getDescripcion();

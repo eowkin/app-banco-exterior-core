@@ -164,7 +164,7 @@ public class TasaController {
 			redirectAttributes.addFlashAttribute(MENSAJE, respuesta);
 			return REDIRECTINDEX;
 		} catch (CustomException e) {
-			result.addError(new ObjectError(LISTAERROR, " Codigo :" +e.getMessage()));
+			result.addError(new ObjectError(LISTAERROR, e.getMessage()));
 			listaError.add(e.getMessage());
 			model.addAttribute(LISTAERROR, listaError);
 			return URLFORMTASAEDIT;
