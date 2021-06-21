@@ -3,7 +3,6 @@ package com.bancoexterior.app.convenio.dto;
 import java.io.Serializable;
 
 import com.bancoexterior.app.convenio.model.AcumuladosCompraVenta;
-import com.bancoexterior.app.convenio.model.AcumuladosPorAprobar;
 import com.bancoexterior.app.convenio.response.Resultado;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
